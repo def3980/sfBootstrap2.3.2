@@ -229,25 +229,24 @@ EOF;
     return implode("\n", $data)."\n";
   }
 
-  /**
-   * Adds stylesheets and javascripts statements to the data.
-   *
-   * @param string $viewName The view name
-   *
-   * @return string The PHP statement
-   */
-  protected function addHtmlAsset($viewName = '')
-  {
-    // Merge the current view's stylesheets with the app's default stylesheets
-    $stylesheets = $this->mergeConfigValue('stylesheets', $viewName);
-    $css = $this->addAssets('Stylesheet', $stylesheets);
+    /**
+     * Adds stylesheets and javascripts statements to the data.
+     *
+     * @param string $viewName The view name
+     *
+     * @return string The PHP statement
+     */
+    protected function addHtmlAsset($viewName = '') {
+        // Merge the current view's stylesheets with the app's default stylesheets
+        $stylesheets = $this->mergeConfigValue('stylesheets', $viewName);
+        $css = $this->addAssets('Stylesheet', $stylesheets);
 
-    // Merge the current view's javascripts with the app's default javascripts
-    $javascripts = $this->mergeConfigValue('javascripts', $viewName);
-    $js = $this->addAssets('Javascript', $javascripts);
+        // Merge the current view's javascripts with the app's default javascripts
+        $javascripts = $this->mergeConfigValue('javascripts', $viewName);
+        $js = $this->addAssets('Javascript', $javascripts);
 
-    return implode("\n", array_merge($css, $js))."\n";
-  }
+        return implode("\n", array_merge($css, $js))."\n";
+    }
 
   /**
    * Creates a list of add$Type PHP statements for the given type and config.
@@ -322,23 +321,45 @@ EOF;
     return self::mergeConfig(self::parseYamls($configFiles));
   }
 
-  static protected function mergeConfig($config)
-  {
-    // merge javascripts and stylesheets
-    $config['all']['stylesheets'] = array_merge(isset($config['default']['stylesheets']) && is_array($config['default']['stylesheets']) ? $config['default']['stylesheets'] : array(), isset($config['all']['stylesheets']) && is_array($config['all']['stylesheets']) ? $config['all']['stylesheets'] : array());
-    unset($config['default']['stylesheets']);
+    // Buscando setear una nueva configuracion en app/config/view.yml
+    static protected function mergeConfig($config) {
+        // merge javascripts and stylesheets
+        $config['all']['stylesheets'] = array_merge(
+            isset($config['default']['stylesheets']) 
+            && is_array($config['default']['stylesheets']) 
+            ? $config['default']['stylesheets'] 
+            : array(), isset($config['all']['stylesheets']) 
+                       && is_array($config['all']['stylesheets']) 
+                       ? $config['all']['stylesheets'] 
+                       : array()
+        );
+        unset($config['default']['stylesheets']);
 
-    $config['all']['javascripts'] = array_merge(isset($config['default']['javascripts']) && is_array($config['default']['javascripts']) ? $config['default']['javascripts'] : array(), isset($config['all']['javascripts']) && is_array($config['all']['javascripts']) ? $config['all']['javascripts'] : array());
-    unset($config['default']['javascripts']);
+        $config['all']['javascripts'] = array_merge(
+            isset($config['default']['javascripts']) 
+            && is_array($config['default']['javascripts']) 
+            ? $config['default']['javascripts'] 
+            : array(), isset($config['all']['javascripts']) 
+                       && is_array($config['all']['javascripts']) 
+                       ? $config['all']['javascripts'] 
+                       : array()
+        );
+        unset($config['default']['javascripts']);
+        // ---------------------------------------------------------
 
-    // merge default and all
-    $config['all'] = sfToolkit::arrayDeepMerge(
-      isset($config['default']) && is_array($config['default']) ? $config['default'] : array(),
-      isset($config['all']) && is_array($config['all']) ? $config['all'] : array()
-    );
+        // merge default and all
+        $config['all'] = sfToolkit::arrayDeepMerge(
+            isset($config['default']) 
+            && is_array($config['default']) 
+            ? $config['default'] 
+            : array(), isset($config['all']) 
+                       && is_array($config['all']) 
+                       ? $config['all'] 
+                        : array()
+        );
+        unset($config['default']);
 
-    unset($config['default']);
+        return self::replaceConstants($config);
+    }
 
-    return self::replaceConstants($config);
-  }
 }

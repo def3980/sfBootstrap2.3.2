@@ -163,28 +163,25 @@
                         <p class="lead">Move beyond the base template with a few example layouts. We encourage folks to iterate on these examples and not simply use them as an end result.</p>
                         <ul class="thumbnails bootstrap-examples">
                             <li class="span3">
-                                <?php echo link_to(image_tag(assets_css_path(
-                                                        'img/examples/bootstrap-example-starter.png'), 
-                                                    array('alt' => null)), 
-                                                '@bootstrap2_examples_starter_template', array('class' => 'thumbnail')
+                                <?php echo link_to(
+                                            image_tag('examples/bootstrap-example-starter', array('alt' => null)), 
+                                            '@bootstrap2_examples_starter_template', array('class' => 'thumbnail')
                                            ).PHP_EOL ?>
                                 <h4>Starter template</h4>
                                 <p>A barebones HTML document with all the Bootstrap CSS and JavaScript included.</p>
                             </li>
                             <li class="span3">
-                                <?php echo link_to(image_tag(assets_css_path(
-                                                        'img/examples/bootstrap-example-marketing.png'), 
-                                                    array('alt' => null)), 
-                                                '@bootstrap2_examples_hero', array('class' => 'thumbnail')
+                                <?php echo link_to(
+                                            image_tag('examples/bootstrap-example-marketing', array('alt' => null)), 
+                                            '@bootstrap2_examples_hero', array('class' => 'thumbnail')
                                            ).PHP_EOL ?>
                                 <h4>Basic marketing site</h4>
                                 <p>Featuring a hero unit for a primary message and three supporting elements.</p>
                             </li>
                             <li class="span3">
-                                <?php echo link_to(image_tag(assets_css_path(
-                                                        'img/examples/bootstrap-example-fluid.png'), 
-                                                    array('alt' => null)), 
-                                                '@bootstrap2_examples_fluid', array('class' => 'thumbnail')
+                                <?php echo link_to(
+                                            image_tag('examples/bootstrap-example-fluid', array('alt' => null)), 
+                                            '@bootstrap2_examples_fluid', array('class' => 'thumbnail')
                                            ).PHP_EOL ?>
                                 <h4>Fluid layout</h4>
                                 <p>Uses our new responsive, fluid grid system to create a seamless liquid layout.</p>

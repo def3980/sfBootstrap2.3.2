@@ -2,7 +2,16 @@
 # http://www.symfony-project.org/reference/1_4/en/13-View
 
 default:
-  stylesheets: ['assets/css/bootstrap', opcion: { bootstrap: true }]
-  javascripts: []
+#  http_metas:
+#    content-type: text/html
+  
+  metas:
+    charset: utf-8
+    viewport: 'width=device-width, initial-scale=1.0'
+    description: 
+    author: 
+
+  stylesheets: [ bootstrap: { bootstrap : true }, bootstrap-responsive: { bootstrap : true }, docs: { bootstrap : true }, google-code-prettify: { bootstrap : true } ]
+  javascripts: [ widgets: { bootstrap : true }, jquery: { bootstrap : true }, bootstrap-alert: { bootstrap : true }, bootstrap-modal: { bootstrap : true }, bootstrap-dropdown: { bootstrap : true }, bootstrap-scrollspy: { bootstrap : true }, bootstrap-tab: { bootstrap : true }, bootstrap-tooltip: { bootstrap : true }, bootstrap-popover: { bootstrap : true }, bootstrap-button: { bootstrap : true }, bootstrap-collapse: { bootstrap : true }, bootstrap-carousel: { bootstrap : true }, bootstrap-typeahead: { bootstrap : true }, bootstrap-affix: { bootstrap : true }, holder/holder: { bootstrap : true }, google-code-prettify/prettify: { bootstrap : true }, application: { bootstrap : true } ]
   has_layout:  true
   layout:      layout

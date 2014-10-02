@@ -98,6 +98,7 @@ function javascript_path($source, $absolute = false)
 */
 function javascript_include_tag() {
     $html          = '';
+    $inside        = false;
     $sources       = func_get_args();
     $sourceOptions = (func_num_args() > 1 && is_array($sources[func_num_args() - 1])) ? array_pop($sources) : array();
     foreach ($sources as $source) {
@@ -121,7 +122,9 @@ function javascript_include_tag() {
 
         if (isset($sourceOptions['bootstrap']) && $sourceOptions['bootstrap']) {
             if ($sourceOptions['bootstrap']) {
+                $inside = $sourceOptions['inside'];
                 unset($sourceOptions['bootstrap']);
+                unset($sourceOptions['inside']);
                 $options = array_merge(array('src' => $source), $sourceOptions);
             }
         } else {
@@ -137,7 +140,7 @@ function javascript_include_tag() {
         $html .= $tag.PHP_EOL;
     }
 
-    return $html;
+    return $inside ? $html :"\t".$html;
 }
 
 /**
@@ -195,6 +198,7 @@ function stylesheet_path($source, $absolute = false)
  */
 function stylesheet_tag() {
     $html          = '';
+    $icons         = false;
     $sources       = func_get_args();
     $sourceOptions = (func_num_args() > 1 && is_array($sources[func_num_args() - 1])) ? array_pop($sources) : array();
     foreach ($sources as $source) {
@@ -215,16 +219,20 @@ function stylesheet_tag() {
         } else {
             unset($sourceOptions['raw_name']);
         }
-        
+
         if (isset($sourceOptions['bootstrap']) && $sourceOptions['bootstrap']) {
             if ($sourceOptions['bootstrap']) {
                 unset($sourceOptions['bootstrap']);
                 $options = array_merge(array('href' => $source, 'rel' => 'stylesheet'), $sourceOptions);
             }
+        } elseif(isset($sourceOptions['icons']) && $sourceOptions['icons']) {
+            $icons = $sourceOptions['icons'];
+            unset($sourceOptions['icons']);
+            $options = array_merge($sourceOptions, array('href' => $source));
         } else {
             $options = array_merge(array('rel' => 'stylesheet', 'type' => 'text/css', 'media' => 'screen', 'href' => $source), $sourceOptions);
         }
-        
+
         $tag = tag('link', $options);
 
         if (null !== $condition) {
@@ -234,7 +242,7 @@ function stylesheet_tag() {
         $html .= $tag.PHP_EOL;
     }
 
-    return "\t".$html;
+    return $icons ? $html : "\t".$html;
 }
 
 /**
@@ -409,35 +417,33 @@ function _compute_public_path($source, $dir, $ext, $absolute = false)
   return $source.$query_string;
 }
 
-/**
- * Prints a set of <meta> tags according to the response attributes,
- * to be included in the <head> section of a HTML document.
- *
- * <b>Examples:</b>
- * <code>
- *  include_metas();
- *    => <meta name="title" content="symfony - open-source PHP5 web framework" />
- *       <meta name="robots" content="index, follow" />
- *       <meta name="description" content="symfony - open-source PHP5 web framework" />
- *       <meta name="keywords" content="symfony, project, framework, php, php5, open-source, mit, symphony" />
- *       <meta name="language" content="en" /><link href="/stylesheets/style.css" media="screen" rel="stylesheet" type="text/css" />
- * </code>
- *
- * <b>Note:</b> Modify the view.yml or use sfWebResponse::addMeta() to change, add or remove metas.
- *
- * @return string XHTML compliant <meta> tag(s)
- * @see    include_http_metas
- * @see    sfWebResponse::addMeta()
- */
-function include_metas()
-{
-  $context = sfContext::getInstance();
-  $i18n = sfConfig::get('sf_i18n') ? $context->getI18N() : null;
-  foreach ($context->getResponse()->getMetas() as $name => $content)
-  {
-    echo tag('meta', array('name' => $name, 'content' => null === $i18n ? $content : $i18n->__($content)))."\n";
-  }
-}
+    /**
+     * Prints a set of <meta> tags according to the response attributes,
+     * to be included in the <head> section of a HTML document.
+     *
+     * <b>Examples:</b>
+     * <code>
+     *  include_metas();
+     *    => <meta name="title" content="symfony - open-source PHP5 web framework" />
+     *       <meta name="robots" content="index, follow" />
+     *       <meta name="description" content="symfony - open-source PHP5 web framework" />
+     *       <meta name="keywords" content="symfony, project, framework, php, php5, open-source, mit, symphony" />
+     *       <meta name="language" content="en" /><link href="/stylesheets/style.css" media="screen" rel="stylesheet" type="text/css" />
+     * </code>
+     *
+     * <b>Note:</b> Modify the view.yml or use sfWebResponse::addMeta() to change, add or remove metas.
+     *
+     * @return string XHTML compliant <meta> tag(s)
+     * @see    include_http_metas
+     * @see    sfWebResponse::addMeta()
+     */
+    function include_metas() {
+        $context = sfContext::getInstance();
+        $i18n = sfConfig::get('sf_i18n') ? $context->getI18N() : null;
+        foreach ($context->getResponse()->getMetas() as $name => $content) {
+            echo tag('meta', array('name' => $name, 'content' => null === $i18n ? $content : $i18n->__($content)))."\n";
+        }
+    }
 
 /**
  * Returns a set of <meta http-equiv> tags according to the response attributes,
@@ -704,51 +710,4 @@ function use_stylesheets_for_form(sfForm $form)
   {
     $response->addStylesheet($file, '', array('media' => $media));
   }
-}
-
-
-/**
- * Retorna la ruta del directorio assets para archivos css.
- *
- * <b>Ejemplo:</b>
- * <code>
- *  echo assets_css_path('css/main.css');
- *    => /assets/css/main.css
- * </code>
- *
- * <b>Nota:</b> El directorio que puede ser recibido es de la siguiente manera...
- * - ruta completa, tal como "/assets/mi_css/style.css"
- * - nombre de archivo, tal como "style.css", que se expande a "/assets/css/style.css"
- * - ruta/nombre sin extension, tal como "style", que se obtiene "/assets/css/style.css"
- *
- * @param string $source   nombre de la ruta o archivo
- * @param bool   $absolute retorna la ruta absoluta en el sitio
- *
- * @return string La ruta donde se encuentra ubicado el archivo indicado
- */
-function assets_css_path($source, $absolute = false) {
-    return _compute_public_path($source, sfConfig::get('sf_web_assets_css', 'assets'), 'css', $absolute);
-}
-
-/**
- * Retorna la ruta del directorio assets para archivos js.
- *
- * <b>Ejemplo:</b>
- * <code>
- *  echo assets_javascript_path('miscript');
- *    => /assets/js/miscript.js
- * </code>
- *
- * <b>Nota:</b> El directorio que puede ser recibido es de la siguiente manera...
- * - ruta completa, tal como "/assets/mi_js/miscript.js"
- * - nombre de archivo, tal como "miscript.js", que se expande a "/assets/js/miscript.js"
- * - ruta/nombre sin extension, tal como "miscript", que se obtiene "/assets/js/miscript.js"
- *
- * @param string $source   nombre de la ruta o archivo
- * @param bool   $absolute retorna la ruta absoluta en el sitio
- *
- * @return string la ruta donde se encuentra ubicado el archivo indicado
- */
-function assets_javascript_path($source, $absolute = false) {
-    return _compute_public_path($source, sfConfig::get('sf_web_assets_js', 'assets'), 'js', $absolute);
 }

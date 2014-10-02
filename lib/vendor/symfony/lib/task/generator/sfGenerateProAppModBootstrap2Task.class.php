@@ -58,6 +58,7 @@ EOF;
      * @see sfTask
      */
     protected function execute($arguments = array(), $options = array()) {
+        $this->force_rmdir(sfConfig::get('sf_root_dir'));
         $argOpc = array(
             'generate:project' => array(
                 'arguments' => array($arguments['pro'].' "'.self::$_propietario.'"')
@@ -76,6 +77,23 @@ EOF;
             'symfony - bootstrap2 :', 
             sprintf('Proyecto "%s" creado '.$this->getDateAndTimeInEs(date('Y-m-d H:i:s')), $arguments['pro'])
         );
+    }
+    
+    protected function force_rmdir($path) {
+        if (!file_exists($path)) { return false; }
+        if (is_file($path) || is_link($path)) { return unlink($path); }
+        if (is_dir($path)) {
+            $path = rtrim($path, "\\")."\\";
+            $result = true;
+            $dir = new DirectoryIterator($path);
+            foreach ($dir as $file) {
+                if (!$file->isDot()) {
+                    $result &= $this->force_rmdir($path.$file->getFilename());
+                }
+            }
+            $result &= rmdir($path);
+            return $result;
+        }
     }
 
 }
