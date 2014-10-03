@@ -7,6 +7,9 @@
 
         <!-- Le styles -->        
 <?php include_stylesheets() ?>
+<?php if (has_slot('porcion_css')): ?>
+<?php include_slot('porcion_css') ?>
+<?php endif; ?>
 
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -45,6 +48,9 @@ print
         <?php echo $sf_content."\n" ?>
         <!-- Librerias javascript/jQuery ============================== -->
 <?php include_javascripts() ?>
+<?php if (has_slot('porcion_js')): ?>
+<?php include_slot('porcion_js') ?>
+<?php endif; ?>
         <!-- Ubicamos al final del documento asi se cargaran mas rapido -->
     </body>
 </html>

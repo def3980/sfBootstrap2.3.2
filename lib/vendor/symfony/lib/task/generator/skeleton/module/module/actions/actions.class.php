@@ -82,4 +82,46 @@ class ##MODULE_NAME##Actions extends sfActions {
      */
     public function executeFluid(sfWebRequest $request) {}
 
+    /**
+     * Ejecuta una accion en el nombre del controlador creado
+     *
+     * @param sfWebRequest $request Recibe un objecto de la peticion
+     */
+    public function executeMarketingNarrow(sfWebRequest $request) {}
+
+    /**
+     * Ejecuta una accion en el nombre del controlador creado
+     *
+     * @param sfWebRequest $request Recibe un objecto de la peticion
+     */
+    public function executeJustifiedNav(sfWebRequest $request) {}
+
+    /**
+     * Ejecuta una accion en el nombre del controlador creado
+     *
+     * @param sfWebRequest $request Recibe un objecto de la peticion
+     */
+    public function executeSignin(sfWebRequest $request) {}
+
+    /**
+     * Ejecuta una accion en el nombre del controlador creado
+     *
+     * @param sfWebRequest $request Recibe un objecto de la peticion
+     */
+    public function executeStickyFooter(sfWebRequest $request) {}
+
+    /**
+     * Ejecuta una accion en el nombre del controlador creado
+     *
+     * @param sfWebRequest $request Recibe un objecto de la peticion
+     */
+    public function executeStickyFooterNavbar(sfWebRequest $request) {}
+
+    /**
+     * Ejecuta una accion en el nombre del controlador creado
+     *
+     * @param sfWebRequest $request Recibe un objecto de la peticion
+     */
+    public function executeCarousel(sfWebRequest $request) {}
+
 }

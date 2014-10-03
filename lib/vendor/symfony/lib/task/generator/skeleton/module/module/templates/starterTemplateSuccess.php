@@ -1,3 +1,11 @@
+<?php slot('titulo', 'Bootstrap, from Twitter') ?>
+<?php slot('porcion_css') ?>
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        </style>
+<?php end_slot() ?>
 <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">

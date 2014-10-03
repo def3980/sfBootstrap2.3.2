@@ -1,3 +1,4 @@
+<?php slot('titulo', 'Getting &middot; Bootstrap') ?>
 <!-- Navbar ================================================== -->
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
@@ -149,7 +150,7 @@
         &lt;link href="css/bootstrap.min.css" rel="stylesheet" media="screen"&gt;
     &lt;/head&gt;
     &lt;body&gt;
-        &AElig;&lt;h1&gt;Hello, world!&lt;/h1&gt;
+        &lt;h1&gt;Hello, world!&lt;/h1&gt;
         &lt;script src="http://code.jquery.com/jquery.js"&gt;&lt;/script&gt;
         &lt;script src="js/bootstrap.min.js"&gt;&lt;/script&gt;
     &lt;/body&gt;
@@ -186,82 +187,72 @@
                                 <h4>Fluid layout</h4>
                                 <p>Uses our new responsive, fluid grid system to create a seamless liquid layout.</p>
                             </li>
-                        <li class="span3">
-                        <a class="thumbnail" href="examples/marketing-narrow.html">
-                        <img src="assets/img/examples/bootstrap-example-marketing-narrow.png" alt="">
-                        </a>
-                        <h4>Narrow marketing</h4>
-                        <p>Slim, lightweight marketing template for small projects or teams.</p>
-                        </li>
-                        <li class="span3">
-                        <a class="thumbnail" href="examples/justified-nav.html">
-                        <img src="assets/img/examples/bootstrap-example-justified-nav.png" alt="">
-                        </a>
-                        <h4>Justified nav</h4>
-                        <p>Marketing page with equal-width navigation links in a modified navbar.</p>
-                        </li>
-                        <li class="span3">
-                        <a class="thumbnail" href="examples/signin.html">
-                        <img src="assets/img/examples/bootstrap-example-signin.png" alt="">
-                        </a>
-                        <h4>Sign in</h4>
-                        <p>Barebones sign in form with custom, larger form controls and a flexible layout.</p>
-                        </li>
-
-                        <li class="span3">
-                        <a class="thumbnail" href="examples/sticky-footer.html">
-                        <img src="assets/img/examples/bootstrap-example-sticky-footer.png" alt="">
-                        </a>
-                        <h4>Sticky footer</h4>
-                        <p>Pin a fixed-height footer to the bottom of the user's viewport.</p>
-                        </li>
-                        <li class="span3">
-                        <a class="thumbnail" href="examples/carousel.html">
-                        <img src="assets/img/examples/bootstrap-example-carousel.png" alt="">
-                        </a>
-                        <h4>Carousel jumbotron</h4>
-                        <p>A more interactive riff on the basic marketing site featuring a prominent carousel.</p>
-                        </li>
+                            <li class="span3">
+                                <?php echo link_to(
+                                            image_tag('examples/bootstrap-example-marketing-narrow', array('alt' => null)), 
+                                            '@bootstrap2_examples_marketing_narrow', array('class' => 'thumbnail')
+                                           ).PHP_EOL ?>
+                                <h4>Narrow marketing</h4>
+                                <p>Slim, lightweight marketing template for small projects or teams.</p>
+                            </li>
+                            <li class="span3">
+                                <?php echo link_to(
+                                            image_tag('examples/bootstrap-example-justified-nav', array('alt' => null)), 
+                                            '@bootstrap2_examples_justified_nav', array('class' => 'thumbnail')
+                                           ).PHP_EOL ?>
+                                <h4>Justified nav</h4>
+                                <p>Marketing page with equal-width navigation links in a modified navbar.</p>
+                            </li>
+                            <li class="span3">
+                                <?php echo link_to(
+                                            image_tag('examples/bootstrap-example-signin', array('alt' => null)), 
+                                            '@bootstrap2_examples_signin', array('class' => 'thumbnail')
+                                           ).PHP_EOL ?>
+                                <h4>Sign in</h4>
+                                <p>Barebones sign in form with custom, larger form controls and a flexible layout.</p>
+                            </li>
+                            <li class="span3">
+                                <?php echo link_to(
+                                            image_tag('examples/bootstrap-example-sticky-footer', array('alt' => null)), 
+                                            '@bootstrap2_examples_sticky_footer', array('class' => 'thumbnail')
+                                           ).PHP_EOL ?>
+                                <h4>Sticky footer</h4>
+                                <p>Pin a fixed-height footer to the bottom of the user's viewport.</p>
+                            </li>
+                            <li class="span3">
+                                <?php echo link_to(
+                                            image_tag('examples/bootstrap-example-carousel', array('alt' => null)), 
+                                            '@bootstrap2_examples_carousel', array('class' => 'thumbnail')
+                                           ).PHP_EOL ?>
+                                <h4>Carousel jumbotron</h4>
+                                <p>A more interactive riff on the basic marketing site featuring a prominent carousel.</p>
+                            </li>
                         </ul>
                     </section>
-
-
-
-
-        <!-- Next
-        ================================================== -->
-        <section id="what-next">
-        <div class="page-header">
-        <h1>What next?</h1>
+                    <!-- Next ================================================== -->
+                    <section id="what-next">
+                        <div class="page-header">
+                            <h1>What next?</h1>
+                        </div>
+                        <p class="lead">Head to the docs for information, examples, and code snippets, or take the next leap and customize Bootstrap for any upcoming project.</p>
+                        <a class="btn btn-large btn-primary" href="./scaffolding.html" onclick="_gaq.push(['_trackEvent', 'Getting started', 'Next steps', 'Visit docs']);">Visit the Bootstrap docs</a>
+                        <a class="btn btn-large" href="./customize.html" style="margin-left: 5px;" onclick="_gaq.push(['_trackEvent', 'Getting started', 'Next steps', 'Customize']);">Customize Bootstrap</a>
+                    </section>
+                </div>
+            </div>
         </div>
-        <p class="lead">Head to the docs for information, examples, and code snippets, or take the next leap and customize Bootstrap for any upcoming project.</p>
-        <a class="btn btn-large btn-primary" href="./scaffolding.html" onclick="_gaq.push(['_trackEvent', 'Getting started', 'Next steps', 'Visit docs']);">Visit the Bootstrap docs</a>
-        <a class="btn btn-large" href="./customize.html" style="margin-left: 5px;" onclick="_gaq.push(['_trackEvent', 'Getting started', 'Next steps', 'Customize']);">Customize Bootstrap</a>
-        </section>
-
-
-
-
-        </div>
-        </div>
-
-        </div>
-
-
-
-        <!-- Footer
-        ================================================== -->
+        <!-- Footer ================================================== -->
         <footer class="footer">
-        <div class="container">
-        <p>Designed and built with all the love in the world by <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a>.</p>
-        <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>, documentation under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-        <p><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-        <ul class="footer-links">
-        <li><a href="http://blog.getbootstrap.com">Blog</a></li>
-        <li class="muted">&middot;</li>
-        <li><a href="https://github.com/twbs/bootstrap/issues?state=open">Issues</a></li>
-        <li class="muted">&middot;</li>
-        <li><a href="https://github.com/twbs/bootstrap/releases">Changelog</a></li>
-        </ul>
-        </div>
+            <div class="container">
+                <p>Designed and built with all the love in the world by <?=link_to('@mdo', 'http://twitter.com/mdo', array('target' => '_blank'))?> and <?=link_to('@fat', 'http://twitter.com/fat', array('target' => '_blank'))?>.</p>
+                <p>Code licensed under <?=link_to('Apache License v2.0', 'http://www.apache.org/licenses/LICENSE-2.0', array('target' => '_blank'))?>, documentation under <?=link_to('CC BY 3.0', 'http://creativecommons.org/licenses/by/3.0/')?>.</p>
+                <p><?=link_to('Glyphicons Free', 'http://glyphicons.com')?> licensed under <?=link_to('CC BY 3.0', 'http://creativecommons.org/licenses/by/3.0/')?>.</p>
+                <ul class="footer-links">
+                    <li><?=link_to('Blog', 'http://blog.getbootstrap.com')?></li>
+                    <li class="muted">&middot;</li>
+                    <li><?=link_to('Issues', 'https://github.com/twbs/bootstrap/issues?state=open')?></li>
+                    <li class="muted">&middot;</li>
+                    <li><?=link_to('Changelog', 'https://github.com/twbs/bootstrap/releases')?></li>
+                </ul>
+            </div>
         </footer>

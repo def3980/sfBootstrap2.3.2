@@ -32,6 +32,24 @@ bootstrap2_examples_hero:
 bootstrap2_examples_fluid:
   url:   /bootstrap2/examples/fluid.html
   param: { module: bootstrap2, action: fluid }
+bootstrap2_examples_marketing_narrow:
+  url:   /bootstrap2/examples/marketing-narrow.html
+  param: { module: bootstrap2, action: marketingNarrow }
+bootstrap2_examples_justified_nav:
+  url:   /bootstrap2/examples/justified-nav.html
+  param: { module: bootstrap2, action: justifiedNav }
+bootstrap2_examples_signin:
+  url:   /bootstrap2/examples/signin.html
+  param: { module: bootstrap2, action: signin }
+bootstrap2_examples_sticky_footer:
+  url:   /bootstrap2/examples/sticky-footer.html
+  param: { module: bootstrap2, action: stickyFooter }
+bootstrap2_examples_sticky_footer_navbar:
+  url:   /bootstrap2/examples/sticky-footer-navbar.html
+  param: { module: bootstrap2, action: stickyFooterNavbar }
+bootstrap2_examples_carousel:
+  url:   /bootstrap2/examples/carousel.html
+  param: { module: bootstrap2, action: carousel }
 # + -------------------------------------------------------------------------- +
 
 # Reglas por defecto

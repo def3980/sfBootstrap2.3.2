@@ -1,12 +1,13 @@
-<?php //use_stylesheet(assets_css_path('css/bootstrap')) ?>
-<?php //echo assets_css_path('css/bootstrap')."\n"; ?>
-<style>
+<?php slot('titulo', 'Bootstrap, from Twitter') ?>
+<?php slot('porcion_css') ?>
+        <style type="text/css">
             body {
                 padding-top: 60px;
                 padding-bottom: 40px;
             }
         </style>
-        <div class="navbar navbar-inverse navbar-fixed-top">
+<?php end_slot() ?>
+<div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
                     <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">

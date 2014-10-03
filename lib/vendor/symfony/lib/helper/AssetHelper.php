@@ -307,76 +307,74 @@ function image_path($source, $absolute = false)
   return _compute_public_path($source, sfConfig::get('sf_web_images_dir_name', 'images'), 'png', $absolute);
 }
 
-/**
- * Returns an <img> image tag for the asset given as argument.
- *
- * <b>Options:</b>
- * - 'absolute' - to output absolute file paths, useful for embedded images in emails
- * - 'alt'  - defaults to the file name part of the asset (capitalized and without the extension)
- * - 'size' - Supplied as "XxY", so "30x45" becomes width="30" and height="45"
- *
- * <b>Examples:</b>
- * <code>
- *  echo image_tag('foobar');
- *    => <img src="images/foobar.png" alt="Foobar" />
- *  echo image_tag('/my_images/image.gif', array('alt' => 'Alternative text', 'size' => '100x200'));
- *    => <img src="/my_images/image.gif" alt="Alternative text" width="100" height="200" />
- * </code>
- *
- * @param string $source  image asset name
- * @param array  $options additional HTML compliant <img> tag parameters
- *
- * @return string XHTML compliant <img> tag
- * @see    image_path
- */
-function image_tag($source, $options = array())
-{
-  if (!$source)
-  {
-    return '';
-  }
+    /**
+     * Returns an <img> image tag for the asset given as argument.
+     *
+     * <b>Options:</b>
+     * - 'absolute' - to output absolute file paths, useful for embedded images in emails
+     * - 'alt'  - defaults to the file name part of the asset (capitalized and without the extension)
+     * - 'size' - Supplied as "XxY", so "30x45" becomes width="30" and height="45"
+     *
+     * <b>Examples:</b>
+     * <code>
+     *  echo image_tag('foobar');
+     *    => <img src="images/foobar.png" alt="Foobar" />
+     *  echo image_tag('/my_images/image.gif', array('alt' => 'Alternative text', 'size' => '100x200'));
+     *    => <img src="/my_images/image.gif" alt="Alternative text" width="100" height="200" />
+     * </code>
+     *
+     * @param string $source  image asset name
+     * @param array  $options additional HTML compliant <img> tag parameters
+     * @return string XHTML compliant <img> tag
+     * @see    image_path
+     */
+    function image_tag($source, $options = array()) {
+        /**
+         * Realizado unos pequeños cambios para cuando src == null
+         * Vie, 03 Oct 2014 11:55:03 - Por Oswaldo Rojas
+         */
+        if (!$source) {
+            if (is_array($options) && $options['caso_especial']) {
+                $options  = _parse_attributes($options);
+                unset($options['caso_especial']);
+            } else {
+                return '';
+            }
+        } else {
+            $options  = _parse_attributes($options);
+            $absolute = false;
 
-  $options = _parse_attributes($options);
+            if (isset($options['absolute'])) {
+                unset($options['absolute']);
+                $absolute = true;
+            }
 
-  $absolute = false;
-  if (isset($options['absolute']))
-  {
-    unset($options['absolute']);
-    $absolute = true;
-  }
+            if (!isset($options['raw_name'])) {
+                $options['src'] = image_path($source, $absolute);
+            } else {
+                $options['src'] = $source;
+                unset($options['raw_name']);
+            }
 
-  if (!isset($options['raw_name']))
-  {
-    $options['src'] = image_path($source, $absolute);
-  }
-  else
-  {
-    $options['src'] = $source;
-    unset($options['raw_name']);
-  }
+            if (isset($options['alt_title'])) {
+                // set as alt and title but do not overwrite explicitly set
+                if (!isset($options['alt'])) {
+                    $options['alt'] = $options['alt_title'];
+                }
+                if (!isset($options['title'])) {
+                    $options['title'] = $options['alt_title'];
+                }
+                unset($options['alt_title']);
+            }
 
-  if (isset($options['alt_title']))
-  {
-    // set as alt and title but do not overwrite explicitly set
-    if (!isset($options['alt']))
-    {
-      $options['alt'] = $options['alt_title'];
+            if (isset($options['size'])) {
+                list($options['width'], $options['height']) = explode('x', $options['size'], 2);
+                unset($options['size']);
+            }
+        }
+
+        return tag('img', $options);
     }
-    if (!isset($options['title']))
-    {
-      $options['title'] = $options['alt_title'];
-    }
-    unset($options['alt_title']);
-  }
-
-  if (isset($options['size']))
-  {
-    list($options['width'], $options['height']) = explode('x', $options['size'], 2);
-    unset($options['size']);
-  }
-
-  return tag('img', $options);
-}
 
 function _compute_public_path($source, $dir, $ext, $absolute = false)
 {
