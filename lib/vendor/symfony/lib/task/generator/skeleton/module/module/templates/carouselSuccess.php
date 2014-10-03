@@ -1,6 +1,3 @@
-<?php
-    $rs = sfResponse::class
-?>
 <?php slot('titulo', 'Carousel Template &middot; Bootstrap') ?>
 <?php slot('porcion_css') ?>
         <style>

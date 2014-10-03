@@ -11,13 +11,13 @@
                     <?php echo link_to('Bootstrap', '@bootstrap2_index', array('class' => 'brand')).PHP_EOL ?>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            <li><?php echo link_to('Home', '@bootstrap2_index') ?></li>
-                            <li class="active"><?php echo link_to('Get started', '@bootstrap2_getting_started') ?></li>
-                            <li class=""><a href="./scaffolding.html">Scaffolding</a></li>
-                            <li class=""><a href="./base-css.html">Base CSS</a></li>
-                            <li class=""><a href="./components.html">Components</a></li>
-                            <li class=""><a href="./javascript.html">JavaScript</a></li>
-                            <li class=""><a href="./customize.html">Customize</a></li>
+                            <li class=""><?=link_to('Home', '@bootstrap2_index')?></li>
+                            <li class="active"><?=link_to('Get started', '@bootstrap2_getting_started')?></li>
+                            <li class=""><?=link_to('Scaffolding', '@bootstrap2_scaffolding')?></li>
+                            <li class=""><?=link_to('Base CSS', '@bootstrap2_base_css')?></li>
+                            <li class=""><?=link_to('Components', '@bootstrap2_components')?></li>
+                            <li class=""><?=link_to('JavaScript', '@bootstrap2_javascript')?></li>
+                            <li class=""><?=link_to('Customize', '@bootstrap2_customize')?></li>
                         </ul>
                     </div>
                 </div>
@@ -30,7 +30,6 @@
                 <p class="lead">Overview of the project, its contents, and how to get started with a simple template.</p>
             </div>
         </header>
-        <br />
         <div class="container">
             <div class="alert alert-danger bs-alert-old-docs">
                 <strong>Heads up!</strong> These docs are for v2.3.2, which is no longer officially supported. <?php echo link_to('Check out the latest version of Bootstrap!', 'http://getbootstrap.com').PHP_EOL ?>
@@ -241,18 +240,4 @@
                 </div>
             </div>
         </div>
-        <!-- Footer ================================================== -->
-        <footer class="footer">
-            <div class="container">
-                <p>Designed and built with all the love in the world by <?=link_to('@mdo', 'http://twitter.com/mdo', array('target' => '_blank'))?> and <?=link_to('@fat', 'http://twitter.com/fat', array('target' => '_blank'))?>.</p>
-                <p>Code licensed under <?=link_to('Apache License v2.0', 'http://www.apache.org/licenses/LICENSE-2.0', array('target' => '_blank'))?>, documentation under <?=link_to('CC BY 3.0', 'http://creativecommons.org/licenses/by/3.0/')?>.</p>
-                <p><?=link_to('Glyphicons Free', 'http://glyphicons.com')?> licensed under <?=link_to('CC BY 3.0', 'http://creativecommons.org/licenses/by/3.0/')?>.</p>
-                <ul class="footer-links">
-                    <li><?=link_to('Blog', 'http://blog.getbootstrap.com')?></li>
-                    <li class="muted">&middot;</li>
-                    <li><?=link_to('Issues', 'https://github.com/twbs/bootstrap/issues?state=open')?></li>
-                    <li class="muted">&middot;</li>
-                    <li><?=link_to('Changelog', 'https://github.com/twbs/bootstrap/releases')?></li>
-                </ul>
-            </div>
-        </footer>
+<?php include_partial('bootstrap_footer') ?>

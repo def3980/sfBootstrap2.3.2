@@ -8,21 +8,7 @@ bootstrap2_index:
 bootstrap2_getting_started:
   url:   /bootstrap2/getting-started.html
   param: { module: bootstrap2, action: gettingStarted }
-bootstrap2_scaffolding:
-  url:   /bootstrap2/scaffolding.html
-  param: { module: bootstrap2, action: scaffolding }
-bootstrap2_base_css:
-  url:   /bootstrap2/base-css.html
-  param: { module: bootstrap2, action: baseCss }
-bootstrap2_components:
-  url:   /bootstrap2/components.html
-  param: { module: bootstrap2, action: components }
-bootstrap2_javascript:
-  url:   /bootstrap2/javascript.html
-  param: { module: bootstrap2, action: javascript }
-bootstrap2_customize:
-  url:   /bootstrap2/customize.html
-  param: { module: bootstrap2, action: customize }
+# Ejemplos dentro de Getting Starter
 bootstrap2_examples_starter_template:
   url:   /bootstrap2/examples/starter-template.html
   param: { module: bootstrap2, action: starterTemplate }
@@ -50,6 +36,23 @@ bootstrap2_examples_sticky_footer_navbar:
 bootstrap2_examples_carousel:
   url:   /bootstrap2/examples/carousel.html
   param: { module: bootstrap2, action: carousel }
+# -- Fin de los ejemplos
+bootstrap2_scaffolding:
+  url:   /bootstrap2/scaffolding.html
+  param: { module: bootstrap2, action: scaffolding }
+bootstrap2_base_css:
+  url:   /bootstrap2/base-css.html
+  param: { module: bootstrap2, action: baseCss }
+bootstrap2_components:
+  url:   /bootstrap2/components.html
+  param: { module: bootstrap2, action: components }
+bootstrap2_javascript:
+  url:   /bootstrap2/javascript.html
+  param: { module: bootstrap2, action: javascript }
+bootstrap2_customize:
+  url:   /bootstrap2/customize.html
+  param: { module: bootstrap2, action: customize }
+
 # + -------------------------------------------------------------------------- +
 
 # Reglas por defecto

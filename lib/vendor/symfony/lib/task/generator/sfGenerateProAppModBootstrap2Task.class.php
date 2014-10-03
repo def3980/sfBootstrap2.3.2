@@ -16,7 +16,6 @@ class sfGenerateProAppModBootstrap2Task extends sfGeneratorBaseTask {
     
     private static $_propietario = "Oswaldo Rojas <def.3980@gmail.com>";
 
-
     /**
      * Me permite ejecutar la tarea, saltandose la validacion que dice
      * "debo estar dentro de un directorio de proyecto symfony"
