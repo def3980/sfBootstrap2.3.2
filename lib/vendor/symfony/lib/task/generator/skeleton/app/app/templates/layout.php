@@ -3,11 +3,7 @@
     <head>
 <?php //include_http_metas() ?>
 <?php include_metas() ?>
-        <!--<meta charset="utf-8">-->
         <title><?php include_slot('titulo', 'Bootstrap') ?></title>
-<!--        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="author" content="">-->
 
         <!-- Le styles -->        
 <?php include_stylesheets() ?>
@@ -44,9 +40,6 @@ print
             'icons' => true
         ));
 ?>
-
-        <!-- inclucion librerias adicionales -->
-        <!-- // fin de la inclucion -->
     </head>
     <body data-spy="scroll" data-target=".bs-docs-sidebar">
         <?php echo $sf_content."\n" ?>

@@ -6,8 +6,8 @@ default:
 #    content-type: text/html
   
   metas:
-    charset: utf-8
-    viewport: 'width=device-width, initial-scale=1.0'
+    charset:     utf-8~
+    viewport:    'width=device-width, initial-scale=1.0'
     description: 
     author: 
 
