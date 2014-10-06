@@ -1,64 +1,40 @@
 <?php
 
-/*
- * This file is part of the symfony package.
- * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- * 
- * + ------------------------------------------------------------------- +
- * Añadiendo nuevas formas a lo ya optimizado. Por Oswaldo Rojas un
- * Jueves, 27 Septiembre 2014 20:01:57
- * + ------------------------------------------------------------------- +
+/**
+ * Bootstrap2.3.2 - Todos los ejemplos y tutoriales de implementacion
  */
 
 require_once(dirname(__FILE__).'/sfGeneratorBaseTask.class.php');
 
 /**
- * Genera un nuevo modulo.
+ * Genera un modulo completo sobre Bootstrap2 y sus funcionalidades.
  *
  * @package    symfony
  * @subpackage task
- * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @author     Oswaldo Rojas
  * @version    SVN: $Id: sfGenerateModuleTask.class.php 23922 2009-11-14 14:58:38Z fabien $
  */
-class sfGenerateModuleTask extends sfGeneratorBaseTask {
+class sfGenerateModuleFullBootstrap2Task extends sfGeneratorBaseTask {
     
     /**
      * @see sfTask
      */
     protected function configure() {
-        $this->addArguments(array(
-            new sfCommandArgument('application', sfCommandArgument::REQUIRED, 'El nombre de la aplicacion'),
-            new sfCommandArgument('module', sfCommandArgument::REQUIRED, 'El nombre del modulo'),
+        $this->addArguments(array( // 1 == sfCommandArgument::REQUIRED, 2 == sfCommandArgument::OPTIONAL
+            new sfCommandArgument('application', 1, 'El nombre de la aplicacion'),
+            new sfCommandArgument('module', 2, 'El nombre del modulo', 'bootstrap2'),
         ));
         $this->namespace           = 'generate';
-        $this->name                = 'module';
-        $this->briefDescription    = '>> Genera un nuevo modulo';
+        $this->name                = 'module-full-bootstrap2';
+        $this->briefDescription    = '>> Genera un modulo completo sobre Bootstrap2';
         $this->detailedDescription = <<<EOF
-La tarea [generate:module|INFO] crea una estructura de directorio basica
-para un modulo en una aplicacion existente:
+La tarea [generate:module-full-bootstrap2|INFO] crea una estructura de 
+directorio completa sobre Bootstrap2 en una aplicacion existente:
 
-  [./symfony generate:module frontend nombre_modulo|INFO]
+  [./symfony generate:module-full-bootstrap2 frontend nombre_modulo|INFO]
 
-La tarea tambien puede cambiar el nombre del autor que se encuentra en la 
-clase antes generada [actions.class.php|COMMENT] para lo cual debes 
-tener configurado el archivo ubicado en [config/properties.ini|COMMENT]:
-
-  [[symfony]
-    name=sitioweb
-    author=Oswaldo Rojas <def.3980@gmail.com>|INFO]
-
-Adicional se puede personalizar el esqueleto usado por defecto en esta tarea
-creando uno en el directorio [%sf_data_dir%/skeleton/module|COMMENT].
-
-Tambien se puede crear un nombre de tarea funcional que no esta pasado o 
-realizado por defecto en 
-[%sf_test_dir%/functional/%application%/%module%ActionsTest.class.php|COMMENT]
-
-Si un modulo el cual contiene un nombre ya existente en la aplicacion, 
-la misma tarea lanzara una excepcion [sfCommandException|COMMENT].
+El nombre del modulo se puede omitir ya que "bootstrap2" esta por defecto
+aunque se puede cambiar a otro.
 EOF;
     }
 
@@ -90,10 +66,10 @@ EOF;
             'FECHA_y_HORA' => $this->getDateAndTimeInEs(date('Y-m-d H:i:s')),
         );
 
-        if (is_readable(sfConfig::get('sf_data_dir').'/skeleton/module')) {
-            $skeletonDir = sfConfig::get('sf_data_dir').'/skeleton/module';
+        if (is_readable(sfConfig::get('sf_data_dir').'/skeleton/module-bootstrap2')) {
+            $skeletonDir = sfConfig::get('sf_data_dir').'/skeleton/module-bootstrap2';
         } else {
-            $skeletonDir = dirname(__FILE__).'/skeleton/module';
+            $skeletonDir = dirname(__FILE__).'/skeleton/module-bootstrap2';
         }
 
         // crea una estructura basica para la aplicacion

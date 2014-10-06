@@ -57,7 +57,6 @@ bootstrap2_javascript:
 bootstrap2_customize:
   url:   /bootstrap2/customize.html
   param: { module: bootstrap2, action: customize }
-
 # + -------------------------------------------------------------------------- +
 
 # Reglas por defecto

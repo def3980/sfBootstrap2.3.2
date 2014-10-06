@@ -63,9 +63,9 @@ EOF;
                 'arguments' => array($arguments['pro'].' "'.self::$_propietario.'"')
             ),
             'generate:app' => array(
-                'arguments' => array($arguments['app'])
+                'arguments' => array($arguments['app'].' --generar-rutas-bootstrap2=true')
             ),
-            'generate:module' => array(
+            'generate:module-full-bootstrap2' => array(
                 'arguments' => array($arguments['app'], $arguments['mod'])
             )            
         );

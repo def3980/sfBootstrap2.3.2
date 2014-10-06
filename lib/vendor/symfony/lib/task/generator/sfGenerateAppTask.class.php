@@ -36,6 +36,7 @@ class sfGenerateAppTask extends sfGeneratorBaseTask {
         $this->addOptions(array(
             new sfCommandOption('escaping-strategy', null, sfCommandOption::PARAMETER_REQUIRED, 'Estrategia salida de escape de caracteres', true),
             new sfCommandOption('csrf-secret', null, sfCommandOption::PARAMETER_REQUIRED, 'Clave secreta para proteccion CSRF', true),
+            new sfCommandOption('generar-rutas-bootstrap2', null, sfCommandOption::PARAMETER_REQUIRED, 'Genera rutas personalizadas de Bootstrap2 en la aplicacion', false),
         ));
 
         $this->namespace        = 'generate';
@@ -73,7 +74,14 @@ definiendo una clave secreta con la opcion [csrf-secret|COMMENT]:
   [./symfony generate:app frontend --csrf-secret=UniqueSecret|INFO]
 
 Adicional puedes personalizar el esqueleto por defecto usado por la tarea 
-en el directorio [%sf_data_dir%/skeleton/app|COMMENT]
+en el directorio [%sf_data_dir%/skeleton/app|COMMENT].
+
+Finalmente, puedes agregar rutas por defecto para Bootstrap2. Nota: no olvides
+crear el modulo Bootstrap2 tambien y obviamente este parametro viene 
+desactivado (false) por defecto. El ejemplo de abajo indica que se va a activar
+las rutas en el routing.yml
+
+  [./symfony generate:app frontend --generar-rutas-bootstrap2=true|INFO]
 EOF;
     }
 
@@ -101,16 +109,10 @@ EOF;
         }
 
         // Crear una estructura basica de la aplicacion
-        $finder = sfFinder::type('any')->discard('.sf');
+        $finder = sfFinder::type('any')->discard('.md');
         $this->getFilesystem()->mirror($skeletonDir.'/app', $appDir, $finder);
 
-        // Crea $app.php o index.php si es nuestra primera aplicacion
-//        $indexName = 'index';
-//        $firstApp = !file_exists(sfConfig::get('sf_web_dir').'/index.php');
-//        if (!$firstApp) {
-//            $indexName = $app;
-//        }
-        
+        // Crea $app.php o index.php si es nuestra primera aplicacion        
         $indexName = !(!file_exists(sfConfig::get('sf_web_dir').'/index.php')) ? $app : 'index';
 
         if (true === $options['csrf-secret']) {
@@ -120,14 +122,24 @@ EOF;
         // Guarda el valor no_script_name en settings.yml para el ambiente de produccion
         $finder = sfFinder::type('file')->name('settings.yml');
         $this->getFilesystem()->replaceTokens($finder->in($appDir.'/config'), '##', '##', array(
-//            'NO_SCRIPT_NAME'    => $firstApp ? 'true' : 'false',
             'NO_SCRIPT_NAME'    => !file_exists(sfConfig::get('sf_web_dir').'/index.php') ? 'true' : 'false',
             'CSRF_SECRET'       => sfYamlInline::dump(sfYamlInline::parseScalar($options['csrf-secret'])),
             'ESCAPING_STRATEGY' => sfYamlInline::dump((boolean) sfYamlInline::parseScalar($options['escaping-strategy'])),
             'USE_DATABASE'      => sfConfig::has('sf_orm') ? 'true' : 'false',
         ));
         
-//        $this->getFilesystem()->replaceTokens($files, $indexName, $skeletonDir, $tokens); //por determinar
+        /* Eligiendo o no rutas Bootstrap2*/
+        if (true === $options['generar-rutas-bootstrap2']) {
+            $this->getFilesystem()->copy(
+                $skeletonDir.'/config/routing_con_bootstrap2.yml', 
+                $appDir.'/config/routing.yml'
+            );
+        } else {
+            $this->getFilesystem()->copy(
+                $skeletonDir.'/config/routing_sin_bootstrap2.yml', 
+                $appDir.'/config/routing.yml'
+            );
+        }
 
         $this->getFilesystem()->copy($skeletonDir.'/web/index.php', sfConfig::get('sf_web_dir').'/'.$indexName.'.php');
         $this->getFilesystem()->copy($skeletonDir.'/web/index.php', sfConfig::get('sf_web_dir').'/'.$app.'_dev.php');
