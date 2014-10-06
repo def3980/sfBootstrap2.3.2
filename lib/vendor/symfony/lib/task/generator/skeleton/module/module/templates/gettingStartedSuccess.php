@@ -1,39 +1,15 @@
 <?php slot('titulo', 'Getting &middot; Bootstrap') ?>
-<!-- Navbar ================================================== -->
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <?php echo link_to('Bootstrap', '@bootstrap2_index', array('class' => 'brand')).PHP_EOL ?>
-                    <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            <li class=""><?=link_to('Home', '@bootstrap2_index')?></li>
-                            <li class="active"><?=link_to('Get started', '@bootstrap2_getting_started')?></li>
-                            <li class=""><?=link_to('Scaffolding', '@bootstrap2_scaffolding')?></li>
-                            <li class=""><?=link_to('Base CSS', '@bootstrap2_base_css')?></li>
-                            <li class=""><?=link_to('Components', '@bootstrap2_components')?></li>
-                            <li class=""><?=link_to('JavaScript', '@bootstrap2_javascript')?></li>
-                            <li class=""><?=link_to('Customize', '@bootstrap2_customize')?></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+<?php include_partial('bootstrap_navbar', array('ruta' => '@bootstrap2_getting_started')) ?>
         <!-- Subhead ================================================== -->
         <header class="jumbotron subhead" id="overview">
             <div class="container">
                 <h1>Getting started</h1>
                 <p class="lead">Overview of the project, its contents, and how to get started with a simple template.</p>
+<?php include_partial('bootstrap_carbonads') ?>
             </div>
         </header>
         <div class="container">
-            <div class="alert alert-danger bs-alert-old-docs">
-                <strong>Heads up!</strong> These docs are for v2.3.2, which is no longer officially supported. <?php echo link_to('Check out the latest version of Bootstrap!', 'http://getbootstrap.com').PHP_EOL ?>
-            </div>
+<?php include_partial('bootstrap_heads-up') ?>
             <!-- Docs nav ================================================== -->
             <div class="row">
                 <div class="span3 bs-docs-sidebar">

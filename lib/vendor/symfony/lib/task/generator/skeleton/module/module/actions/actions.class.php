@@ -18,6 +18,13 @@ class ##MODULE_NAME##Actions extends sfActions {
      * @param sfWebRequest $request Recibe un objecto de la peticion
      */
     public function executeIndex(sfWebRequest $request) {}
+
+    /**
+     * Ejemplo dentro de la opcion index
+     *
+     * @param sfWebRequest $request Recibe un objecto de la peticion
+     */
+    public function executeExtend(sfWebRequest $request) {}
     
     /**
      * Ejecuta una accion en el nombre del controlador creado

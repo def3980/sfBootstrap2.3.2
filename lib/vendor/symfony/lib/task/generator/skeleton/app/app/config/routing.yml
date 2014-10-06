@@ -5,6 +5,11 @@
 bootstrap2_index:
   url:   /bootstrap2/index.html
   param: { module: bootstrap2, action: index }
+# Ejemplos dentro de index
+bootstrap2_extend:
+  url:   /bootstrap2/extend.html
+  param: { module: bootstrap2, action: extend }
+# -- Fin de los ejemplos
 bootstrap2_getting_started:
   url:   /bootstrap2/getting-started.html
   param: { module: bootstrap2, action: gettingStarted }

@@ -1,27 +1,4 @@
-<!-- Navbar ================================================== -->
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <?php echo link_to('Bootstrap', '@bootstrap2_index', array('class' => 'brand')).PHP_EOL ?>
-                    <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            <li class="active"><?php echo link_to('Home', '@bootstrap2_index') ?></li>
-                            <li class=""><?php echo link_to('Get started', '@bootstrap2_getting_started') ?></li>
-                            <li class=""><?php echo link_to('Scaffolding', '@bootstrap2_scaffolding') ?></li>
-                            <li class=""><?php echo link_to('Base CSS', '@bootstrap2_base_css') ?></li>
-                            <li class=""><?php echo link_to('Components', '@bootstrap2_components') ?></li>
-                            <li class=""><?php echo link_to('JavaScript', '@bootstrap2_javascript') ?></li>
-                            <li class=""><?php echo link_to('Customize', '@bootstrap2_customize') ?></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+<?php include_partial('bootstrap_navbar', array('ruta' => '@bootstrap2_index')) ?>
         <div class="jumbotron masthead">
             <div class="container">
                 <h1>Bootstrap</h1>
@@ -41,12 +18,11 @@
                     </li>
                     <li>Version 2.3.2</li>
                 </ul>
+<?php include_partial('bootstrap_carbonads', array('home' => true)) ?>
             </div>
         </div>
         <div class="container">
-            <div class="alert alert-danger bs-alert-old-docs">
-                <strong>Heads up!</strong> These docs are for v2.3.2, which is no longer officially supported. <a href="http://getbootstrap.com">Check out the latest version of Bootstrap!</a>
-            </div>
+<?php include_partial('bootstrap_heads-up') ?>
             <div class="marketing">
                 <h1>Introducing Bootstrap.</h1>
                 <p class="marketing-byline">Need reasons to love Bootstrap? Look no further.</p>

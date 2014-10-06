@@ -5,12 +5,11 @@
             <div class="container">
                 <h1>Base CSS</h1>
                 <p class="lead">Fundamental HTML elements styled and enhanced with extensible classes.</p>
+<?php include_partial('bootstrap_carbonads') ?>
             </div>
         </header>
         <div class="container">
-            <div class="alert alert-danger bs-alert-old-docs">
-                <strong>Heads up!</strong> These docs are for v2.3.2, which is no longer officially supported. <a href="http://getbootstrap.com">Check out the latest version of Bootstrap!</a>
-            </div>
+<?php include_partial('bootstrap_heads-up') ?>
             <!-- Docs nav ================================================== -->
             <div class="row">
                 <div class="span3 bs-docs-sidebar">

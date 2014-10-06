@@ -336,7 +336,7 @@ function image_path($source, $absolute = false)
         if (!$source) {
             if (is_array($options) && $options['caso_especial']) {
                 $options  = _parse_attributes($options);
-                unset($options['caso_especial']);
+                unset($options['caso_especial']); // <-- OJO: Este es el parametro a enviar, junto con $source = NULL
             } else {
                 return '';
             }
