@@ -7,6 +7,11 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * + ------------------------------------------------------------------- +
+ * Añadiendo nuevas formas a lo ya optimizado. Por Oswaldo Rojas un
+ * Martes, 07 Octubre 2014 15:45:55
+ * + ------------------------------------------------------------------- +
  */
 
 require_once(dirname(__FILE__).'/sfDoctrineBaseTask.class.php');
@@ -20,39 +25,39 @@ require_once(dirname(__FILE__).'/sfDoctrineBaseTask.class.php');
  * @author     Jonathan H. Wage <jonwage@gmail.com>
  * @version    SVN: $Id: sfDoctrineBuildSchemaTask.class.php 23922 2009-11-14 14:58:38Z fabien $
  */
-class sfDoctrineBuildSchemaTask extends sfDoctrineBaseTask
-{
-  /**
-   * @see sfTask
-   */
-  protected function configure()
-  {
-    $this->addOptions(array(
-      new sfCommandOption('application', null, sfCommandOption::PARAMETER_OPTIONAL, 'The application name', true),
-      new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
-    ));
+class sfDoctrineBuildSchemaTask extends sfDoctrineBaseTask {
+    
+    /**
+     * @see sfTask
+     */
+    protected function configure() {
+        $this->addOptions(array(
+            new sfCommandOption('application', null, sfCommandOption::PARAMETER_OPTIONAL, 'El nombre de la aplicacion', true),
+            new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'El ambiente de desarrollo', 'dev'),
+        ));
 
-    $this->namespace = 'doctrine';
-    $this->name = 'build-schema';
-    $this->briefDescription = 'Creates a schema from an existing database';
+        $this->namespace        = 'doctrine';
+        $this->name             = 'build-schema';
+        $this->briefDescription = 'Crea un esquema (*.yml) de una base de datos existente.';
 
     $this->detailedDescription = <<<EOF
-The [doctrine:build-schema|INFO] task introspects a database to create a schema:
+La tarea [doctrine:build-schema|INFO] hace un ingenieria inversa 
+desde la base de datos hasta crear el esquema yml:
 
   [./symfony doctrine:build-schema|INFO]
 
-The task creates a yml file in [config/doctrine|COMMENT]
+La tarea crea un archivo schema.yml en [config/doctrine|COMMENT]
 EOF;
   }
 
-  /**
-   * @see sfTask
-   */
-  protected function execute($arguments = array(), $options = array())
-  {
-    $this->logSection('doctrine', 'generating yaml schema from database');
+    /**
+     * @see sfTask
+     */
+    protected function execute($arguments = array(), $options = array()) {
+        $this->logSection('doctrine', 'generando un esquema yaml desde una base de datos');
 
-    $databaseManager = new sfDatabaseManager($this->configuration);
-    $this->callDoctrineCli('generate-yaml-db');
-  }
+        $databaseManager = new sfDatabaseManager($this->configuration);
+        $this->callDoctrineCli('generate-yaml-db');
+    }
+
 }

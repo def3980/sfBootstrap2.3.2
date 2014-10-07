@@ -7,7 +7,7 @@
 #
 # Acciones realizadas:
 #  - Veces ejecutado configure:database     : "001"
-#  - Ultima vez que se actualizo el esquema : "yyyy-mm-dd hh:mm:ss"
+#  - Ultima vez que se actualizo el esquema : "yyyy-mm-dd_hh:mm:ss"
 # + -------------------------------------------------------------------------- +
 
 all:

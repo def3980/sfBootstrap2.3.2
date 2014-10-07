@@ -1,4 +1,4 @@
-# You can find more information about this file on the symfony website:
+# Puedes encontrar mas informacion sobre esto en el sitio web de symfony:
 # http://www.symfony-project.org/reference/1_4/en/07-Databases
 
 # + -------------------------------------------------------------------------- +
@@ -7,7 +7,7 @@
 #
 # Acciones realizadas:
 #  - Veces ejecutado configure:database     : "001"
-#  - Ultima vez que se actualizo el esquema : "yyyy-mm-dd hh:mm:ss"
+#  - Ultima vez que se actualizo el esquema : "yyyy-mm-dd_hh:mm:ss"
 # + -------------------------------------------------------------------------- +
 
 all:
