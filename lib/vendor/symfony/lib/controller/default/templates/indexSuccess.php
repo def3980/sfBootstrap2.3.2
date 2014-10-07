@@ -1,25 +1,22 @@
 <?php decorate_with(dirname(__FILE__).'/defaultLayout.php') ?>
-
-<div class="sfTMessageContainer sfTMessage"> 
-  <?php echo image_tag('/sf/sf_default/images/icons/ok48.png', array('alt' => 'ok', 'class' => 'sfTMessageIcon', 'size' => '48x48')) ?>
-  <div class="sfTMessageWrap">
-    <h1>Symfony Project Created</h1>
-    <h5>Congratulations! You have successfully created your symfony project.</h5>
-  </div>
-</div>
-<dl class="sfTMessageInfo">
-  <dt>Project setup successful</dt>
-  <dd>This project uses the symfony libraries. If you see no image in this page, you may need to configure your web server so that it gains access to the <code>symfony_data/web/sf/</code> directory.</dd>
-
-  <dt>This is a temporary page</dt>
-  <dd>This page is part of the symfony <code>default</code> module. It will disappear as soon as you define a <code>homepage</code> route in your <code>routing.yml</code>.</dd>
-
-  <dt>What's next</dt>
-  <dd>
-    <ul class="sfTIconList">
-      <li class="sfTDatabaseMessage">Create your data model</li>
-      <li class="sfTColorMessage">Customize the layout of the generated templates</li>
-      <li class="sfTLinkMessage"><?php echo link_to('Learn more from the online documentation', 'http://www.symfony-project.org/doc') ?></li>
-    </ul>
-  </dd>
-</dl>
+            <div class="sfTMessageContainer sfTMessage"> 
+                <?php echo image_tag('/sf/sf_default/images/icons/ok48.png', array('alt' => 'ok', 'class' => 'sfTMessageIcon', 'size' => '48x48')).PHP_EOL ?>
+                <div class="sfTMessageWrap">
+                    <h1>Proyecto Symfony 1.4.20 Creado</h1>
+                    <h5>Felicitaciones!! Has creado un nuevo proyecto Symfony.</h5>
+                </div>
+            </div>
+            <dl class="sfTMessageInfo">
+                <dt>Instalaci&oacute;n del proyecto, correcta.</dt>
+                <dd>Este proyecto actualmente usa las librerias de Bootstrap2.3.2, asi que esta p&aacute;gina de ejemplo sera la &uacute;nica que use otras librerias en este caso las de <code>symfony 1.4.20</code></dd>
+                <dt>Esta es un p&aacute;gina temporal</dt>
+                <dd>Esta p&aacute;gina es parte del m&oacute;dulo por defeto <code>default</code> que se encuentra en <code>config/routing.yml</code>. Se puede quitar tan pronto definas una ruta inicial <code>homepage</code> en el archivo <code>routing.yml</code>, dentro de la carpeta de configuracion.</dd>
+                <dt>Ahora, cu&aacute;l es el siguiente paso?</dt>
+                <dd>
+                    <ul class="sfTIconList">
+                        <li class="sfTDatabaseMessage">Crear un modelo de datos</li>
+                        <li class="sfTColorMessage">Personaliza un layout(capa) para los modulos generados</li>
+                        <li class="sfTLinkMessage"><?php echo link_to('Aprende mas desde la documentaci&oacute;n', 'http://www.symfony-project.org/doc') ?></li>
+                    </ul>
+                </dd>
+            </dl>

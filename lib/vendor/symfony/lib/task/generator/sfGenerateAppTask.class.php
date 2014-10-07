@@ -89,10 +89,6 @@ EOF;
      * @see sfTask
      */
     protected function execute($arguments = array(), $options = array()) {
-//        print_r($arguments); 
-//        print_r($options);
-//        print_r(gettype($options['escaping-strategy'])); echo PHP_EOL;
-//        print_r(gettype($options['routing-bootstrap2'])); echo PHP_EOL; die();
         $app = $arguments['app'];
 
         // Validar el nombre de la aplicacion
@@ -113,7 +109,7 @@ EOF;
         }
 
         // Crear una estructura basica de la aplicacion
-        $finder = sfFinder::type('any')->discard('.md');
+        $finder = sfFinder::type('any')->discard('.sf');
         $this->getFilesystem()->mirror($skeletonDir.'/app', $appDir, $finder);
 
         // Crea $app.php o index.php si es nuestra primera aplicacion        

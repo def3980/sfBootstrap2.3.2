@@ -17,6 +17,8 @@ class ##MODULE_NAME##Actions extends sfActions {
      *
      * @param sfWebRequest $request Recibe un objecto de la peticion
      */
-    public function executeIndex(sfWebRequest $request) {}
+    public function executeIndex(sfWebRequest $request) {
+        $this->forward('default', 'module');
+    }
 
 }

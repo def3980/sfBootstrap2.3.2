@@ -5,7 +5,7 @@
             <div class="container">
                 <h1>Base CSS</h1>
                 <p class="lead">Fundamental HTML elements styled and enhanced with extensible classes.</p>
-<?php include_partial('bootstrap_carbonads') ?>
+<?php include_partial('bootstrap_carbonads', array('home' => false)) ?>
             </div>
         </header>
         <div class="container">

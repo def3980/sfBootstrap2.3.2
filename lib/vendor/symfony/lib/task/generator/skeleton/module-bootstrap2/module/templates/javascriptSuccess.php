@@ -5,7 +5,7 @@
             <div class="container">
                 <h1>JavaScript</h1>
                 <p class="lead">Bring Bootstrap's components to life&mdash;now with 13 custom jQuery plugins.
-<?php include_partial('bootstrap_carbonads') ?>
+<?php include_partial('bootstrap_carbonads', array('home' => false)) ?>
             </div>
         </header>
         <div class="container">

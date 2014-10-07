@@ -73,7 +73,7 @@ EOF;
         }
 
         // crea una estructura basica para la aplicacion
-        $finder = sfFinder::type('any')->discard('.md');
+        $finder = sfFinder::type('any')->discard('.sf');
         $this->getFilesystem()->mirror($skeletonDir.'/module', $moduleDir, $finder);
 
         // crea un test basico

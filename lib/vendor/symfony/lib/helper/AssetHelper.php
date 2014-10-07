@@ -120,13 +120,10 @@ function javascript_include_tag() {
             unset($sourceOptions['raw_name']);
         }
 
-        if (isset($sourceOptions['bootstrap']) && $sourceOptions['bootstrap']) {
-            if ($sourceOptions['bootstrap']) {
-                $inside = $sourceOptions['inside'];
-                unset($sourceOptions['bootstrap']);
-                unset($sourceOptions['inside']);
-                $options = array_merge(array('src' => $source), $sourceOptions);
-            }
+        if (isset($sourceOptions['inside']) && $sourceOptions['inside']) {
+            $inside = $sourceOptions['inside'];
+            unset($sourceOptions['inside']);
+            $options = array_merge(array('src' => $source), $sourceOptions);
         } else {
             $options = array_merge(array('type' => 'text/javascript', 'src' => $source), $sourceOptions);
         }
@@ -229,6 +226,10 @@ function stylesheet_tag() {
             $icons = $sourceOptions['icons'];
             unset($sourceOptions['icons']);
             $options = array_merge($sourceOptions, array('href' => $source));
+        } elseif(isset($sourceOptions['inside']) && $sourceOptions['inside']) {
+            $inside = $sourceOptions['inside'];
+            unset($sourceOptions['inside']);
+            $options = array_merge(array('href' => $source, 'rel' => 'stylesheet'), $sourceOptions);
         } else {
             $options = array_merge(array('rel' => 'stylesheet', 'type' => 'text/css', 'media' => 'screen', 'href' => $source), $sourceOptions);
         }
@@ -242,7 +243,7 @@ function stylesheet_tag() {
         $html .= $tag.PHP_EOL;
     }
 
-    return $icons ? $html : "\t".$html;
+    return (isset($icons) && $icons) || (isset($inside) && $inside) ? $html : "\t".$html;
 }
 
 /**

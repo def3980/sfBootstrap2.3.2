@@ -5,7 +5,7 @@
             <div class="container">
                 <h1>Customize and download</h1>
                 <p class="lead"><a href="https://github.com/twbs/bootstrap/archive/v2.3.2.zip">Download Bootstrap</a> or customize variables, components, JavaScript plugins, and more.</p>
-<?php include_partial('bootstrap_carbonads') ?>
+<?php include_partial('bootstrap_carbonads', array('home' => false)) ?>
             </div>
         </header>
         <div class="container">

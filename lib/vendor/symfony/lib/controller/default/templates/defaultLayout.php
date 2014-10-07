@@ -1,5 +1,33 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+<?php include_metas() ?>
+        <title><?php include_slot('titulo', 'Symfony 1.4.20') ?></title>
+<?php echo stylesheet_tag('/sf/sf_default/css/screen.css') ?>
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <!--[if lt IE 7.]>
+        <?php echo stylesheet_tag('/sf/sf_default/css/ie.css', array('inside' => true)) ?>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="sfTContainer">
+            <?php echo link_to(
+                            image_tag(
+                                '/sf/sf_default/images/sfTLogo.png', 
+                                array(
+                                    'alt' => 'symfony PHP Framework', 
+                                    'class' => 'sfTLogo', 
+                                    'size' => '186x39'
+                                )
+                            ), 
+                            'http://www.symfony-project.org/'
+                        ).PHP_EOL ?>
+<?php echo $sf_content ?>
+        </div>
+    </body>
+</html>
+<?php /*<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 
 <?php include_http_metas() ?>
@@ -23,3 +51,4 @@
 </div>
 </body>
 </html>
+*/ ?>

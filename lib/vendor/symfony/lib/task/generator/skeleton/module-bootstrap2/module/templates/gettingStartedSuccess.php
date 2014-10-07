@@ -5,7 +5,7 @@
             <div class="container">
                 <h1>Getting started</h1>
                 <p class="lead">Overview of the project, its contents, and how to get started with a simple template.</p>
-<?php include_partial('bootstrap_carbonads') ?>
+<?php include_partial('bootstrap_carbonads', array('home' => false)) ?>
             </div>
         </header>
         <div class="container">

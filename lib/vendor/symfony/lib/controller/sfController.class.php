@@ -159,98 +159,95 @@ abstract class sfController
     return false;
   }
 
-  /**
-   * Forwards the request to another action.
-   *
-   * @param string $moduleName A module name
-   * @param string $actionName An action name
-   *
-   * @throws sfConfigurationException  If an invalid configuration setting has been found
-   * @throws sfForwardException        If an error occurs while forwarding the request
-   * @throws sfError404Exception       If the action not exist
-   * @throws sfInitializationException If the action could not be initialized
-   */
-  public function forward($moduleName, $actionName)
-  {
-    // replace unwanted characters
-    $moduleName = preg_replace('/[^a-z0-9_]+/i', '', $moduleName);
-    $actionName = preg_replace('/[^a-z0-9_]+/i', '', $actionName);
+    /**
+     * Remite la solicitud (peticion) hacia otra accion.
+     *
+     * @param string $moduleName El nombre del modulo
+     * @param string $actionName El nombre de la accion
+     *
+     * @throws sfConfigurationException  If an invalid configuration setting has been found
+     * @throws sfForwardException        If an error occurs while forwarding the request
+     * @throws sfError404Exception       If the action not exist
+     * @throws sfInitializationException If the action could not be initialized
+     */
+    public function forward($moduleName, $actionName) {
 
-    if ($this->getActionStack()->getSize() >= $this->maxForwards)
-    {
-      // let's kill this party before it turns into cpu cycle hell
-      throw new sfForwardException('Too many forwards have been detected for this request.');
+        // reemplazamos caracteres que no necesitamos
+        $moduleName = preg_replace('/[^a-z0-9_]+/i', '', $moduleName);
+        $actionName = preg_replace('/[^a-z0-9_]+/i', '', $actionName);
+
+        if ($this->getActionStack()->getSize() >= $this->maxForwards) {
+            // Matenos esta fiesta antes de que se torne en un ciclo del infierno hacial el cpu
+            throw new sfForwardException('Demasiados forwards se han detectado en esta peticion.');
+        }
+
+        // Revisa si hay un archivo generator.yml en la configuracion del modulo
+        $this->context->getConfigCache()->import('modules/'.$moduleName.'/config/generator.yml', false, true);
+
+        if (!$this->actionExists($moduleName, $actionName)) {
+            // si la accion solicitada no existe            
+            // Guardo en el log
+            if (sfConfig::get('sf_logging_enabled')) {
+                $this->dispatcher->notify(new sfEvent($this, 'application.log', array(sprintf('La acción "%s/%s" no existe.', $moduleName, $actionName))));
+            }
+            // envio el mensaje de error 404
+            throw new sfError404Exception(sprintf('La acción "%s/%s" no existe.', $moduleName, $actionName));
+        }
+
+        // crea una instancia de la accion
+        $actionInstance = $this->getAction($moduleName, $actionName);
+
+        // agrego un nueva accion a la entrada stack
+        $this->getActionStack()->addEntry($moduleName, $actionName, $actionInstance);
+
+        // se incluye el modulo de configruacion
+        $viewClass = sfConfig::get('mod_'.strtolower($moduleName).'_view_class', false);
+        require($this->context->getConfigCache()->checkConfig('modules/'.$moduleName.'/config/module.yml'));
+        if (false !== $viewClass) {
+            sfConfig::set('mod_'.strtolower($moduleName).'_view_class', $viewClass);
+        }
+
+        // elmodulo esta activado?
+        if (sfConfig::get('mod_'.strtolower($moduleName).'_enabled')) {
+            // reviso el modulo config.php
+            $moduleConfig = sfConfig::get('sf_app_module_dir').'/'.$moduleName.'/config/config.php';
+            if (is_readable($moduleConfig)) {
+                require_once($moduleConfig);
+            }
+
+            // creo una nueva cadena de filtrado
+            $filterChain = new sfFilterChain();
+            $filterChain->loadConfiguration($actionInstance);
+
+            $this->context->getEventDispatcher()->notify(new sfEvent($this, 'controller.change_action', array('module' => $moduleName, 'action' => $actionName)));
+
+            if ($moduleName == sfConfig::get('sf_error_404_module') && $actionName == sfConfig::get('sf_error_404_action')) {
+                $this->context->getResponse()->setStatusCode(404);
+                $this->context->getResponse()->setHttpHeader('Status', '404 Not Found');
+
+                $this->dispatcher->notify(new sfEvent($this, 'controller.page_not_found', array('module' => $moduleName, 'action' => $actionName)));
+            }
+
+            // procesa la cadena de filtrado
+            $filterChain->execute();
+        } else {
+            $moduleName = sfConfig::get('sf_module_disabled_module');
+            $actionName = sfConfig::get('sf_module_disabled_action');
+
+            if (!$this->actionExists($moduleName, $actionName)) {
+                // no se pudo encontrar el mod deshabilitado module/action
+                throw new sfConfigurationException(
+                    sprintf(
+                        'Invalid configuration settings: [sf_module_disabled_module] "%s", [sf_module_disabled_action] "%s".', 
+                        $moduleName, 
+                        $actionName
+                    )
+                );
+            }
+
+            $this->forward($moduleName, $actionName);
+        }
     }
-
-    // check for a module generator config file
-    $this->context->getConfigCache()->import('modules/'.$moduleName.'/config/generator.yml', false, true);
-
-    if (!$this->actionExists($moduleName, $actionName))
-    {
-      // the requested action doesn't exist
-      if (sfConfig::get('sf_logging_enabled'))
-      {
-        $this->dispatcher->notify(new sfEvent($this, 'application.log', array(sprintf('Action "%s/%s" does not exist', $moduleName, $actionName))));
-      }
-
-      throw new sfError404Exception(sprintf('Action "%s/%s" does not exist.', $moduleName, $actionName));
-    }
-
-    // create an instance of the action
-    $actionInstance = $this->getAction($moduleName, $actionName);
-
-    // add a new action stack entry
-    $this->getActionStack()->addEntry($moduleName, $actionName, $actionInstance);
-
-    // include module configuration
-    $viewClass = sfConfig::get('mod_'.strtolower($moduleName).'_view_class', false);
-    require($this->context->getConfigCache()->checkConfig('modules/'.$moduleName.'/config/module.yml'));
-    if (false !== $viewClass)
-    {
-      sfConfig::set('mod_'.strtolower($moduleName).'_view_class', $viewClass);
-    }
-
-    // module enabled?
-    if (sfConfig::get('mod_'.strtolower($moduleName).'_enabled'))
-    {
-      // check for a module config.php
-      $moduleConfig = sfConfig::get('sf_app_module_dir').'/'.$moduleName.'/config/config.php';
-      if (is_readable($moduleConfig))
-      {
-        require_once($moduleConfig);
-      }
-
-      // create a new filter chain
-      $filterChain = new sfFilterChain();
-      $filterChain->loadConfiguration($actionInstance);
-
-      $this->context->getEventDispatcher()->notify(new sfEvent($this, 'controller.change_action', array('module' => $moduleName, 'action' => $actionName)));
-
-      if ($moduleName == sfConfig::get('sf_error_404_module') && $actionName == sfConfig::get('sf_error_404_action'))
-      {
-        $this->context->getResponse()->setStatusCode(404);
-        $this->context->getResponse()->setHttpHeader('Status', '404 Not Found');
-
-        $this->dispatcher->notify(new sfEvent($this, 'controller.page_not_found', array('module' => $moduleName, 'action' => $actionName)));
-      }
-
-      // process the filter chain
-      $filterChain->execute();
-    }
-    else
-    {
-      $moduleName = sfConfig::get('sf_module_disabled_module');
-      $actionName = sfConfig::get('sf_module_disabled_action');
-
-      if (!$this->actionExists($moduleName, $actionName))
-      {
-        // cannot find mod disabled module/action
-        throw new sfConfigurationException(sprintf('Invalid configuration settings: [sf_module_disabled_module] "%s", [sf_module_disabled_action] "%s".', $moduleName, $actionName));
-      }
-
-      $this->forward($moduleName, $actionName);
-    }
-  }
 
   /**
    * Retrieves an sfAction implementation instance.

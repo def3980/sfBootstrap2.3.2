@@ -5,7 +5,7 @@
             <div class="container">
                 <h1>Scaffolding</h1>
                 <p class="lead">Bootstrap is built on responsive 12-column grids, layouts, and components.</p>
-<?php include_partial('bootstrap_carbonads') ?>
+<?php include_partial('bootstrap_carbonads', array('home' => false)) ?>
             </div>
         </header>
         <div class="container">

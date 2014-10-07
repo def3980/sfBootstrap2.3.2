@@ -5,7 +5,7 @@
             <div class="container">
                 <h1>Components</h1>
                 <p class="lead">Dozens of reusable components built to provide navigation, alerts, popovers, and more.</p>
-<?php include_partial('bootstrap_carbonads') ?>
+<?php include_partial('bootstrap_carbonads', array('home' => false)) ?>
             </div>
         </header>
         <div class="container">

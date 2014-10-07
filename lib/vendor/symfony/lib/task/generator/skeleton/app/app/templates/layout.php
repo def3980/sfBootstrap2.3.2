@@ -13,7 +13,7 @@
 
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
-        <?php echo javascript_include_tag('js/html5shiv', array('bootstrap' => true, 'inside' => true)) ?>
+        <?php echo javascript_include_tag('js/html5shiv', array('inside' => true)) ?>
         <![endif]-->
 
         <!-- Le fav and touch icons -->
