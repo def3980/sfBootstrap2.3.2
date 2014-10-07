@@ -123,6 +123,7 @@ EOF;
         $this->replaceTokens(array(sfConfig::get('sf_config_dir')), self::$_registro);
         unset(self::$_registro['SYMFONY_CORE_AUTOLOAD']);
         
+        self::$_registro['FECHA_Y_HORA'] = $this->getDateAndTimeInEs(date('Y-m-d H:i:s'));
         $this->replaceTokens(array(sfConfig::get('sf_data_dir')), self::$_registro);
         $this->replaceTokens(array(sfConfig::get('sf_root_dir')), self::$_registro);
 

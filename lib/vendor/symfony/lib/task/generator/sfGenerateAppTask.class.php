@@ -36,7 +36,7 @@ class sfGenerateAppTask extends sfGeneratorBaseTask {
         $this->addOptions(array(
             new sfCommandOption('escaping-strategy', null, sfCommandOption::PARAMETER_REQUIRED, 'Estrategia salida de escape de caracteres', true),
             new sfCommandOption('csrf-secret', null, sfCommandOption::PARAMETER_REQUIRED, 'Clave secreta para proteccion CSRF', true),
-            new sfCommandOption('generar-rutas-bootstrap2', null, sfCommandOption::PARAMETER_REQUIRED, 'Genera rutas personalizadas de Bootstrap2 en la aplicacion', false),
+            new sfCommandOption('routing-bootstrap2', null, sfCommandOption::PARAMETER_REQUIRED, 'Genera rutas personalizadas de Bootstrap2 en la aplicacion', false),
         ));
 
         $this->namespace        = 'generate';
@@ -88,7 +88,11 @@ EOF;
     /**
      * @see sfTask
      */
-    protected function execute($arguments = array(), $options = array()) {        
+    protected function execute($arguments = array(), $options = array()) {
+//        print_r($arguments); 
+//        print_r($options);
+//        print_r(gettype($options['escaping-strategy'])); echo PHP_EOL;
+//        print_r(gettype($options['routing-bootstrap2'])); echo PHP_EOL; die();
         $app = $arguments['app'];
 
         // Validar el nombre de la aplicacion
@@ -129,17 +133,21 @@ EOF;
         ));
         
         /* Eligiendo o no rutas Bootstrap2*/
-        if (true === $options['generar-rutas-bootstrap2']) {
+        if (false === $options['routing-bootstrap2']) {
             $this->getFilesystem()->copy(
-                $skeletonDir.'/config/routing_con_bootstrap2.yml', 
+                $appDir.'/config/routing_sin_bootstrap2.yml', 
                 $appDir.'/config/routing.yml'
             );
         } else {
             $this->getFilesystem()->copy(
-                $skeletonDir.'/config/routing_sin_bootstrap2.yml', 
+                $appDir.'/config/routing_con_bootstrap2.yml', 
                 $appDir.'/config/routing.yml'
             );
         }
+        
+        // Borrando routings no necesarios
+        $this->getFilesystem()->remove($appDir.'/config/routing_con_bootstrap2.yml');
+        $this->getFilesystem()->remove($appDir.'/config/routing_sin_bootstrap2.yml');
 
         $this->getFilesystem()->copy($skeletonDir.'/web/index.php', sfConfig::get('sf_web_dir').'/'.$indexName.'.php');
         $this->getFilesystem()->copy($skeletonDir.'/web/index.php', sfConfig::get('sf_web_dir').'/'.$app.'_dev.php');

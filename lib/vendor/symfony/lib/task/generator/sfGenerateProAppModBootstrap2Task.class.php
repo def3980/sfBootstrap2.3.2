@@ -63,11 +63,11 @@ EOF;
                 'arguments' => array($arguments['pro'].' "'.self::$_propietario.'"')
             ),
             'generate:app' => array(
-                'arguments' => array($arguments['app'].' --generar-rutas-bootstrap2=true')
+                'arguments' => array($arguments['app'].' --routing-bootstrap2=true')
             ),
             'generate:module-full-bootstrap2' => array(
                 'arguments' => array($arguments['app'], $arguments['mod'])
-            )            
+            )
         );
         foreach ($argOpc as $k => $v):
             $this->runTask($k, $v['arguments']);
