@@ -7,6 +7,11 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * + ------------------------------------------------------------------- +
+ * Añadiendo nuevas formas a lo ya optimizado. Por Oswaldo Rojas un
+ * Miercoles, 08 Octubre 2014 10:17:59
+ * + ------------------------------------------------------------------- +
  */
 
 /**
@@ -18,51 +23,46 @@
  * @author     Jonathan H. Wage <jonwage@gmail.com>
  * @version    SVN: $Id: sfDoctrineBaseTask.class.php 28976 2010-04-05 00:27:39Z Kris.Wallsmith $
  */
-abstract class sfDoctrineBaseTask extends sfBaseTask
-{
-  /**
-   * Returns an array of configuration variables for the Doctrine CLI.
-   *
-   * @return array $config
-   *
-   * @see sfDoctrinePluginConfiguration::getCliConfig()
-   */
-  public function getCliConfig()
-  {
-    return $this->configuration->getPluginConfiguration('sfDoctrinePlugin')->getCliConfig();
-  }
+abstract class sfDoctrineBaseTask extends sfBaseTask {
 
-  /**
-   * Calls a Doctrine CLI command.
-   *
-   * @param string $task Name of the Doctrine task to call
-   * @param array  $args Arguments for the task
-   *
-   * @see sfDoctrineCli
-   */
-  public function callDoctrineCli($task, $args = array())
-  {
-    $config = $this->getCliConfig();
-
-    $arguments = array('./symfony', $task);
-
-    foreach ($args as $key => $arg)
-    {
-      if (isset($config[$key]))
-      {
-        $config[$key] = $arg;
-      }
-      else
-      {
-        $arguments[] = $arg;
-      }
+    /**
+     * Retorna un arreglo de variables de configuracion para la linea de 
+     * comandos (CLI) de Doctrine.
+     *
+     * @return array $config
+     *
+     * @see sfDoctrinePluginConfiguration::getCliConfig()
+     */
+    public function getCliConfig() {
+        return $this->configuration->getPluginConfiguration('sfDoctrinePlugin')->getCliConfig();
     }
 
-    $cli = new sfDoctrineCli($config);
-    $cli->setSymfonyDispatcher($this->dispatcher);
-    $cli->setSymfonyFormatter($this->formatter);
-    $cli->run($arguments);
-  }
+    /**
+     * Llama a la linea de comandos (CLI) de Doctrine.
+     *
+     * @param string $task Nombre de la tarea Doctrine a llamar
+     * @param array  $args Argumentos (Parametros, deben ser en arreglo) para la tarea
+     *
+     * @see sfDoctrineCli
+     */
+    public function callDoctrineCli($task, $args = array()) {
+        $config = $this->getCliConfig();
+
+        $arguments = array('./symfony', $task);
+
+        foreach ($args as $key => $arg) {
+            if (isset($config[$key])) {
+                $config[$key] = $arg;
+            } else {
+                $arguments[] = $arg;
+            }
+        }
+
+        $cli = new sfDoctrineCli($config);
+        $cli->setSymfonyDispatcher($this->dispatcher);
+        $cli->setSymfonyFormatter($this->formatter);
+        $cli->run($arguments);
+    }
 
   /**
    * Returns Doctrine databases from the supplied database manager.

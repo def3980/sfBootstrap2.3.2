@@ -3,8 +3,8 @@
 # Fecha: ##FECHA_Y_HORA##
 #
 # Acciones realizadas:
-#  - Veces ejecutado doctrine:build-schema  : "001"
-#  - Ultima vez que se actualizo el esquema : "yyyy-mm-dd hh:mm:ss"
+#  - Veces ejecutado doctrine:build-schema  : "000000"
+#  - Ultima vez que se actualizo el esquema : "yyyy-mm-dd_hh:mm:ss"
 # + -------------------------------------------------------------------------- +
 # Detalle del modelo base de base de datos mediante ingenieria inversa o
 # directa. Tu decides.

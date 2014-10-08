@@ -30,6 +30,13 @@
  * @version     $Revision: 1080 $
  * @author      Jonathan H. Wage <jwage@mac.com>
  */
+
+/**
+ * + ------------------------------------------------------------------- +
+ * Añadiendo nuevas formas a lo ya optimizado. Por Oswaldo Rojas un
+ * Miercoles, 08 Octubre 2014 11:28:04
+ * + ------------------------------------------------------------------- +
+ */
 abstract class Doctrine_Parser
 {
     /**
@@ -142,12 +149,86 @@ abstract class Doctrine_Parser
      * @param string $path 
      * @return void
      */
-    public function doDump($data, $path = null)
-    {
-      if ($path !== null) {
-            return file_put_contents($path, $data);
+    public function doDump($data, $path = null) {
+        /**
+         * acomodos en esta parte
+         */
+        $acc = $fecha = $reem = ""; $cont = 0;
+        foreach (file($path) as $k => $v):
+            if ("" !== $this->ubicarEntre($v, '"', '"')) {
+                $acc = $this->ubicarEntre($v, '"', '"');
+                break; // encuentra y sale del bucle
+            }
+        endforeach;
+        if ("" !== $acc) {
+            foreach (file($path) as $cont_k => $cont_v):
+                if ("" !== $this->ubicarEntre($cont_v, '"', '"')) {
+                    $cont += 1;
+                    if ($cont > 1) {
+                        $fecha = $this->ubicarEntre($cont_v, '"', '"');
+                        $cont = 0;
+                        break; // encuentra y sale del bucle                    
+                    }
+                }
+            endforeach;
+            foreach (file($path) as $reem_k => $reem_v):
+                if (false !== strpos($reem_v, '"'.$acc.'"')) {
+                    $reem .= str_replace('"'.$acc.'"', '"'.$this->numeroDAcceso(($acc * 1) + 1).'"', $reem_v);
+                } elseif (false !== strpos($reem_v, '"'.$fecha.'"')) {
+                    $reem .= str_replace('"'.$fecha.'"', '"'.date('Y-m-d H:i:s').'"', $reem_v);
+                } else {
+                    $reem .= $reem_v;
+                }
+                if ($reem_k == 7) { break; } // despues de acciones realizadas me detengo
+            endforeach;
+            
+            $reem = $reem.PHP_EOL.$data;
+            
+            return $path !== null ? file_put_contents($path, $reem) : $data;
         } else {
-            return $data;
+            // lo de abajo es de doctrine
+            if ($path !== null) {
+                return file_put_contents($path, $data);
+            } else {
+                return $data;
+            }
         }
+        /* ------------------------------------------------------------------ */
     }
+    
+    
+    
+    /**
+     * Funciones pequeñas para el registro de modificacion por parte del usuario
+     * hacia el archivo ubicado en config/doctrine/schema.yml guardando fecha
+     * y hora de actualizacion. Esta es mi personalizacion.
+     */
+    protected function ubicarEntre($contenido, $inicio, $fin) {
+        $cadena = explode($inicio, $contenido);
+        if (isset($cadena[1])) {
+            $cadena = explode($fin, $cadena[1]);
+            return reset($cadena);
+        }
+
+        return '';
+    }
+    
+    protected function numeroDAcceso($valor) {
+        $no = 0;
+        switch (true):
+            case $valor < 10: $no = '00000'.$valor; break;
+            case $valor < 100: $no = '0000'.$valor; break;
+            case $valor < 1000: $no = '000'.$valor; break;
+            case $valor < 10000: $no = '00'.$valor; break;
+            case $valor < 100000: $no = '0'.$valor; break;
+            case $valor < 1000000: $no = ''.$valor; break;
+        endswitch;
+        /**
+         * Exageradooo!!! 
+         * mmm talvez, pero puede suceder.
+         */
+        return $no;
+    }    
+    /* ---------------------------------------------------------------------- */
+
 }

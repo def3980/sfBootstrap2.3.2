@@ -132,7 +132,7 @@ EOF;
             'PROJECT_NAME' => $this->arguments['name'],
             'AUTHOR_NAME'  => $this->arguments['author'],
             'PROJECT_DIR'  => sfConfig::get('sf_root_dir'),
-            'FECHA_Y_HORA' => $this->getDateAndTimeInEs(date('Y-m-d H:i:s'))
+            'FECHA_Y_HORA' => self::$_registro['FECHA_Y_HORA']
         );
 
         $this->replaceTokens();
@@ -152,7 +152,7 @@ EOF;
             array(
                 'PROJECT_NAME' => $this->arguments['name'],
                 'AUTHOR_NAME'  => $this->arguments['author'],
-                'FECHA_Y_HORA' => $this->getDateAndTimeInEs(date('Y-m-d H:i:s'))
+                'FECHA_Y_HORA' => self::$_registro['FECHA_Y_HORA']
             )
         );
         $this->getFilesystem()->rename(

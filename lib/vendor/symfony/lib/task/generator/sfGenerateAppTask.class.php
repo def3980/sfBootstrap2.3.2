@@ -149,7 +149,7 @@ EOF;
         $this->getFilesystem()->copy($skeletonDir.'/web/index.php', sfConfig::get('sf_web_dir').'/'.$app.'_dev.php');
 
         $properties = parse_ini_file(sfConfig::get('sf_config_dir').'/properties.ini', true);
-        $this->getFilesystem()->replaceTokens(sfConfig::get('sf_web_dir').'/'.$indexName.'.php', '##', '##', array(
+        $reem = array(
             'PROJECT_NAME' => isset($properties['symfony']['name']) ? $properties['symfony']['name'] : 'symfony',
             'AUTHOR_NAME'  => isset($properties['symfony']['author']) ? $properties['symfony']['author'] : 'Tu nombre aqui',
             'FECHA_Y_HORA' => $this->getDateAndTimeInEs(date('Y-m-d H:i:s')),
@@ -157,22 +157,18 @@ EOF;
             'ENVIRONMENT'  => 'prod',
             'IS_DEBUG'     => 'false',
             'IP_CHECK'     => '',
-        ));
+        );
+        $this->getFilesystem()->replaceTokens(sfConfig::get('sf_web_dir').'/'.$indexName.'.php', '##', '##', $reem);
 
-        $this->getFilesystem()->replaceTokens(sfConfig::get('sf_web_dir').'/'.$app.'_dev.php', '##', '##', array(
-            'PROJECT_NAME' => isset($properties['symfony']['name']) ? $properties['symfony']['name'] : 'symfony',
-            'AUTHOR_NAME'  => isset($properties['symfony']['author']) ? $properties['symfony']['author'] : 'Tu nombre aqui',
-            'FECHA_Y_HORA' => $this->getDateAndTimeInEs(date('Y-m-d H:i:s')),
-            'APP_NAME'    => $app,
-            'ENVIRONMENT' => 'dev',
-            'IS_DEBUG'    => 'true',
-            'IP_CHECK'    => '// Esta comprobacion impide el acceso a los controladores frontales de depuracion que se '.PHP_EOL.
-                             '// despliegan por accidente a los servidores de produccion.'.PHP_EOL.
-                             '// Sientete libre de suprimir esta comprobacion, extenderlo o hacer algo mas sofisticado.'.PHP_EOL.
-                             'if (!in_array(@$_SERVER[\'REMOTE_ADDR\'], array(\'127.0.0.1\', \'::1\'))) {'.PHP_EOL.
-                             '    die(\'No esta permitido acceder a este archivo. Revisa el archivo \'.basename(__FILE__).\' para mas informacion.\');'.PHP_EOL.
-                             '}'.PHP_EOL,
-        ));
+        $reem['ENVIRONMENT'] = 'dev';
+        $reem['IS_DEBUG']    = 'true';
+        $reem['IP_CHECK']    = '// Esta comprobacion impide el acceso a los controladores frontales de depuracion que se '.PHP_EOL.
+                               '// despliegan por accidente a los servidores de produccion.'.PHP_EOL.
+                               '// Sientete libre de suprimir esta comprobacion, extenderlo o hacer algo mas sofisticado.'.PHP_EOL.
+                               'if (!in_array(@$_SERVER[\'REMOTE_ADDR\'], array(\'127.0.0.1\', \'::1\'))) {'.PHP_EOL.
+                               '    die(\'No esta permitido acceder a este archivo. Revisa el archivo \'.basename(__FILE__).\' para mas informacion.\');'.PHP_EOL.
+                               '}'.PHP_EOL;
+        $this->getFilesystem()->replaceTokens(sfConfig::get('sf_web_dir').'/'.$app.'_dev.php', '##', '##', $reem);
 
         $this->getFilesystem()->rename($appDir.'/config/ApplicationConfiguration.class.php', $appDir.'/config/'.$app.'Configuration.class.php');
         $this->getFilesystem()->replaceTokens($appDir.'/config/'.$app.'Configuration.class.php', '##', '##', array('APP_NAME' => $app));

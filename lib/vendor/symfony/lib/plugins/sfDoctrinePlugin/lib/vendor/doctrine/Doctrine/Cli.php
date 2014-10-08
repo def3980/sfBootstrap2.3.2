@@ -473,8 +473,8 @@ class Doctrine_Cli
      * @throws Doctrine_Cli_Exception If the requested task has not been registered or if required arguments are missing
      * @todo Continue refactoring for testing
      */
-    protected function _run(array $args)
-    {        
+    protected function _run(array $args) {
+
         $this->_scriptName = $args[0];
         
         $requestedTaskName = isset($args[1]) ? $args[1] : null;

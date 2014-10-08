@@ -42,7 +42,7 @@ class sfDoctrineConfigureDatabaseTask extends sfBaseTask {
 
         $this->namespace           = 'configure';
         $this->name                = 'database';
-        $this->briefDescription    = 'Configura DSN (nombre fuente de base de datos) de la base de datos';
+        $this->briefDescription    = '>> Configura DSN (nombre fuente de base de datos) de la base de datos';
         $this->detailedDescription = <<<EOF
 La tarea [configure:database|INFO] configura el DSN de la base de datos 
 para el proyecto:
@@ -96,7 +96,7 @@ EOF;
             ),
         );
 
-        $acc = $pos = $fecha = $res = ""; $cont = 0;
+        $acc = $pos = $fecha = $res = ""; $cont = 0; $reem = array();
         foreach (file($file) as $k => $v):
             if ("" !== $this->ubicarEntre($v, '"', '"')) {
                 $acc = $this->ubicarEntre($v, '"', '"');
@@ -121,17 +121,23 @@ EOF;
                 }
             endforeach;
 
-            $this->getFilesystem()->replaceTokens($file, '"', '"', array($acc => '"'.$this->numeroDAcceso(($acc * 1) + 1).'"'));
-            $this->getFilesystem()->replaceTokens($file, '"', '"', array($fecha => '"'.date('Y-m-d H:i:s').'"'));
+            foreach (file($file) as $reem_k => $reem_v):
+                if (false !== strpos($reem_v, '"'.$acc.'"')) {
+                    $reem[] = str_replace('"'.$acc.'"', '"'.$this->numeroDAcceso(($acc * 1) + 1).'"', $reem_v);
+                } elseif (false !== strpos($reem_v, '"'.$fecha.'"')) {
+                    $reem[] = str_replace('"'.$fecha.'"', '"'.date('Y-m-d H:i:s').'"', $reem_v);
+                } else {
+                    $reem[] = $reem_v;
+                }
+            endforeach;
 
-            $array_file = file($file);
             for ( $i = 0 ; $i <= ($pos_k - 1) ; $i += 1 ):
-                $res .= $array_file[$i];
+                $res .= $reem[$i];
             endfor;
 
             file_put_contents($file, $res.sfYaml::dump($config, 4));
 
-            $this->logSection('DSN', sprintf('Esquema (schema) yaml, actualizado...'));
+            $this->logSection('doctrine DSN', sprintf('Esquema (schema) yaml, actualizado...'));
         } else {
             file_put_contents($file, sfYaml::dump($config, 4));
         }

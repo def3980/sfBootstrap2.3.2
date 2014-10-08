@@ -22,10 +22,10 @@ abstract class sfGeneratorBaseTask extends sfBaseTask {
                         'domingo', 
                         'lunes', 
                         'martes', 
-                        'miércoles', 
+                        'miercoles', 
                         'jueves', 
                         'viernes', 
-                        'sábado'
+                        'sabado'
                        ),
               $_diasAbreviados = array(),
               $_meses = array(

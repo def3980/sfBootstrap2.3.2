@@ -38,7 +38,7 @@ class sfDoctrineBuildSchemaTask extends sfDoctrineBaseTask {
 
         $this->namespace        = 'doctrine';
         $this->name             = 'build-schema';
-        $this->briefDescription = 'Crea un esquema (*.yml) de una base de datos existente.';
+        $this->briefDescription = '>> Crea un esquema (*.yml) de una base de datos existente.';
 
     $this->detailedDescription = <<<EOF
 La tarea [doctrine:build-schema|INFO] hace un ingenieria inversa 
@@ -54,7 +54,7 @@ EOF;
      * @see sfTask
      */
     protected function execute($arguments = array(), $options = array()) {
-        $this->logSection('doctrine', 'generando un esquema yaml desde una base de datos');
+        $this->logSection('doctrine', 'Generando un esquema yaml desde una base de datos...');
 
         $databaseManager = new sfDatabaseManager($this->configuration);
         $this->callDoctrineCli('generate-yaml-db');
