@@ -20,6 +20,12 @@
  */
 
 /**
+ * + ------------------------------------------------------------------- +
+ * Añadiendo nuevas formas a lo ya optimizado. Por Oswaldo Rojas un
+ * Miercoles, 08 Octubre 2014 15:38:36
+ * + ------------------------------------------------------------------- +
+
+/**
  * Doctrine_Import_Builder
  *
  * Import builder is responsible of building Doctrine_Record classes
@@ -331,31 +337,35 @@ class Doctrine_Import_Builder extends Doctrine_Builder
      * @param  string $table
      * @param  array  $tableColumns
      */
-    public function buildTableDefinition(array $definition)
-    {
-        if (isset($definition['inheritance']['type']) && ($definition['inheritance']['type'] == 'simple' || $definition['inheritance']['type'] == 'column_aggregation')) {
+    public function buildTableDefinition(array $definition) {
+
+        if (isset($definition['inheritance']['type']) 
+            && ($definition['inheritance']['type'] == 'simple' 
+                    || $definition['inheritance']['type'] == 'column_aggregation')) {
             return;
         }
 
         $ret = array();
-
-        $i = 0;
+        $i   = 0;
 
         if (isset($definition['inheritance']['type']) && $definition['inheritance']['type'] == 'concrete') {
             $ret[$i] = "        parent::setTableDefinition();";
             $i++;
         }
-
+        
         if (isset($definition['tableName']) && !empty($definition['tableName'])) {
             $ret[$i] = "        ".'$this->setTableName(\''. $definition['tableName'].'\');';
             $i++;
         }
+        
 
         if (isset($definition['columns']) && is_array($definition['columns']) && !empty($definition['columns'])) {
             $ret[$i] = $this->buildColumns($definition['columns']);
             $i++;
         }
 
+//        print_r($ret);
+//        die();
         if (isset($definition['indexes']) && is_array($definition['indexes']) && !empty($definition['indexes'])) {
             $ret[$i] = $this->buildIndexes($definition['indexes']);
             $i++;
@@ -523,8 +533,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
      * @param string $array
      * @return void
      */
-    public function buildColumns(array $columns)
-    {
+    public function buildColumns(array $columns) {
         $manager = Doctrine_Manager::getInstance();
         $refl = new ReflectionClass($this->_baseClassName);
 
@@ -541,8 +550,8 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             if (isset($column['alias']) && !isset($column['name'])) {
                 $column['name'] = $name . ' as ' . $column['alias'];
             }
-          
-            $columnName = isset($column['name']) ? $column['name']:$name;
+
+            $columnName = isset($column['name']) ? $column['name'] : $name;
             if ($manager->getAttribute(Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE)) {
                 $e = explode(' as ', $columnName);
                 $fieldName = isset($e[1]) ? $e[1] : $e[0];
@@ -556,10 +565,9 @@ class Doctrine_Import_Builder extends Doctrine_Builder
                     );
                 }
             }
-            $build .= "        ".'$this->hasColumn(\'' . $columnName . '\', \'' . $column['type'] . '\'';
-
+            $build .= "        ".'$this->hasColumn(\''.$columnName.'\', \''.$column['type'].'\'';
             if ($column['length']) {
-                $build .= ', ' . $column['length'];
+                $build .= ', '.$column['length'];
             } else {
                 $build .= ', null';
             }
@@ -573,13 +581,19 @@ class Doctrine_Import_Builder extends Doctrine_Builder
 
             // Remove notnull => true if the column is primary
             // Primary columns are implied to be notnull in Doctrine
-            if (isset($options['primary']) && $options['primary'] == true && (isset($options['notnull']) && $options['notnull'] == true)) {
+            if (isset($options['primary']) 
+                && $options['primary'] == true 
+                && (isset($options['notnull']) 
+                && $options['notnull'] == true)) {
                 unset($options['notnull']);
             }
 
             // Remove default if the value is 0 and the column is a primary key
             // Doctrine defaults to 0 if it is a primary key
-            if (isset($options['primary']) && $options['primary'] == true && (isset($options['default']) && $options['default'] == 0)) {
+            if (isset($options['primary']) 
+                && $options['primary'] == true 
+                && (isset($options['default']) 
+                && $options['default'] == 0)) {
                 unset($options['default']);
             }
 
@@ -589,9 +603,13 @@ class Doctrine_Import_Builder extends Doctrine_Builder
                     unset($options[$key]);
                 }
             }
+//            print_r($build.PHP_EOL);
+//            print_r($options);
+//            print_r($this->varExport($options));
+//            die();
 
             if (is_array($options) && !empty($options)) {
-                $build .= ', ' . $this->varExport($options);
+                $build .= ', '.$this->varExport($options);
             }
 
             $build .= ');' . PHP_EOL;
@@ -955,15 +973,17 @@ class Doctrine_Import_Builder extends Doctrine_Builder
      * @param array $definition
      * @return string
      */
-    public function buildDefinition(array $definition)
-    {
+    public function buildDefinition(array $definition) {
         if ( ! isset($definition['className'])) {
             throw new Doctrine_Import_Builder_Exception('Missing class name.');
         }
-        $abstract = isset($definition['abstract']) && $definition['abstract'] === true ? 'abstract ':null;
-        $className = $definition['className'];
-        $extends = isset($definition['inheritance']['extends']) ? $definition['inheritance']['extends']:$this->_baseClassName;
 
+        $abstract  = isset($definition['abstract']) && $definition['abstract'] === true ? 'abstract ' : null;
+        $className = $definition['className'];
+        $extends   = isset($definition['inheritance']['extends']) 
+                     ? $definition['inheritance']['extends']
+                     : $this->_baseClassName;
+        
         if ( ! (isset($definition['no_definition']) && $definition['no_definition'] === true)) {
             $tableDefinitionCode = $this->buildTableDefinition($definition);
             $setUpCode = $this->buildSetUp($definition);
@@ -971,6 +991,13 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             $tableDefinitionCode = null;
             $setUpCode = null;
         }
+//        print_r($abstract.PHP_EOL);
+//        print_r($className.PHP_EOL);
+//        print_r($extends.PHP_EOL);
+//        print_r($tableDefinitionCode);
+//        print_r($setUpCode);
+//        die();
+        
 
         if ($tableDefinitionCode && $setUpCode) {
             $setUpCode = PHP_EOL . $setUpCode;
@@ -1188,8 +1215,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
      * @param array $actAs
      * @return void
      */
-    public function writeDefinition(array $definition)
-    {
+    public function writeDefinition(array $definition) {
         $originalClassName = $definition['className'];
         if ($prefix = $this->_classPrefix) {
             $definition['className'] = $prefix . $definition['className'];

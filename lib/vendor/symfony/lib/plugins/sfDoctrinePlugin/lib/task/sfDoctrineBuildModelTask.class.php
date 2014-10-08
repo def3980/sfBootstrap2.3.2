@@ -7,12 +7,17 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * + ------------------------------------------------------------------- +
+ * Añadiendo nuevas formas a lo ya optimizado. Por Oswaldo Rojas un
+ * Miercoles, 08 Octubre 2014 14:38:51
+ * + ------------------------------------------------------------------- +
  */
 
 require_once(dirname(__FILE__).'/sfDoctrineBaseTask.class.php');
 
 /**
- * Create classes for the current model.
+ * Crea las clases para el actual modelo de datos.
  *
  * @package    symfony
  * @subpackage doctrine
@@ -20,89 +25,97 @@ require_once(dirname(__FILE__).'/sfDoctrineBaseTask.class.php');
  * @author     Jonathan H. Wage <jonwage@gmail.com>
  * @version    SVN: $Id: sfDoctrineBuildModelTask.class.php 30901 2010-09-13 17:41:16Z Kris.Wallsmith $
  */
-class sfDoctrineBuildModelTask extends sfDoctrineBaseTask
-{
-  /**
-   * @see sfTask
-   */
-  protected function configure()
-  {
-    $this->addOptions(array(
-      new sfCommandOption('application', null, sfCommandOption::PARAMETER_OPTIONAL, 'The application name', true),
-      new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
-    ));
+class sfDoctrineBuildModelTask extends sfDoctrineBaseTask {
 
-    $this->namespace = 'doctrine';
-    $this->name = 'build-model';
-    $this->briefDescription = 'Creates classes for the current model';
+    /**
+     * @see sfTask
+     */
+    protected function configure() {
+        $this->addOptions(array(
+            new sfCommandOption('application', null, sfCommandOption::PARAMETER_OPTIONAL, 'El nombre de la aplicacion', true),
+            new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'El ambiente de desarrollo', 'dev'),
+        ));
 
-    $this->detailedDescription = <<<EOF
-The [doctrine:build-model|INFO] task creates model classes from the schema:
+        $this->namespace           = 'doctrine';
+        $this->name                = 'build-model';
+        $this->briefDescription    = '>> Crea clases para el actual modelo de datos';
+        $this->detailedDescription = <<<EOF
+La tarea [doctrine:build-model|INFO] crea clases del modelo de datos referido 
+desde config/doctrine/schema.yml:
 
   [./symfony doctrine:build-model|INFO]
 
-The task read the schema information in [config/doctrine/*.yml|COMMENT]
-from the project and all enabled plugins.
+La tarea lee la informacion del esquema en [config/doctrine/*.yml|COMMENT] de 
+la parte del proyecto y de todos los plugins activados.
 
-The model classes files are created in [lib/model/doctrine|COMMENT].
+Los archivos de clases del modelo de datos son creados en el directorio 
+[lib/model/doctrine|COMMENT].
 
-This task never overrides custom classes in [lib/model/doctrine|COMMENT].
-It only replaces files in [lib/model/doctrine/base|COMMENT].
+Esta tarea nunca sobreescribe clases personalizadas en [lib/model/doctrine|COMMENT].
+Solo reemplaza archivos en [lib/model/doctrine/base|COMMENT].
 EOF;
-  }
+    }
 
-  /**
-   * @see sfTask
-   */
-  protected function execute($arguments = array(), $options = array())
-  {
-    $this->logSection('doctrine', 'generating model classes');
+    /**
+     * @see sfTask
+     */
+    protected function execute($arguments = array(), $options = array()) {
+        $this->logSection('doctrine', 'Generando modelo de clases');
 
-    $config = $this->getCliConfig();
-    $builderOptions = $this->configuration->getPluginConfiguration('sfDoctrinePlugin')->getModelBuilderOptions();
+        $config = $this->getCliConfig();
+        $builderOptions = $this->configuration->getPluginConfiguration('sfDoctrinePlugin')->getModelBuilderOptions();
 
-    $stubFinder = sfFinder::type('file')->prune('base')->name('*'.$builderOptions['suffix']);
-    $before = $stubFinder->in($config['models_path']);
+        $stubFinder = sfFinder::type('file')->prune('base')->name('*'.$builderOptions['suffix']);
+        $before = $stubFinder->in($config['models_path']);
 
-    $schema = $this->prepareSchemaFile($config['yaml_schema_path']);
+        $schema = $this->prepareSchemaFile($config['yaml_schema_path']);
 
-    $import = new Doctrine_Import_Schema();
-    $import->setOptions($builderOptions);
-    $import->importSchema($schema, 'yml', $config['models_path']);
+        $import = new Doctrine_Import_Schema();
+        $import->setOptions($builderOptions);
+        $import->importSchema($schema, 'yml', $config['models_path']);
 
-    // markup base classes with magic methods
-    foreach (sfYaml::load($schema) as $model => $definition)
-    {
-      $file = sprintf('%s%s/%s/Base%s%s', $config['models_path'], isset($definition['package']) ? '/'.substr($definition['package'], 0, strpos($definition['package'], '.')) : '', $builderOptions['baseClassesDirectory'], $model, $builderOptions['suffix']);
-      $code = file_get_contents($file);
+        // markup base classes with magic methods
+        foreach (sfYaml::load($schema) as $model => $definition) {
+            $file = sprintf(
+                        '%s%s/%s/Base%s%s', 
+                        $config['models_path'], 
+                        isset($definition['package']) 
+                        ? '/'.substr($definition['package'], 0, strpos($definition['package'], '.')) 
+                        : '', 
+                        $builderOptions['baseClassesDirectory'], 
+                        $model, 
+                        $builderOptions['suffix']
+                    );
+        
+        $code = file_get_contents($file);
 
-      // introspect the model without loading the class
-      if (preg_match_all('/@property (\w+) \$(\w+)/', $code, $matches, PREG_SET_ORDER))
-      {
+        // introspect the model without loading the class
+        if (preg_match_all('/@property (\w+) \$(\w+)/', $code, $matches, PREG_SET_ORDER))
+        {
         $properties = array();
         foreach ($matches as $match)
         {
-          $properties[$match[2]] = $match[1];
+        $properties[$match[2]] = $match[1];
         }
 
-        $typePad = max(array_map('strlen', array_merge(array_values($properties), array($model))));
-        $namePad = max(array_map('strlen', array_keys(array_map(array('sfInflector', 'camelize'), $properties))));
-        $setters = array();
-        $getters = array();
+    $typePad = max(array_map('strlen', array_merge(array_values($properties), array($model))));
+    $namePad = max(array_map('strlen', array_keys(array_map(array('sfInflector', 'camelize'), $properties))));
+    $setters = array();
+    $getters = array();
 
-        foreach ($properties as $name => $type)
-        {
-          $camelized = sfInflector::camelize($name);
-          $collection = 'Doctrine_Collection' == $type;
+    foreach ($properties as $name => $type)
+    {
+    $camelized = sfInflector::camelize($name);
+    $collection = 'Doctrine_Collection' == $type;
 
-          $getters[] = sprintf('@method %-'.$typePad.'s %s%-'.($namePad + 2).'s Returns the current record\'s "%s" %s', $type, 'get', $camelized.'()', $name, $collection ? 'collection' : 'value');
-          $setters[] = sprintf('@method %-'.$typePad.'s %s%-'.($namePad + 2).'s Sets the current record\'s "%s" %s', $model, 'set', $camelized.'()', $name, $collection ? 'collection' : 'value');
-        }
+    $getters[] = sprintf('@method %-'.$typePad.'s %s%-'.($namePad + 2).'s Returns the current record\'s "%s" %s', $type, 'get', $camelized.'()', $name, $collection ? 'collection' : 'value');
+    $setters[] = sprintf('@method %-'.$typePad.'s %s%-'.($namePad + 2).'s Sets the current record\'s "%s" %s', $model, 'set', $camelized.'()', $name, $collection ? 'collection' : 'value');
+    }
 
-        // use the last match as a search string
-        $code = str_replace($match[0], $match[0].PHP_EOL.' * '.PHP_EOL.' * '.implode(PHP_EOL.' * ', array_merge($getters, $setters)), $code);
-        file_put_contents($file, $code);
-      }
+    // use the last match as a search string
+    $code = str_replace($match[0], $match[0].PHP_EOL.' * '.PHP_EOL.' * '.implode(PHP_EOL.' * ', array_merge($getters, $setters)), $code);
+    file_put_contents($file, $code);
+    }
     }
 
     $properties = parse_ini_file(sfConfig::get('sf_config_dir').'/properties.ini', true);

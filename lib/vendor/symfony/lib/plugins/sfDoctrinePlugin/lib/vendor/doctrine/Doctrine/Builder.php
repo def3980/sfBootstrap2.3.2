@@ -40,17 +40,50 @@ class Doctrine_Builder
      * @param string $var
      * @return void
      */
-    public function varExport($var)
-    {
+    public function varExport($var) {
         $export = var_export($var, true);
-        $export = str_replace("\n", PHP_EOL . str_repeat(' ', 50), $export);
+        $export = str_replace("\n", PHP_EOL.str_repeat(' ', 50), $export);
         $export = str_replace('  ', ' ', $export);
         $export = str_replace('array (', 'array(', $export);
         $export = str_replace('array( ', 'array(', $export);
         $export = str_replace(',)', ')', $export);
         $export = str_replace(', )', ')', $export);
         $export = str_replace('  ', ' ', $export);
+        $export = explode("\n", $export);
+        $copia = $export;
+        array_shift($copia); array_pop($copia);
+        $lon = 0;
+        foreach ($var as $k => $v):
+            $lon = $lon < strlen($k) ? strlen($k) : $lon;
+        endforeach;
+        foreach ($var as $k2 => $v2):
+            if (strlen($k2) != $lon) {
+                $aux = $lon - strlen($k2);
+                foreach ($copia as $int_k => $int_v):
+                    if (false !== strpos($int_v, $k2)) {
+                        $copia[$int_k] = str_replace("'$k2' => ", "'$k2'".str_repeat(' ', $aux)." => ", $int_v);
+                        break;
+                    }
+                endforeach;
+            } else {
+                foreach ($copia as $int_k => $int_v):
+                    if (false !== strpos($int_v, $k2)) {
+                        $copia[$int_k] = str_replace("'$k2' => ", "'$k2' => ", $int_v);
+                        break;
+                    }
+                endforeach;
+            }
+        endforeach;
+        
+        array_unshift($copia, reset($export));
+        array_push($copia, end($export));
+        
+        $export = "";
+        foreach ($copia as $exp_k2 => $exp_v2):
+            $export .= $exp_v2.PHP_EOL;
+        endforeach;
 
         return $export;
     }
+
 }
