@@ -26,7 +26,7 @@ require_once(dirname(__FILE__).'/sfDoctrineBaseTask.class.php');
  * @version    SVN: $Id: sfDoctrineBuildModelTask.class.php 30901 2010-09-13 17:41:16Z Kris.Wallsmith $
  */
 class sfDoctrineBuildModelTask extends sfDoctrineBaseTask {
-
+    
     /**
      * @see sfTask
      */
@@ -86,15 +86,13 @@ EOF;
                         $model, 
                         $builderOptions['suffix']
                     );
-        
+
             $code = file_get_contents($file);
 
             // introspect the model without loading the class
             if (preg_match_all('/@property (\w+) \$(\w+)/', $code, $matches, PREG_SET_ORDER)) {
                 $properties = array();
-                foreach ($matches as $match) {
-                    $properties[$match[2]] = $match[1];
-                }
+                foreach ($matches as $match) { $properties[$match[2]] = $match[1]; }
 
                 $typePad = max(array_map('strlen', array_merge(array_values($properties), array($model))));
                 $namePad = max(array_map('strlen', array_keys(array_map(array('sfInflector', 'camelize'), $properties))));
@@ -107,7 +105,7 @@ EOF;
 
                     $getters[] = sprintf(
 //                                    '@method %-'.$typePad.'s %s%-'.$namePad.'s Returns the current record\'s "%s" %s', 
-                                    '@method %-'.$typePad.'s %s%-'.$namePad.'s Retorna el registro ('.($collection ? 'coleccion de datos' : 'valor').') actual del campo "%s"', 
+                                    '@method %-'.$typePad.'s %s%-'.$namePad.'s Retorna el registro ('.($collection ? 'coleccion de datos' : 'valor').') actual del campo [%s]', 
                                     $type, 
                                     'get', 
                                     $camelized.'()', 
@@ -116,7 +114,7 @@ EOF;
                                  );
                     $setters[] = sprintf(
 //                                    '@method %-'.$typePad.'s %s%-'.$namePad.'s Sets the current record\'s "%s" %s', 
-                                    '@method %-'.$typePad.'s %s%-'.$namePad.'s Guarda un registro ('.($collection ? 'coleccion de datos' : 'valor').') al campo "%s"', 
+                                    '@method %-'.$typePad.'s %s%-'.$namePad.'s Guarda un registro ('.($collection ? 'coleccion de datos' : 'valor').') al campo [%s]', 
                                     $model, 
                                     'set', 
                                     $camelized.'()', 
@@ -132,17 +130,6 @@ EOF;
         }
 
         $properties = parse_ini_file(sfConfig::get('sf_config_dir').'/properties.ini', true);
-//        $miScanDir = array_diff(scandir($config['models_path']), array('.', '..', 'base'));
-//        print_r($miScanDir); die();
-//        print_r(file($config['models_path'].'/base/BaseAHORROS.class.php')); die();
-//        $miString = "*/".PHP_EOL.PHP_EOL
-//                  . "/**".PHP_EOL
-//                  . " * fecha creacion : ##FECHA_Y_HORA##".PHP_EOL
-//                  . " * ".PHP_EOL
-//                  . " * ".PHP_EOL
-//                  . " */".PHP_EOL
-//                ;
-//        print_r(str_replace("*/", $miString, file_get_contents($config['models_path'].'/base/BaseAHORROS.class.php'))); die();
         $tokens = array(
             '##PACKAGE##'    => isset($properties['symfony']['name']) ? $properties['symfony']['name'] : 'symfony',
             '##SUBPACKAGE##' => 'model',
@@ -154,6 +141,60 @@ EOF;
         // cleanup new stub classes
         $after = $stubFinder->in($config['models_path']);
         $this->getFilesystem()->replaceTokens(array_diff($after, $before), '', '', $tokens);
+
+        // cargando anotaciones de ultimas actividades
+//        $miScanDirModel = array_diff(scandir($config['models_path']), array('.', '..', 'base'));
+//        $miScanDirModelBase = array_diff(scandir($config['models_path'].'/base'), array('.', '..'));
+//        $ruta = $config['models_path'].'/base/';
+//        $acc = $fecha = $reem = ""; $cont = 0;
+//        foreach ($miScanDirModelBase as $posicion => $clase):
+////            echo $posicion.' ~ '.$clase.PHP_EOL;
+//            /**
+//             * acomodos en esta parte
+//             */
+//            foreach (file($ruta.$clase) as $k => $v):
+//                if ("" !== $this->ubicarEntre($v, '"', '"')) {
+//                    $acc = $this->ubicarEntre($v, '"', '"');
+//                    break; // encuentra y sale del bucle
+//                }
+//            endforeach;
+//            if (str_repeat('0', 6) !== $acc) {
+//                $base = str_replace(
+//                            "*/", 
+//                            "*/".PHP_EOL.PHP_EOL
+//                            . "/**".PHP_EOL
+//                            . " * Fecha creacion : {$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}".PHP_EOL
+//                            . " * ".PHP_EOL
+//                            . " * Acciones realizadas:".PHP_EOL
+//                            . " * - Veces ejecutado doctrine:build-model  : \"000000\"".PHP_EOL
+//                            . " * - Ultima vez que se actualizo el modelo : \"yyyy-mm-dd_hh:mm:ss\"".PHP_EOL
+//                            . " */".PHP_EOL, 
+//                            file_get_contents($ruta.$clase)
+//                        );
+//                file_put_contents($ruta.$clase, $base);
+//            } elseif (str_repeat('0', 6) === $acc) {
+//                $base = str_replace(
+//                            " * Acciones realizadas:", 
+//                            " * Acciones realizadas:".PHP_EOL
+//                            . " * - Veces ejecutado doctrine:build-model  : \"{$this->numeroDAcceso(($acc * 1) + 1)}\"".PHP_EOL
+//                            . " * - Ultima vez que se actualizo el modelo : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"".PHP_EOL
+//                            . " */".PHP_EOL, 
+//                            file_get_contents($ruta.$clase)
+//                        );
+//                file_put_contents($ruta.$clase, $base);
+//            } else {
+//                $base = str_replace(
+//                            " * Acciones realizadas:", 
+//                            " * Acciones realizadas:".PHP_EOL
+//                            . " * - Veces ejecutado doctrine:build-model  : \"{$this->numeroDAcceso(($acc * 1) + 1)}\"".PHP_EOL
+//                            . " * - Ultima vez que se actualizo el modelo : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"".PHP_EOL
+//                            . " */".PHP_EOL, 
+//                            file_get_contents($ruta.$clase)
+//                        );
+//                file_put_contents($ruta.$clase, $base);
+//            }
+//            /* ------------------------------------------------------------------ */
+//        endforeach;
 
         // cleanup base classes
         $baseFinder = sfFinder::type('file')->name('Base*'.$builderOptions['suffix']);

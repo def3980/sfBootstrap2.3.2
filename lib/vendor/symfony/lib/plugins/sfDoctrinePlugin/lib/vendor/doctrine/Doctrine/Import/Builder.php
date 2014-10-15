@@ -194,6 +194,37 @@ class Doctrine_Import_Builder extends Doctrine_Builder
     protected static $_tpl;
 
     /**
+     * Para el calculo de fechas en español
+     *
+     * @var array
+     */
+    protected $_dias = array(
+                        'domingo', 
+                        'lunes', 
+                        'martes', 
+                        'miercoles', 
+                        'jueves', 
+                        'viernes', 
+                        'sabado'
+                       ),
+              $_diasAbreviados = array(),
+              $_meses = array(
+                        'enero', 
+                        'febrero', 
+                        'marzo', 
+                        'abril', 
+                        'mayo', 
+                        'junio',
+                        'julio', 
+                        'agosto', 
+                        'septiembre', 
+                        'octubre', 
+                        'noviembre', 
+                        'diciembre'
+                       ),
+              $_mesesAbreviados = array();
+
+    /**
      * __construct
      *
      * @return void
@@ -330,6 +361,10 @@ class Doctrine_Import_Builder extends Doctrine_Builder
 //                    . '%s' . PHP_EOL
 //                    . '}';
         self::$_tpl = '/**'
+                    . '%s' . PHP_EOL
+                    . ' */' . PHP_EOL
+                    .PHP_EOL
+                    . '/**' . PHP_EOL
                     . '%s' . PHP_EOL
                     . ' */' . PHP_EOL
                     . '%sclass %s extends %s {' . PHP_EOL
@@ -1054,16 +1089,51 @@ class Doctrine_Import_Builder extends Doctrine_Builder
 //                                       $extends,
 //                                       $tableDefinitionCode,
 //                                       $setUpCode);
+
+        // cargando anotaciones de ultimas actividades
+        $ruta = sfConfig::get('sf_lib_dir').'/model/doctrine/base/'.$definition['className'].'.class.php';
+        $acc = $reem = $fecha = ""; $cont = 0;
+        foreach (file($ruta) as $k => $v):
+            if ("" !== $this->ubicarEntre($v, '"', '"')) {
+                $fecha = $this->ubicarEntre($v, '"', '"');
+                if (!strpos($acc, ",")) {
+                    $acc = $this->ubicarEntre($v, '"', '"');
+                    break; // encuentra y sale del bucle
+                }
+            }
+        endforeach;
+        if (str_repeat('0', 6) === $acc) {
+            $reem .= " * Fecha creacion : \"$fecha\"".PHP_EOL
+                  . " * ".PHP_EOL
+                  . " * Acciones realizadas:".PHP_EOL
+                  . " * - Veces ejecutado doctrine:build-model  : \"000000\"".PHP_EOL
+                  . " * - Ultima vez que se actualizo el modelo : \"yyyy-mm-dd_hh:mm:ss\"";
+        } elseif (str_repeat('0', 6) !== $acc && "" !== $acc){ // 000001 en adelante...
+            $reem .= " * Fecha creacion : \"$fecha\"".PHP_EOL
+                  . " * ".PHP_EOL
+                  ." * Acciones realizadas:".PHP_EOL
+                  . " * - Veces ejecutado doctrine:build-model  : \"{$this->numeroDAcceso(($acc * 1) + 1)}\"".PHP_EOL
+                  . " * - Ultima vez que se actualizo el modelo : \"".date('Y-m-d H:i:s')."\"";
+        } else {
+            $reem .= " * Fecha creacion : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"".PHP_EOL
+                  . " * ".PHP_EOL
+                  . " * Acciones realizadas:".PHP_EOL
+                  . " * - Veces ejecutado doctrine:build-model  : \"000000\"".PHP_EOL
+                  . " * - Ultima vez que se actualizo el modelo : \"yyyy-mm-dd_hh:mm:ss\"";
+        } 
+        
         $content = sprintf(
                     self::$_tpl, 
                     $docs, 
+                    $reem,
                     $abstract,
                     $className,
                     $extends,
                     $tableDefinitionCode,
                     $setUpCode
                    );
-
+        print_r($content);
+        die();
         return $content;
     }
 
@@ -1368,4 +1438,85 @@ class Doctrine_Import_Builder extends Doctrine_Builder
 
         Doctrine_Core::loadModel($definition['className'], $writePath);
     }
+    
+    /**
+     * Ayuda a traducir la fecha y hora actual del sistema en formato español.
+     *
+     * Por Oswaldo Rojas ~ Sáb, 27 Sep 2014 13:53:12
+     * 
+     * @param  date $date Recibe la fecha y hora actual ('Y-m-d H:i:s')
+     * @param  boolean $complete Indica si los nombre de las fechas son
+     * completas o abreviadas
+     * @param  boolean $capital Indica los nombres de las fechas con letra 
+     * capital
+     * @return string Ej.: Lun, 01 Ene 1970 00:00:01
+     */
+    private function obtenerFechaYHoraEnEsp($date, $complete = true, $capital = true) {
+        // Debido a que este proyecto de modificacion de symfony se realiza en
+        // Ecuador se va a poner por default el timezone correspondiente, pero
+        // sientete libre de cambiarlo a tu gusto (manualmente) ;-|
+        date_default_timezone_set('America/Guayaquil');
+
+        foreach ($this->_dias as $k => $v) { $this->_diasAbreviados[$k] = substr($v, 0, 3); }        
+        array_unshift($this->_meses, '');
+        foreach ($this->_meses as $k => $v) { $this->_mesesAbreviados[$k] = substr($v, 0, 3); }
+        array_unshift($this->_mesesAbreviados, '');
+        $dia    = explode('-', $date, 3);
+        $year   = reset($dia);
+        $month  = (string)(int)$dia[1];
+        $day    = (string)(int)$dia[2];
+        $hms    = explode(' ', $dia[2], 2);
+        $time   = (string) $hms[1];
+        $dias   = $this->_dias;
+        $dAbr   = $this->_diasAbreviados;
+        $tdia   = $dias[intval((date('w', mktime(0, 0, 0, $month, $day, $year))))];
+        $tAbr   = $dAbr[intval((date('w', mktime(0, 0, 0, $month, $day, $year))))];
+        $meses  = $this->_meses;
+        $mesAbr = $this->_mesesAbreviados;
+
+        return $complete 
+               ? ($capital 
+                  ? ucfirst($tdia) 
+                  : $tdia).", {$day} ".($capital 
+                                        ? ucfirst($meses[$month]) 
+                                        : $meses[$month])." {$year} {$time}"
+               : ($capital 
+                  ? ucfirst($tAbr) 
+                  : $tAbr).", {$day} ".($capital 
+                                        ? ucfirst($mesAbr[$month]) 
+                                        : $mesAbr[$month])." {$year} {$time}";
+    }
+    
+    /**
+     * Funciones pequeñas para el registro de modificacion por parte del usuario
+     * hacia el archivo ubicado en config/doctrine/schema.yml guardando fecha
+     * y hora de actualizacion. Esta es mi personalizacion.
+     */
+    protected function ubicarEntre($contenido, $inicio, $fin) {
+        $cadena = explode($inicio, $contenido);
+        if (isset($cadena[1])) {
+            $cadena = explode($fin, $cadena[1]);
+            return reset($cadena);
+        }
+
+        return '';
+    }
+    
+    protected function numeroDAcceso($valor) {
+        $no = 0;
+        switch (true):
+            case $valor < 10: $no = '00000'.$valor; break;
+            case $valor < 100: $no = '0000'.$valor; break;
+            case $valor < 1000: $no = '000'.$valor; break;
+            case $valor < 10000: $no = '00'.$valor; break;
+            case $valor < 100000: $no = '0'.$valor; break;
+            case $valor < 1000000: $no = ''.$valor; break;
+        endswitch;
+        /**
+         * Exageradooo!!! 
+         * mmm talvez, pero puede suceder.
+         */
+        return $no;
+    }    
+    /* ---------------------------------------------------------------------- */
 }
