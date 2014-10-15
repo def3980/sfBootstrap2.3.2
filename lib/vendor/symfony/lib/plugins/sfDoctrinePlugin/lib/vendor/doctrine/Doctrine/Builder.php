@@ -49,39 +49,44 @@ class Doctrine_Builder
         $export = str_replace(',)', ')', $export);
         $export = str_replace(', )', ')', $export);
         $export = str_replace('  ', ' ', $export);
-        $export = explode("\n", $export);
-        $copia = $export;
-        array_shift($copia); array_pop($copia);
-        $lon = 0;
-        foreach ($var as $k => $v):
-            $lon = $lon < strlen($k) ? strlen($k) : $lon;
-        endforeach;
-        foreach ($var as $k2 => $v2):
-            if (strlen($k2) != $lon) {
-                $aux = $lon - strlen($k2);
-                foreach ($copia as $int_k => $int_v):
-                    if (false !== strpos($int_v, $k2)) {
-                        $copia[$int_k] = str_replace("'$k2' => ", "'$k2'".str_repeat(' ', $aux)." => ", $int_v);
-                        break;
-                    }
-                endforeach;
-            } else {
-                foreach ($copia as $int_k => $int_v):
-                    if (false !== strpos($int_v, $k2)) {
-                        $copia[$int_k] = str_replace("'$k2' => ", "'$k2' => ", $int_v);
-                        break;
-                    }
-                endforeach;
-            }
-        endforeach;
-        
-        array_unshift($copia, reset($export));
-        array_push($copia, end($export));
-        
-        $export = "";
-        foreach ($copia as $exp_k2 => $exp_v2):
-            $export .= $exp_v2.PHP_EOL;
-        endforeach;
+
+        if (is_array($var)) {
+            $export = str_replace('             ', str_repeat(' ', 12), $export);
+            $export = explode("\n", $export);
+            $copia = $export;
+            array_shift($copia); array_pop($copia);
+            $lon = 0;
+            foreach ($var as $k => $v):
+                $lon = $lon < strlen($k) ? strlen($k) : $lon;
+            endforeach;
+            foreach ($var as $k2 => $v2):
+                if (strlen($k2) != $lon) {
+                    $aux = $lon - strlen($k2);
+                    foreach ($copia as $int_k => $int_v):
+                        if (false !== strpos($int_v, $k2)) {
+                            $copia[$int_k] = str_replace("'$k2' => ", "'$k2'".str_repeat(' ', $aux)." => ", $int_v);
+                            break;
+                        }
+                    endforeach;
+                } else {
+                    foreach ($copia as $int_k => $int_v):
+                        if (false !== strpos($int_v, $k2)) {
+                            $copia[$int_k] = str_replace("'$k2' => ", "'$k2' => ", $int_v);
+                            break;
+                        }
+                    endforeach;
+                }
+            endforeach;
+
+            array_unshift($copia, reset($export));
+            array_push($copia, trim(end($export)));
+
+            $export = "";
+            foreach ($copia as $exp_k2 => $exp_v2):
+//                $export .= count($copia) - 1 === $exp_k2 ? str_replace(')', str_repeat(' ', 8).')', $exp_v2) : $exp_v2.PHP_EOL;
+                $export .= count($copia) - 1 === $exp_k2 ? str_replace(')', str_repeat(' ', 8).')', $exp_v2) : $exp_v2;
+            endforeach;
+        }
 
         return $export;
     }

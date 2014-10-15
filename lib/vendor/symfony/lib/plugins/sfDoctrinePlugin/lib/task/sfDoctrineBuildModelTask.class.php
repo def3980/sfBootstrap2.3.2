@@ -87,55 +87,80 @@ EOF;
                         $builderOptions['suffix']
                     );
         
-        $code = file_get_contents($file);
+            $code = file_get_contents($file);
 
-        // introspect the model without loading the class
-        if (preg_match_all('/@property (\w+) \$(\w+)/', $code, $matches, PREG_SET_ORDER))
-        {
-        $properties = array();
-        foreach ($matches as $match)
-        {
-        $properties[$match[2]] = $match[1];
+            // introspect the model without loading the class
+            if (preg_match_all('/@property (\w+) \$(\w+)/', $code, $matches, PREG_SET_ORDER)) {
+                $properties = array();
+                foreach ($matches as $match) {
+                    $properties[$match[2]] = $match[1];
+                }
+
+                $typePad = max(array_map('strlen', array_merge(array_values($properties), array($model))));
+                $namePad = max(array_map('strlen', array_keys(array_map(array('sfInflector', 'camelize'), $properties))));
+                $setters = array();
+                $getters = array();
+
+                foreach ($properties as $name => $type) {
+                    $camelized = sfInflector::camelize($name);
+                    $collection = 'Doctrine_Collection' == $type;
+
+                    $getters[] = sprintf(
+//                                    '@method %-'.$typePad.'s %s%-'.$namePad.'s Returns the current record\'s "%s" %s', 
+                                    '@method %-'.$typePad.'s %s%-'.$namePad.'s Retorna el registro ('.($collection ? 'coleccion de datos' : 'valor').') actual del campo "%s"', 
+                                    $type, 
+                                    'get', 
+                                    $camelized.'()', 
+                                    $name//, 
+//                                    $collection ? 'collection' : 'value'
+                                 );
+                    $setters[] = sprintf(
+//                                    '@method %-'.$typePad.'s %s%-'.$namePad.'s Sets the current record\'s "%s" %s', 
+                                    '@method %-'.$typePad.'s %s%-'.$namePad.'s Guarda un registro ('.($collection ? 'coleccion de datos' : 'valor').') al campo "%s"', 
+                                    $model, 
+                                    'set', 
+                                    $camelized.'()', 
+                                    $name//, 
+//                                    $collection ? 'collection' : 'value'
+                                 );
+                }
+
+                // use the last match as a search string
+                $code = str_replace($match[0], $match[0].PHP_EOL.' * '.PHP_EOL.' * '.implode(PHP_EOL.' * ', array_merge($getters, $setters)), $code);
+                file_put_contents($file, $code);
+            }
         }
 
-    $typePad = max(array_map('strlen', array_merge(array_values($properties), array($model))));
-    $namePad = max(array_map('strlen', array_keys(array_map(array('sfInflector', 'camelize'), $properties))));
-    $setters = array();
-    $getters = array();
+        $properties = parse_ini_file(sfConfig::get('sf_config_dir').'/properties.ini', true);
+//        $miScanDir = array_diff(scandir($config['models_path']), array('.', '..', 'base'));
+//        print_r($miScanDir); die();
+//        print_r(file($config['models_path'].'/base/BaseAHORROS.class.php')); die();
+//        $miString = "*/".PHP_EOL.PHP_EOL
+//                  . "/**".PHP_EOL
+//                  . " * fecha creacion : ##FECHA_Y_HORA##".PHP_EOL
+//                  . " * ".PHP_EOL
+//                  . " * ".PHP_EOL
+//                  . " */".PHP_EOL
+//                ;
+//        print_r(str_replace("*/", $miString, file_get_contents($config['models_path'].'/base/BaseAHORROS.class.php'))); die();
+        $tokens = array(
+            '##PACKAGE##'    => isset($properties['symfony']['name']) ? $properties['symfony']['name'] : 'symfony',
+            '##SUBPACKAGE##' => 'model',
+            '##NAME##'       => isset($properties['symfony']['author']) ? $properties['symfony']['author'] : 'Tu nombre aqui',
+            ' <##EMAIL##>'   => '',
+            "{\n\n}"         => "{\n}\n",
+        );
 
-    foreach ($properties as $name => $type)
-    {
-    $camelized = sfInflector::camelize($name);
-    $collection = 'Doctrine_Collection' == $type;
+        // cleanup new stub classes
+        $after = $stubFinder->in($config['models_path']);
+        $this->getFilesystem()->replaceTokens(array_diff($after, $before), '', '', $tokens);
 
-    $getters[] = sprintf('@method %-'.$typePad.'s %s%-'.($namePad + 2).'s Returns the current record\'s "%s" %s', $type, 'get', $camelized.'()', $name, $collection ? 'collection' : 'value');
-    $setters[] = sprintf('@method %-'.$typePad.'s %s%-'.($namePad + 2).'s Sets the current record\'s "%s" %s', $model, 'set', $camelized.'()', $name, $collection ? 'collection' : 'value');
+        // cleanup base classes
+        $baseFinder = sfFinder::type('file')->name('Base*'.$builderOptions['suffix']);
+        $baseDirFinder = sfFinder::type('dir')->name('base');
+        $this->getFilesystem()->replaceTokens($baseFinder->in($baseDirFinder->in($config['models_path'])), '', '', $tokens);
+
+        $this->reloadAutoload();
     }
 
-    // use the last match as a search string
-    $code = str_replace($match[0], $match[0].PHP_EOL.' * '.PHP_EOL.' * '.implode(PHP_EOL.' * ', array_merge($getters, $setters)), $code);
-    file_put_contents($file, $code);
-    }
-    }
-
-    $properties = parse_ini_file(sfConfig::get('sf_config_dir').'/properties.ini', true);
-    $tokens = array(
-      '##PACKAGE##'    => isset($properties['symfony']['name']) ? $properties['symfony']['name'] : 'symfony',
-      '##SUBPACKAGE##' => 'model',
-      '##NAME##'       => isset($properties['symfony']['author']) ? $properties['symfony']['author'] : 'Your name here',
-      ' <##EMAIL##>'   => '',
-      "{\n\n}"         => "{\n}\n",
-    );
-
-    // cleanup new stub classes
-    $after = $stubFinder->in($config['models_path']);
-    $this->getFilesystem()->replaceTokens(array_diff($after, $before), '', '', $tokens);
-
-    // cleanup base classes
-    $baseFinder = sfFinder::type('file')->name('Base*'.$builderOptions['suffix']);
-    $baseDirFinder = sfFinder::type('dir')->name('base');
-    $this->getFilesystem()->replaceTokens($baseFinder->in($baseDirFinder->in($config['models_path'])), '', '', $tokens);
-
-    $this->reloadAutoload();
-  }
 }

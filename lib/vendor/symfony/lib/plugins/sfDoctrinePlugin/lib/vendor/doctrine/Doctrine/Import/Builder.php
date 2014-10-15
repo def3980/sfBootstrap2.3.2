@@ -321,13 +321,20 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             return;
         }
 
+//        self::$_tpl = '/**'
+//                    . '%s' . PHP_EOL
+//                    . ' */' . PHP_EOL
+//                    . '%sclass %s extends %s' . PHP_EOL
+//                    . '{'
+//                    . '%s' . PHP_EOL
+//                    . '%s' . PHP_EOL
+//                    . '}';
         self::$_tpl = '/**'
                     . '%s' . PHP_EOL
                     . ' */' . PHP_EOL
-                    . '%sclass %s extends %s' . PHP_EOL
-                    . '{'
+                    . '%sclass %s extends %s {' . PHP_EOL
                     . '%s' . PHP_EOL
-                    . '%s' . PHP_EOL
+                    . '%s' . PHP_EOL . PHP_EOL
                     . '}';
     }
 
@@ -364,8 +371,6 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             $i++;
         }
 
-//        print_r($ret);
-//        die();
         if (isset($definition['indexes']) && is_array($definition['indexes']) && !empty($definition['indexes'])) {
             $ret[$i] = $this->buildIndexes($definition['indexes']);
             $i++;
@@ -399,7 +404,8 @@ class Doctrine_Import_Builder extends Doctrine_Builder
         $code = implode(PHP_EOL, $ret);
         $code = trim($code);
 
-        return PHP_EOL . "    public function setTableDefinition()" . PHP_EOL . '    {' . PHP_EOL . '        ' . $code . PHP_EOL . '    }';
+        return PHP_EOL."    public function setTableDefinition() {".PHP_EOL."        ".$code.PHP_EOL."    }";
+//        return PHP_EOL . "    public function setTableDefinition()" . PHP_EOL . '    {' . PHP_EOL . '        ' . $code . PHP_EOL . '    }';
     }
 
     /**
@@ -417,7 +423,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
 
         if (isset($definition['relations']) && is_array($definition['relations']) && ! empty($definition['relations'])) {
             foreach ($definition['relations'] as $name => $relation) {
-                $class = isset($relation['class']) ? $relation['class']:$name;
+                $class = isset($relation['class']) ? $relation['class'] : $name;
                 $alias = (isset($relation['alias']) && $relation['alias'] !== $this->_classPrefix . $relation['class']) ? ' as ' . $relation['alias'] : '';
 
                 if ( ! isset($relation['type'])) {
@@ -430,63 +436,106 @@ class Doctrine_Import_Builder extends Doctrine_Builder
                     $ret[$i] = "        ".'$this->hasMany(\'' . $class . $alias . '\'';
                 }
 
-                $a = array();
+                $a = array(); $lon = 0; $cad = "";
+                foreach ($relation as $k => $v):
+                    $lon = $lon < strlen($k) ? strlen($k) : $lon;
+                endforeach;
+                foreach ($relation as $k => $v):
+                    if ($lon == strlen($k)) $cad = $k;
+                endforeach;
 
                 if (isset($relation['refClass'])) {
-                    $a[] = '\'refClass\' => ' . $this->varExport($relation['refClass']);
+//                    $a[] = '\'refClass\' => ' . $this->varExport($relation['refClass']);
+                    $a[] = "'refClass'"
+                           .str_repeat(' ', strlen('refClass') !== $lon ? $lon - strlen('refClass') : 0)
+                           ." => ".$this->varExport($relation['refClass']);
                 }
                 
                 if (isset($relation['refClassRelationAlias'])) {
-                    $a[] = '\'refClassRelationAlias\' => ' . $this->varExport($relation['refClassRelationAlias']);
+//                    $a[] = '\'refClassRelationAlias\' => ' . $this->varExport($relation['refClassRelationAlias']);
+                    $a[] = "'refClassRelationAlias'"
+                           .str_repeat(' ', strlen('refClassRelationAlias') !== $lon ? $lon - strlen('refClassRelationAlias') : 0)
+                           ." => ".$this->varExport($relation['refClassRelationAlias']);
                 }
                 
                 if (isset($relation['deferred']) && $relation['deferred']) {
-                    $a[] = '\'default\' => ' . $this->varExport($relation['deferred']);
+//                    $a[] = '\'default\' => ' . $this->varExport($relation['deferred']);
+                    $a[] = "'deferred'"
+                           .str_repeat(' ', strlen('deferred') !== $lon ? $lon - strlen('deferred') : 0)
+                           ." => ".$this->varExport($relation['deferred']);
                 }
 
                 if (isset($relation['local']) && $relation['local']) {
-                    $a[] = '\'local\' => ' . $this->varExport($relation['local']);
+//                    $a[] = '\'local\' => ' . $this->varExport($relation['local']);
+                    $a[] = "'local'"
+                           .str_repeat(' ', strlen('local') !== $lon ? $lon - strlen('local') : 0)
+                           ." => ".$this->varExport($relation['local']);
                 }
-
+                
                 if (isset($relation['foreign']) && $relation['foreign']) {
-                    $a[] = '\'foreign\' => ' . $this->varExport($relation['foreign']);
+//                    $a[] = '\'foreign\' => ' . $this->varExport($relation['foreign']);
+                    $a[] = "'foreign'"
+                           .str_repeat(' ', strlen('foreign') !== $lon ? $lon - strlen('foreign') : 0)
+                           ." => ".$this->varExport($relation['foreign']);
                 }
-
+                
                 if (isset($relation['onDelete']) && $relation['onDelete']) {
-                    $a[] = '\'onDelete\' => ' . $this->varExport($relation['onDelete']);
+//                    $a[] = '\'onDelete\' => ' . $this->varExport($relation['onDelete']);
+                    $a[] = "'onDelete'"
+                           .str_repeat(' ', strlen('onDelete') !== $lon ? $lon - strlen('onDelete') : 0)
+                           ." => ".$this->varExport($relation['onDelete']);
                 }
 
                 if (isset($relation['onUpdate']) && $relation['onUpdate']) {
-                    $a[] = '\'onUpdate\' => ' . $this->varExport($relation['onUpdate']);
+//                    $a[] = '\'onUpdate\' => ' . $this->varExport($relation['onUpdate']);
+                    $a[] = "'onUpdate'"
+                           .str_repeat(' ', strlen('onUpdate') !== $lon ? $lon - strlen('onUpdate') : 0)
+                           ." => ".$this->varExport($relation['onUpdate']);
                 }
 
                 if (isset($relation['cascade']) && $relation['cascade']) {
-                    $a[] = '\'cascade\' => ' . $this->varExport($relation['cascade']);
+//                    $a[] = '\'cascade\' => ' . $this->varExport($relation['cascade']);
+                    $a[] = "'cascade'"
+                           .str_repeat(' ', strlen('cascade') !== $lon ? $lon - strlen('cascade') : 0)
+                           ." => ".$this->varExport($relation['cascade']);
                 }
 
                 if (isset($relation['equal']) && $relation['equal']) {
-                    $a[] = '\'equal\' => ' . $this->varExport($relation['equal']);
+//                    $a[] = '\'equal\' => ' . $this->varExport($relation['equal']);
+                    $a[] = "'equal'"
+                           .str_repeat(' ', strlen('equal') !== $lon ? $lon - strlen('equal') : 0)
+                           ." => ".$this->varExport($relation['equal']);
                 }
 
                 if (isset($relation['owningSide']) && $relation['owningSide']) {
-                    $a[] = '\'owningSide\' => ' . $this->varExport($relation['owningSide']);
+//                    $a[] = '\'owningSide\' => ' . $this->varExport($relation['owningSide']);
+                    $a[] = "'owningSide'"
+                           .str_repeat(' ', strlen('owningSide') !== $lon ? $lon - strlen('owningSide') : 0)
+                           ." => ".$this->varExport($relation['owningSide']);
                 }
 
                 if (isset($relation['foreignKeyName']) && $relation['foreignKeyName']) {
-                    $a[] = '\'foreignKeyName\' => ' . $this->varExport($relation['foreignKeyName']);
+//                    $a[] = '\'foreignKeyName\' => ' . $this->varExport($relation['foreignKeyName']);
+                    $a[] = "'foreignKeyName'"
+                           .str_repeat(' ', strlen('foreignKeyName') !== $lon ? $lon - strlen('foreignKeyName') : 0)
+                           ." => ".$this->varExport($relation['foreignKeyName']);
                 }
 
                 if (isset($relation['orderBy']) && $relation['orderBy']) {
-                    $a[] = '\'orderBy\' => ' . $this->varExport($relation['orderBy']);
+//                    $a[] = '\'orderBy\' => ' . $this->varExport($relation['orderBy']);
+                    $a[] = "'orderBy'"
+                           .str_repeat(' ', strlen('orderBy') !== $lon ? $lon - strlen('orderBy') : 0)
+                           ." => ".$this->varExport($relation['orderBy']);
                 }
 
                 if ( ! empty($a)) {
-                    $ret[$i] .= ', ' . 'array(' . PHP_EOL . str_repeat(' ', 13);
+                    $ret[$i] .= ', '.'array('.PHP_EOL.str_repeat(' ', 12);
                     $length = strlen($ret[$i]);
-                    $ret[$i] .= implode(',' . PHP_EOL . str_repeat(' ', 13), $a) . ')';
+                    $ret[$i] .= implode(','.PHP_EOL.str_repeat(' ', 12), $a).PHP_EOL.str_repeat(' ', 8).')';
                 }
 
-                $ret[$i] .= ');'.PHP_EOL;
+//                $ret[$i] .= ');'.PHP_EOL;
+                $ret[$i] .= ');';
                 $i++;
             }
         }
@@ -504,12 +553,14 @@ class Doctrine_Import_Builder extends Doctrine_Builder
         $code = implode(PHP_EOL, $ret);
         $code = trim($code);
 
-        $code = "parent::setUp();" . PHP_EOL . '        ' . $code;
+//        $code = "parent::setUp();" . PHP_EOL . '        ' . $code;
+        $code = "parent::setUp();".PHP_EOL.'        '.$code;
 
         // If we have some code for the function then lets define it and return it
-        if ($code) {
-            return '    public function setUp()' . PHP_EOL . '    {' . PHP_EOL . '        ' . $code . PHP_EOL . '    }';
-        }
+//        if ($code) {
+//            return '    public function setUp()' . PHP_EOL . '    {' . PHP_EOL . '        ' . $code . PHP_EOL . '    }';
+//        }
+        return "    public function setUp() {".PHP_EOL."        {$code}".PHP_EOL."    }";
     }
 
     /**
@@ -658,18 +709,17 @@ class Doctrine_Import_Builder extends Doctrine_Builder
      *
      * @param  array  $definition
      */
-    public function buildPhpDocs(array $definition)
-    {
+    public function buildPhpDocs(array $definition) {
         $ret = array();
 
         $ret[] = $definition['className'];
         $ret[] = '';
-        $ret[] = 'This class has been auto-generated by the Doctrine ORM Framework';
+        $ret[] = 'Esta clase ha sido auto-generada por el Framework ORM de Doctrine';
         $ret[] = '';
 
         if ((isset($definition['is_base_class']) && $definition['is_base_class']) || ! $this->generateBaseClasses()) {
             foreach ($definition['columns'] as $name => $column) {
-                $name = isset($column['name']) ? $column['name']:$name;
+                $name = isset($column['name']) ? $column['name'] : $name;
                 // extract column name & field name
                 if (stripos($name, ' as '))
                 {
@@ -954,8 +1004,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
      * @param array $definition
      * @return string
      */
-    public function buildToString(array $definition)
-    {
+    public function buildToString(array $definition) {
         if ( empty($definition['toString'])) {
             return '';
         }
@@ -983,7 +1032,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
         $extends   = isset($definition['inheritance']['extends']) 
                      ? $definition['inheritance']['extends']
                      : $this->_baseClassName;
-        
+
         if ( ! (isset($definition['no_definition']) && $definition['no_definition'] === true)) {
             $tableDefinitionCode = $this->buildTableDefinition($definition);
             $setUpCode = $this->buildSetUp($definition);
@@ -991,27 +1040,29 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             $tableDefinitionCode = null;
             $setUpCode = null;
         }
-//        print_r($abstract.PHP_EOL);
-//        print_r($className.PHP_EOL);
-//        print_r($extends.PHP_EOL);
-//        print_r($tableDefinitionCode);
-//        print_r($setUpCode);
-//        die();
-        
 
         if ($tableDefinitionCode && $setUpCode) {
             $setUpCode = PHP_EOL . $setUpCode;
         }
 
-        $setUpCode.= $this->buildToString($definition);
-        
+        $setUpCode .= $this->buildToString($definition);
+
         $docs = PHP_EOL . $this->buildPhpDocs($definition);
 
-        $content = sprintf(self::$_tpl, $docs, $abstract,
-                                       $className,
-                                       $extends,
-                                       $tableDefinitionCode,
-                                       $setUpCode);
+//        $content = sprintf(self::$_tpl, $docs, $abstract,
+//                                       $className,
+//                                       $extends,
+//                                       $tableDefinitionCode,
+//                                       $setUpCode);
+        $content = sprintf(
+                    self::$_tpl, 
+                    $docs, 
+                    $abstract,
+                    $className,
+                    $extends,
+                    $tableDefinitionCode,
+                    $setUpCode
+                   );
 
         return $content;
     }
@@ -1237,8 +1288,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
         }
 
         $fileName = $this->_getFileName($originalClassName, $definition);
-
-        $packagesPath = $this->_packagesPath ? $this->_packagesPath:$this->_path;
+        $packagesPath = $this->_packagesPath ? $this->_packagesPath : $this->_path;
 
         // If this is a main class that either extends from Base or Package class
         if (isset($definition['is_main_class']) && $definition['is_main_class']) {
@@ -1296,7 +1346,6 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             $code .= "// Connection Component Binding" . PHP_EOL;
             $code .= "Doctrine_Manager::getInstance()->bindComponent('" . $definition['connectionClassName'] . "', '" . $definition['connection'] . "');" . PHP_EOL;
         }
-
         $code .= PHP_EOL . $definitionCode;
 
         if ($this->_eolStyle) {
