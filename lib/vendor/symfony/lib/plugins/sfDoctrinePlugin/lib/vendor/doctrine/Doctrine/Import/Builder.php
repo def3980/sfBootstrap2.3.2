@@ -1095,10 +1095,11 @@ class Doctrine_Import_Builder extends Doctrine_Builder
         $acc = $reem = $fecha = ""; $cont = 0;
         foreach (file($ruta) as $k => $v):
             if ("" !== $this->ubicarEntre($v, '"', '"')) {
-                $fecha = $this->ubicarEntre($v, '"', '"');
-                if (!strpos($acc, ",")) {
-                    $acc = $this->ubicarEntre($v, '"', '"');
-                    break; // encuentra y sale del bucle
+                if (false !== strpos($this->ubicarEntre($v, '"', '"'), ",")) { // si contiene el formato ejemplo Jueves, 16 Octubre 2014 07:00:33
+                    $fecha = $this->ubicarEntre($v, '"', '"');
+                } else {
+                    $acc = $this->ubicarEntre($v, '"', '"'); // guardo 000000, 000001, 000002, 000003, ... cada vez que verifique
+                    break;
                 }
             }
         endforeach;
@@ -1106,8 +1107,8 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             $reem .= " * Fecha creacion : \"$fecha\"".PHP_EOL
                   . " * ".PHP_EOL
                   . " * Acciones realizadas:".PHP_EOL
-                  . " * - Veces ejecutado doctrine:build-model  : \"000000\"".PHP_EOL
-                  . " * - Ultima vez que se actualizo el modelo : \"yyyy-mm-dd_hh:mm:ss\"";
+                  . " * - Veces ejecutado doctrine:build-model  : \"{$this->numeroDAcceso(($acc * 1) + 1)}\"".PHP_EOL
+                  . " * - Ultima vez que se actualizo el modelo : \"".date('Y-m-d H:i:s')."\"";
         } elseif (str_repeat('0', 6) !== $acc && "" !== $acc){ // 000001 en adelante...
             $reem .= " * Fecha creacion : \"$fecha\"".PHP_EOL
                   . " * ".PHP_EOL
@@ -1132,8 +1133,6 @@ class Doctrine_Import_Builder extends Doctrine_Builder
                     $tableDefinitionCode,
                     $setUpCode
                    );
-        print_r($content);
-        die();
         return $content;
     }
 
