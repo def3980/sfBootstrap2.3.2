@@ -98,18 +98,18 @@ class sfGeneratorManager
     return $ret;
   }
 
-  /**
-   * Generates classes and templates for a given generator class.
-   *
-   * @param string $generatorClass The generator class name
-   * @param array  $param          An array of parameters
-   *
-   * @return string The cache for the configuration file
-   */
-  public function generate($generatorClass, $param)
-  {
-    $generator = new $generatorClass($this);
+    /**
+     * Genera clases y plantillas para una clase generador dada.
+     *
+     * @param string $generatorClass El nombre de la clase generador
+     * @param array  $param          Un arreglo de parametros
+     *
+     * @return string El cache para el archivo de configuracion
+     */
+    public function generate($generatorClass, $param) {
+        $generator = new $generatorClass($this);
 
-    return $generator->generate($param);
-  }
+        return $generator->generate($param);
+    }
+
 }

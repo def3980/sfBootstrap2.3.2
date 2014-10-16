@@ -93,6 +93,8 @@ class sfDoctrineFormGenerator extends sfGenerator
       $this->modelName = $model;
 
       $baseDir = sfConfig::get('sf_lib_dir') . '/form/doctrine';
+        print_r($this->table);
+        die();
 
       $isPluginModel = $this->isPluginModel($model);
       if ($isPluginModel)
