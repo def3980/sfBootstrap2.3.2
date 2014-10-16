@@ -362,11 +362,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
 //                    . '}';
         self::$_tpl = '/**'
                     . '%s' . PHP_EOL
-                    . ' */' . PHP_EOL
-                    .PHP_EOL
-                    . '/**' . PHP_EOL
-                    . '%s' . PHP_EOL
-                    . ' */' . PHP_EOL
+                    . ' */'. PHP_EOL
                     . '%sclass %s extends %s {' . PHP_EOL
                     . '%s' . PHP_EOL
                     . '%s' . PHP_EOL . PHP_EOL
@@ -1084,55 +1080,8 @@ class Doctrine_Import_Builder extends Doctrine_Builder
 
         $docs = PHP_EOL . $this->buildPhpDocs($definition);
 
-//        $content = sprintf(self::$_tpl, $docs, $abstract,
-//                                       $className,
-//                                       $extends,
-//                                       $tableDefinitionCode,
-//                                       $setUpCode);
+        $content = sprintf(self::$_tpl, $docs, $abstract, $className, $extends, $tableDefinitionCode, $setUpCode);
 
-        // cargando anotaciones de ultimas actividades
-        $ruta = sfConfig::get('sf_lib_dir').'/model/doctrine/base/'.$definition['className'].'.class.php';
-        $acc = $reem = $fecha = ""; $cont = 0;
-        foreach (file($ruta) as $k => $v):
-            if ("" !== $this->ubicarEntre($v, '"', '"')) {
-                if (false !== strpos($this->ubicarEntre($v, '"', '"'), ",")) { // si contiene el formato ejemplo Jueves, 16 Octubre 2014 07:00:33
-                    $fecha = $this->ubicarEntre($v, '"', '"');
-                } else {
-                    $acc = $this->ubicarEntre($v, '"', '"'); // guardo 000000, 000001, 000002, 000003, ... cada vez que verifique
-                    break;
-                }
-            }
-        endforeach;
-        if (str_repeat('0', 6) === $acc) {
-            $reem .= " * Fecha creacion : \"$fecha\"".PHP_EOL
-                  . " * ".PHP_EOL
-                  . " * Acciones realizadas:".PHP_EOL
-                  . " * - Veces ejecutado doctrine:build-model  : \"{$this->numeroDAcceso(($acc * 1) + 1)}\"".PHP_EOL
-                  . " * - Ultima vez que se actualizo el modelo : \"".date('Y-m-d H:i:s')."\"";
-        } elseif (str_repeat('0', 6) !== $acc && "" !== $acc){ // 000001 en adelante...
-            $reem .= " * Fecha creacion : \"$fecha\"".PHP_EOL
-                  . " * ".PHP_EOL
-                  ." * Acciones realizadas:".PHP_EOL
-                  . " * - Veces ejecutado doctrine:build-model  : \"{$this->numeroDAcceso(($acc * 1) + 1)}\"".PHP_EOL
-                  . " * - Ultima vez que se actualizo el modelo : \"".date('Y-m-d H:i:s')."\"";
-        } else {
-            $reem .= " * Fecha creacion : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"".PHP_EOL
-                  . " * ".PHP_EOL
-                  . " * Acciones realizadas:".PHP_EOL
-                  . " * - Veces ejecutado doctrine:build-model  : \"000000\"".PHP_EOL
-                  . " * - Ultima vez que se actualizo el modelo : \"yyyy-mm-dd_hh:mm:ss\"";
-        } 
-        
-        $content = sprintf(
-                    self::$_tpl, 
-                    $docs, 
-                    $reem,
-                    $abstract,
-                    $className,
-                    $extends,
-                    $tableDefinitionCode,
-                    $setUpCode
-                   );
         return $content;
     }
 
@@ -1157,8 +1106,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
         $definition['topLevelClassName'] = $definition['className'];
 
         if ($this->generateBaseClasses()) {
-            $definition['is_package'] = (isset($definition['package']) && $definition['package']) ? true:false;
-
+            $definition['is_package'] = (isset($definition['package']) && $definition['package']) ? true : false;
             if ($definition['is_package']) {
                 $e = explode('.', trim($definition['package']));
                 $definition['package_name'] = $e[0];
@@ -1171,7 +1119,9 @@ class Doctrine_Import_Builder extends Doctrine_Builder
 
             // If we have a package then we need to make this extend the package definition and not the base definition
             // The package definition will then extends the base definition
-            $topLevel['inheritance']['extends'] = (isset($topLevel['package']) && $topLevel['package']) ? $this->_packagesPrefix . $topLevel['className']:$this->_baseClassPrefix . $topLevel['className'];
+            $topLevel['inheritance']['extends'] = (isset($topLevel['package']) && $topLevel['package']) 
+                                                   ? $this->_packagesPrefix . $topLevel['className']
+                                                   : $this->_baseClassPrefix . $topLevel['className'];
             $topLevel['no_definition'] = true;
             $topLevel['generate_once'] = true;
             $topLevel['is_main_class'] = true;
@@ -1225,25 +1175,24 @@ class Doctrine_Import_Builder extends Doctrine_Builder
 
     public function buildTableClassDefinition($className, $definition, $options = array())
     {
-        $extends = isset($options['extends']) ? $options['extends']:$this->_baseTableClassName;
+        $extends = isset($options['extends']) ? $options['extends'] : $this->_baseTableClassName;
         if ($extends !== $this->_baseTableClassName) {
             $extends = $this->_classPrefix . $extends;
         }
 
         $code = sprintf("    /**
-     * Returns an instance of this class.
+     * Retorna una instancia de esta clase.
      *
-     * @return object %s
+     * @return objecto %s
      */
-    public static function getInstance()
-    {
+    public static function getInstance() {
         return Doctrine_Core::getTable('%s');
     }", $className, $definition['className']);
 
         $docBlock = array();
         $docBlock[] = $className;
         $docBlock[] = '';
-        $docBlock[] = 'This class has been auto-generated by the Doctrine ORM Framework';
+        $docBlock[] = 'Esta clase ha sido auto-generada por el Framework ORM de Doctrine';
         $docBlock = PHP_EOL.' * ' . implode(PHP_EOL . ' * ', $docBlock);
 
         $content  = '<?php' . PHP_EOL.PHP_EOL;
@@ -1257,6 +1206,15 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             null
         );
 
+        $content = str_replace(
+                    '* Esta clase ha sido auto-generada por el Framework ORM de Doctrine',
+                    "* Esta clase ha sido auto-generada por el Framework ORM de Doctrine"
+                    .PHP_EOL." */"
+                    .str_repeat(PHP_EOL, 2)
+                    ."/**".PHP_EOL
+                    ." * Fecha creacion : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"",
+                    $content
+                   );
         if ($this->_eolStyle) {
             $content = str_replace(PHP_EOL, $this->_eolStyle, $content);
         }
@@ -1348,8 +1306,10 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             }
         }
 
-        $definitionCode = $this->buildDefinition($definition);
-
+        $definitionCode = $this->buildDefinition($definition);  // devuelve un cuerpo de clase Doctrine junto con la definicion
+                                                                // con el nombre de la tabla y sus campos mas atributos
+                                                                // esto dentro de la iteracion que llama a esta funcion
+                                                                // es decir devuelve un cuerpo de clase Doctrine uno a uno
         if ($prefix) {
             $definitionCode = str_replace("this->hasOne('", "this->hasOne('$prefix", $definitionCode);
             $definitionCode = str_replace("this->hasMany('", "this->hasMany('$prefix", $definitionCode);
@@ -1393,9 +1353,75 @@ class Doctrine_Import_Builder extends Doctrine_Builder
                 $writePath = $basePath . DIRECTORY_SEPARATOR . $this->_baseClassesDirectory;
             // Otherwise lets just put it in the root generated folder
             } else {
+                // lib/model/doctrine/base
                 $writePath = $this->_path . DIRECTORY_SEPARATOR . $this->_baseClassesDirectory;
             }
         }
+        
+        // validacion para no mezclar la clase base con otras clases ya que estas se sobreescriben ------------------------------
+        if (isset($definition['is_base_class']) 
+            && $definition['is_base_class'] === true) {
+            // cargando anotaciones de ultimas actividades
+            $acc  = $reem = $fecha = "";
+            $cont = 0;
+            $ruta = $writePath.DIRECTORY_SEPARATOR."{$definition['className']}.class.php";
+            if (is_file($ruta)) {
+                foreach (file($ruta) as $k => $v){
+                    if ("" !== $this->ubicarEntre($v, '"', '"')) {
+                        if (false !== strpos($this->ubicarEntre($v, '"', '"'), ",")) { // si contiene el formato ejemplo Jueves, 16 Octubre 2014 07:00:33
+                            $fecha = $this->ubicarEntre($v, '"', '"');
+                        } else {
+                            $acc = $this->ubicarEntre($v, '"', '"'); // guardo 000000, 000001, 000002, 000003, ... cada vez que verifique
+                            break;
+                        }
+                    }
+                }
+            }
+            if (str_repeat('0', 6) === $acc) {
+                $reem .= " * Fecha creacion : \"$fecha\"".PHP_EOL
+                      . " * ".PHP_EOL
+                      . " * Acciones realizadas:".PHP_EOL
+                      . " * - Veces ejecutado doctrine:build-model  : \"{$this->numeroDAcceso(($acc * 1) + 1)}\"".PHP_EOL
+                      . " * - Ultima vez que se actualizo el modelo : \"".date('Y-m-d H:i:s')."\"";
+            } elseif (str_repeat('0', 6) !== $acc && "" !== $acc){ // 000001 en adelante...
+                $reem .= " * Fecha creacion : \"$fecha\"".PHP_EOL
+                      . " * ".PHP_EOL
+                      ." * Acciones realizadas:".PHP_EOL
+                      . " * - Veces ejecutado doctrine:build-model  : \"{$this->numeroDAcceso(($acc * 1) + 1)}\"".PHP_EOL
+                      . " * - Ultima vez que se actualizo el modelo : \"".date('Y-m-d H:i:s')."\"";
+            } else {
+                $reem .= " * Fecha creacion : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"".PHP_EOL
+                      . " * ".PHP_EOL
+                      . " * Acciones realizadas:".PHP_EOL
+                      . " * - Veces ejecutado doctrine:build-model  : \"000000\"".PHP_EOL
+                      . " * - Ultima vez que se actualizo el modelo : \"yyyy-mm-dd_hh:mm:ss\"";
+            }
+            
+            $definitionCode = str_replace(
+                                '*/',
+                                "*/".str_repeat(PHP_EOL, 2)."/**".PHP_EOL.$reem.PHP_EOL." */",
+                                $definitionCode
+                              );
+        } else {
+            $definitionCode = str_replace(
+                                '*/',
+                                "*/".str_repeat(PHP_EOL, 2)
+                                ."/**".PHP_EOL
+                                ." * Fecha creacion : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"".PHP_EOL
+                                ." */",
+                                $definitionCode
+                              );
+            $definitionCode = str_replace(
+                                str_repeat(PHP_EOL, 3), 
+                                str_repeat(PHP_EOL, 2).str_repeat(' ', 4)
+                                ."// aqui tu codigo __toString() o "
+                                .PHP_EOL.str_repeat(' ', 4)
+                                . "// cualquier metodo/funcion necesaria..."
+                                .PHP_EOL,
+                                $definitionCode
+                              );
+        }
+        // + -------------------------------------------------------------------------------------------------------------------
 
         // If we have a writePath from the if else conditionals above then use it
         if (isset($writePath)) {
@@ -1408,8 +1434,11 @@ class Doctrine_Import_Builder extends Doctrine_Builder
 
             $writePath = $this->_path . DIRECTORY_SEPARATOR . $fileName;
         }
-
-        $code = "<?php" . PHP_EOL;
+        
+        $code = isset($definition['is_base_class']) 
+                && $definition['is_base_class'] === true
+                ? "<?php".str_repeat(PHP_EOL, 2)
+                : '<?php'.PHP_EOL;
 
         if (isset($definition['connection']) && $definition['connection']) {
             $code .= "// Connection Component Binding" . PHP_EOL;
@@ -1421,8 +1450,9 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             $code = str_replace(PHP_EOL, $this->_eolStyle, $code);
         }
 
+        // se salta hacia atras lib/model/doctrine
         Doctrine_Lib::makeDirectories(dirname($writePath));
-
+        
         if (isset($definition['generate_once']) && $definition['generate_once'] === true) {
             if ( ! file_exists($writePath)) {
                 $bytes = file_put_contents($writePath, $code);
@@ -1435,6 +1465,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             throw new Doctrine_Import_Builder_Exception("Couldn't write file " . $writePath);
         }
 
+        // registro el nombre de la clase Base* seguido de la ruta lib/model/doctrine/base/
         Doctrine_Core::loadModel($definition['className'], $writePath);
     }
     

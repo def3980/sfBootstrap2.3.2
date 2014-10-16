@@ -142,60 +142,6 @@ EOF;
         $after = $stubFinder->in($config['models_path']);
         $this->getFilesystem()->replaceTokens(array_diff($after, $before), '', '', $tokens);
 
-        // cargando anotaciones de ultimas actividades
-//        $miScanDirModel = array_diff(scandir($config['models_path']), array('.', '..', 'base'));
-//        $miScanDirModelBase = array_diff(scandir($config['models_path'].'/base'), array('.', '..'));
-//        $ruta = $config['models_path'].'/base/';
-//        $acc = $fecha = $reem = ""; $cont = 0;
-//        foreach ($miScanDirModelBase as $posicion => $clase):
-////            echo $posicion.' ~ '.$clase.PHP_EOL;
-//            /**
-//             * acomodos en esta parte
-//             */
-//            foreach (file($ruta.$clase) as $k => $v):
-//                if ("" !== $this->ubicarEntre($v, '"', '"')) {
-//                    $acc = $this->ubicarEntre($v, '"', '"');
-//                    break; // encuentra y sale del bucle
-//                }
-//            endforeach;
-//            if (str_repeat('0', 6) !== $acc) {
-//                $base = str_replace(
-//                            "*/", 
-//                            "*/".PHP_EOL.PHP_EOL
-//                            . "/**".PHP_EOL
-//                            . " * Fecha creacion : {$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}".PHP_EOL
-//                            . " * ".PHP_EOL
-//                            . " * Acciones realizadas:".PHP_EOL
-//                            . " * - Veces ejecutado doctrine:build-model  : \"000000\"".PHP_EOL
-//                            . " * - Ultima vez que se actualizo el modelo : \"yyyy-mm-dd_hh:mm:ss\"".PHP_EOL
-//                            . " */".PHP_EOL, 
-//                            file_get_contents($ruta.$clase)
-//                        );
-//                file_put_contents($ruta.$clase, $base);
-//            } elseif (str_repeat('0', 6) === $acc) {
-//                $base = str_replace(
-//                            " * Acciones realizadas:", 
-//                            " * Acciones realizadas:".PHP_EOL
-//                            . " * - Veces ejecutado doctrine:build-model  : \"{$this->numeroDAcceso(($acc * 1) + 1)}\"".PHP_EOL
-//                            . " * - Ultima vez que se actualizo el modelo : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"".PHP_EOL
-//                            . " */".PHP_EOL, 
-//                            file_get_contents($ruta.$clase)
-//                        );
-//                file_put_contents($ruta.$clase, $base);
-//            } else {
-//                $base = str_replace(
-//                            " * Acciones realizadas:", 
-//                            " * Acciones realizadas:".PHP_EOL
-//                            . " * - Veces ejecutado doctrine:build-model  : \"{$this->numeroDAcceso(($acc * 1) + 1)}\"".PHP_EOL
-//                            . " * - Ultima vez que se actualizo el modelo : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"".PHP_EOL
-//                            . " */".PHP_EOL, 
-//                            file_get_contents($ruta.$clase)
-//                        );
-//                file_put_contents($ruta.$clase, $base);
-//            }
-//            /* ------------------------------------------------------------------ */
-//        endforeach;
-
         // cleanup base classes
         $baseFinder = sfFinder::type('file')->name('Base*'.$builderOptions['suffix']);
         $baseDirFinder = sfFinder::type('dir')->name('base');
