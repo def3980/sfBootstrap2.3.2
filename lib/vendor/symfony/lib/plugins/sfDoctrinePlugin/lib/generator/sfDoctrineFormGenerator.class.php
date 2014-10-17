@@ -35,7 +35,38 @@ class sfDoctrineFormGenerator extends sfGenerator
    * @var array
    */
   public $pluginModels = array();
-
+  
+    /**
+     * Para el calculo de fechas en español
+     *
+     * @var array
+     */
+    protected $_dias = array(
+                       'domingo', 
+                       'lunes', 
+                       'martes', 
+                       'miercoles', 
+                       'jueves', 
+                       'viernes', 
+                       'sabado'
+                      ),
+              $_diasAbreviados = array(),
+              $_meses = array(
+                       'enero', 
+                       'febrero', 
+                       'marzo', 
+                       'abril', 
+                       'mayo', 
+                       'junio',
+                       'julio', 
+                       'agosto', 
+                       'septiembre', 
+                       'octubre', 
+                       'noviembre', 
+                       'diciembre'
+                      ),
+              $_mesesAbreviados = array();
+    
   /**
    * Initializes the current sfGenerator instance.
    *
@@ -80,7 +111,7 @@ class sfDoctrineFormGenerator extends sfGenerator
       {
         mkdir($directory, 0777, true);
       }
-
+        $this->_fechaYHora = $this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'));
       file_put_contents($file, $this->evalTemplate('sfDoctrineFormBaseTemplate.php'));
     }
 
@@ -93,8 +124,6 @@ class sfDoctrineFormGenerator extends sfGenerator
       $this->modelName = $model;
 
       $baseDir = sfConfig::get('sf_lib_dir') . '/form/doctrine';
-        print_r($this->table);
-        die();
 
       $isPluginModel = $this->isPluginModel($model);
       if ($isPluginModel)
@@ -107,6 +136,27 @@ class sfDoctrineFormGenerator extends sfGenerator
       {
         mkdir($baseDir.'/base', 0777, true);
       }
+
+        /**
+         * Verificando y cargando variables para cuando el archivo Base*Form.class.php
+         * existe y necesito su fecha y hora de creacion, para luego ser utilizado en
+         * la plantilla 
+         * sfDoctrinePlugin/data/generator/sfDoctrineForm/default/template/sfDoctrineFormGeneratedTemplate
+         * 
+         * Siempre y cuando el archivo en cuestion exista
+         */
+        $this->_existeArchivo = false;
+        $this->_fechaYHora = "";
+        if (is_file($baseDir."/base/Base{$model}Form.class.php")) {
+            foreach (file($baseDir."/base/Base{$model}Form.class.php") as $k => $v) {
+                if (!empty($this->ubicarEntre($v, '"', '"'))) {
+                    $this->_existeArchivo = true;
+                    $this->_fechaYHora = $this->ubicarEntre($v, '"', '"');
+                    break;
+                }
+            }
+        }
+        /* + ------------------------------------------------------------------------------------------ + */
 
       file_put_contents($baseDir.'/base/Base'.$model.'Form.class.php', $this->evalTemplate(null === $this->getParentModel() ? 'sfDoctrineFormGeneratedTemplate.php' : 'sfDoctrineFormGeneratedInheritanceTemplate.php'));
 
@@ -128,9 +178,39 @@ class sfDoctrineFormGenerator extends sfGenerator
         {
            file_put_contents($classFile, $this->evalTemplate('sfDoctrinePluginFormTemplate.php'));
         } else {
+            /**
+             * Verificando y cargando variables para cuando el archivo Base*Form.class.php
+             * existe y necesito su fecha y hora de creacion, para luego ser utilizado en
+             * la plantilla 
+             * sfDoctrinePlugin/data/generator/sfDoctrineForm/default/template/sfDoctrineFormTemplate
+             * 
+             * Siempre y cuando el archivo en cuestion exista
+             */
+            $this->_actualizarFechaYHora = false; // me sirve para numeracion y hora
+            if (is_file($classFile)) {
+                $this->_existeArchivo = false;
+                $this->_fechaYHora = "";
+                $cont = 0;
+                foreach (file($classFile) as $k => $v) {
+                    if (!empty($this->ubicarEntre($v, '"', '"'))) {
+                        if (($cont += 1) > 1) {
+                            $this->_numeracion = $this->numeroDAcceso(($this->ubicarEntre($v, '"', '"') * 1) + 1);
+                            $this->_actualizarFechaYHora = true;
+                            $cont = 0;
+                            break;
+                        } else {
+                            $this->_existeArchivo = true;
+                            $this->_fechaYHora = $this->ubicarEntre($v, '"', '"');
+                        }
+                    }
+                }
+            } // si es false utilizo $this->_fechaYHora de la condicion que esta mas arriba
+            /* + ------------------------------------------------------------------------------------------ + */
            file_put_contents($classFile, $this->evalTemplate('sfDoctrineFormTemplate.php'));
         }
       }
+              var_dump($this->modelName);
+        die();
     }
   }
 
@@ -700,4 +780,92 @@ class sfDoctrineFormGenerator extends sfGenerator
   {
     return null === ($model = $this->getParentModel()) ? 'BaseFormDoctrine' : sprintf('%sForm', $model);
   }
+
+    public function get() {
+
+    }
+    public function set() {
+
+    }
+
+  /**
+     * Ayuda a traducir la fecha y hora actual del sistema en formato español.
+     *
+     * Por Oswaldo Rojas ~ Sáb, 27 Sep 2014 13:53:12
+     * 
+     * @param  date $date Recibe la fecha y hora actual ('Y-m-d H:i:s')
+     * @param  boolean $complete Indica si los nombre de las fechas son
+     * completas o abreviadas
+     * @param  boolean $capital Indica los nombres de las fechas con letra 
+     * capital
+     * @return string Ej.: Lun, 01 Ene 1970 00:00:01
+     */
+    public function obtenerFechaYHoraEnEsp($date, $complete = true, $capital = true) {
+        // Debido a que este proyecto de modificacion de symfony se realiza en
+        // Ecuador se va a poner por default el timezone correspondiente, pero
+        // sientete libre de cambiarlo a tu gusto (manualmente) ;-|
+        date_default_timezone_set('America/Guayaquil');
+
+        foreach ($this->_dias as $k => $v) { $this->_diasAbreviados[$k] = substr($v, 0, 3); }        
+        array_unshift($this->_meses, '');
+        foreach ($this->_meses as $k => $v) { $this->_mesesAbreviados[$k] = substr($v, 0, 3); }
+        array_unshift($this->_mesesAbreviados, '');
+        $dia    = explode('-', $date, 3);
+        $year   = reset($dia);
+        $month  = (string)(int)$dia[1];
+        $day    = (string)(int)$dia[2];
+        $hms    = explode(' ', $dia[2], 2);
+        $time   = (string) $hms[1];
+        $dias   = $this->_dias;
+        $dAbr   = $this->_diasAbreviados;
+        $tdia   = $dias[intval((date('w', mktime(0, 0, 0, $month, $day, $year))))];
+        $tAbr   = $dAbr[intval((date('w', mktime(0, 0, 0, $month, $day, $year))))];
+        $meses  = $this->_meses;
+        $mesAbr = $this->_mesesAbreviados;
+
+        return $complete 
+               ? ($capital 
+                  ? ucfirst($tdia) 
+                  : $tdia).", {$day} ".($capital 
+                                        ? ucfirst($meses[$month]) 
+                                        : $meses[$month])." {$year} {$time}"
+               : ($capital 
+                  ? ucfirst($tAbr) 
+                  : $tAbr).", {$day} ".($capital 
+                                        ? ucfirst($mesAbr[$month]) 
+                                        : $mesAbr[$month])." {$year} {$time}";
+    }
+
+    /**
+     * Funciones pequeñas para el registro de modificacion por parte del usuario
+     * hacia el archivo ubicado en config/doctrine/schema.yml guardando fecha
+     * y hora de actualizacion. Esta es mi personalizacion.
+     */
+    protected function ubicarEntre($contenido, $inicio, $fin) {
+        $cadena = explode($inicio, $contenido);
+        if (isset($cadena[1])) {
+            $cadena = explode($fin, $cadena[1]);
+            return reset($cadena);
+        }
+
+        return '';
+    }
+    
+    protected function numeroDAcceso($valor) {
+        $no = 0;
+        switch (true):
+            case $valor < 10: $no = '00000'.$valor; break;
+            case $valor < 100: $no = '0000'.$valor; break;
+            case $valor < 1000: $no = '000'.$valor; break;
+            case $valor < 10000: $no = '00'.$valor; break;
+            case $valor < 100000: $no = '0'.$valor; break;
+            case $valor < 1000000: $no = ''.$valor; break;
+        endswitch;
+        /**
+         * Exageradooo!!! 
+         * mmm talvez, pero puede suceder.
+         */
+        return $no;
+    }    
+    /* ---------------------------------------------------------------------- */
 }
