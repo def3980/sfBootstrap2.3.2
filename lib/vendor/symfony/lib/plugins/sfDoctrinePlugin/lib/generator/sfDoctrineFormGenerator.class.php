@@ -41,7 +41,7 @@ class sfDoctrineFormGenerator extends sfGenerator
      *
      * @var array
      */
-    protected $_dias = array(
+    public $_dias = array(
                        'domingo', 
                        'lunes', 
                        'martes', 
@@ -145,14 +145,19 @@ class sfDoctrineFormGenerator extends sfGenerator
          * 
          * Siempre y cuando el archivo en cuestion exista
          */
-        $this->_existeArchivo = false;
-        $this->_fechaYHora = "";
+        $this->_actualizarFechaYHora = false; $cont = 0;
         if (is_file($baseDir."/base/Base{$model}Form.class.php")) {
+            $this->_fechaYHora = "";
             foreach (file($baseDir."/base/Base{$model}Form.class.php") as $k => $v) {
                 if (!empty($this->ubicarEntre($v, '"', '"'))) {
-                    $this->_existeArchivo = true;
-                    $this->_fechaYHora = $this->ubicarEntre($v, '"', '"');
-                    break;
+                    if (($cont += 1) > 1) {
+                        $this->_numeracion = $this->numeroDAcceso(($this->ubicarEntre($v, '"', '"') * 1) + 1);
+                        $this->_actualizarFechaYHora = true;
+                        $cont = 0;
+                        break;
+                    } else {
+                        $this->_fechaYHora = $this->ubicarEntre($v, '"', '"');
+                    }
                 }
             }
         }
@@ -209,8 +214,6 @@ class sfDoctrineFormGenerator extends sfGenerator
            file_put_contents($classFile, $this->evalTemplate('sfDoctrineFormTemplate.php'));
         }
       }
-              var_dump($this->modelName);
-        die();
     }
   }
 

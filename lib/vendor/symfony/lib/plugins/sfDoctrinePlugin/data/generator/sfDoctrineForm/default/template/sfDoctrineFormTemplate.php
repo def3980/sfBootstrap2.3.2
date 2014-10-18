@@ -10,17 +10,7 @@
  */
 
 /**
- * Fecha creacion : "<?php echo !$this->_existeArchivo 
-                                ? $this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))
-                                : $this->_fechaYHora  ?>"
- * 
- * Acciones realizadas:
- * - Veces ejecutado doctrine:build-model  : "<?php echo !$this->_actualizarFechaYHora
-                                                         ? str_repeat('0', 6) 
-                                                         : $this->_numeracion ?>"
- * - Ultima vez que se actualizo el modelo : "<?php echo !$this->_actualizarFechaYHora
-                                                         ? 'yyyy-mm-dd_hh:mm:ss'
-                                                         : $this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s')) ?>"
+ * Fecha creacion : "<?=$this->_fechaYHora?>"
  */
  class <?php echo $this->table->getOption('name') ?>Form extends Base<?php echo $this->table->getOption('name') ?>Form {
 

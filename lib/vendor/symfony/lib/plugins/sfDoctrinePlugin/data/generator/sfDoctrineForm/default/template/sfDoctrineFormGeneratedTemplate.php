@@ -12,13 +12,15 @@
  */
  
 /**
- * Fecha creacion : "<?php echo !$this->_existeArchivo 
-                                ? $this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))
-                                : $this->_fechaYHora  ?>"
+ * Fecha creacion : "<?=$this->_fechaYHora?>"
  * 
  * Acciones realizadas:
- * - Veces ejecutado doctrine:build-model  : "000000"
- * - Ultima vez que se actualizo el modelo : "yyyy-mm-dd_hh:mm:ss"
+ * - Veces ejecutado doctrine:build-forms            : "<?php echo !$this->_actualizarFechaYHora
+                                                                   ? str_repeat('0', 6) 
+                                                                   : $this->_numeracion ?>"
+ * - Ultima vez que se actualizo la clase formulario : "<?php echo !$this->_actualizarFechaYHora
+                                                                   ? 'yyyy-mm-dd_hh:mm:ss'
+                                                                   : date('Y-m-d H:i:s') ?>"
  */
 abstract class Base<?php echo $this->modelName ?>Form extends <?php echo $this->getFormClassToExtend() ?> {
 
