@@ -16,7 +16,7 @@
 require_once(dirname(__FILE__).'/sfDoctrineBaseTask.class.php');
 
 /**
- * Create filter form classes for the current model.
+ * Crea clases de formulario para el filtrado par el actual modelo.
  *
  * @package    symfony
  * @subpackage doctrine

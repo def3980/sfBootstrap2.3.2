@@ -30,15 +30,16 @@
  * @version     $Revision: 2761 $
  * @author      Jonathan H. Wage <jwage@mac.com>
  */
-class Doctrine_Task_GenerateSql extends Doctrine_Task
-{
-    public $description          =   'Generate sql for all existing database connections.',
-           $requiredArguments    =   array('models_path'    =>  'Specify complete path to your Doctrine_Record definitions.',
-                                           'sql_path'       =>  'Path to write the generated sql.'),
-           $optionalArguments    =   array();
+class Doctrine_Task_GenerateSql extends Doctrine_Task {
+
+    public $description       = 'Generate sql for all existing database connections.',
+           $requiredArguments = array(
+                                    'models_path' => 'Specify complete path to your Doctrine_Record definitions.',
+                                    'sql_path'    => 'Path to write the generated sql.'
+                                ),
+           $optionalArguments = array();
     
-    public function execute()
-    {
+    public function execute() {
         if (is_dir($this->getArgument('sql_path'))) {
             $path = $this->getArgument('sql_path') . DIRECTORY_SEPARATOR . 'schema.sql';
         } else if (is_file($this->getArgument('sql_path'))) {
@@ -46,11 +47,12 @@ class Doctrine_Task_GenerateSql extends Doctrine_Task
         } else {
             throw new Doctrine_Task_Exception('Invalid sql path.');
         }
-        
-        $sql = Doctrine_Core::generateSqlFromModels($this->getArgument('models_path'));
+
+        $sql = Doctrine_Core::generateSqlFromModels($this->getArgument('models_path')); // el parametro es lib/model/doctrine
         
         file_put_contents($path, $sql);
         
-        $this->notify('Generated SQL successfully for models');
+        $this->notify('Script SQL para la base de datos generado correctamente...');
     }
+
 }
