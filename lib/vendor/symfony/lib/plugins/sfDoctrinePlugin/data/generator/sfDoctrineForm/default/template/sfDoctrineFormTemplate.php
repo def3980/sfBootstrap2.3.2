@@ -12,7 +12,7 @@
 /**
  * Fecha creacion : "<?=$this->_fechaYHora?>"
  */
- class <?php echo $this->table->getOption('name') ?>Form extends Base<?php echo $this->table->getOption('name') ?>Form {
+class <?php echo $this->table->getOption('name') ?>Form extends Base<?php echo $this->table->getOption('name') ?>Form {
 
 <?php if ($parent = $this->getParentModel()): ?>
     /**

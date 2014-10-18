@@ -141,7 +141,7 @@ class sfDoctrineFormGenerator extends sfGenerator
          * Verificando y cargando variables para cuando el archivo Base*Form.class.php
          * existe y necesito su fecha y hora de creacion, para luego ser utilizado en
          * la plantilla 
-         * sfDoctrinePlugin/data/generator/sfDoctrineForm/default/template/sfDoctrineFormGeneratedTemplate
+         * sfDoctrinePlugin/data/generator/sfDoctrineForm/default/template/sfDoctrineFormGeneratedTemplate.php
          * 
          * Siempre y cuando el archivo en cuestion exista
          */
@@ -187,7 +187,7 @@ class sfDoctrineFormGenerator extends sfGenerator
              * Verificando y cargando variables para cuando el archivo Base*Form.class.php
              * existe y necesito su fecha y hora de creacion, para luego ser utilizado en
              * la plantilla 
-             * sfDoctrinePlugin/data/generator/sfDoctrineForm/default/template/sfDoctrineFormTemplate
+             * sfDoctrinePlugin/data/generator/sfDoctrineForm/default/template/sfDoctrineFormTemplate.php
              * 
              * Siempre y cuando el archivo en cuestion exista
              */

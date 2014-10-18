@@ -39,7 +39,7 @@ class sfDoctrineBuildFormsTask extends sfDoctrineBaseTask {
 
         $this->namespace           = 'doctrine';
         $this->name                = 'build-forms';
-        $this->briefDescription    = 'Crea clases formulario para el actual modelo de datos';
+        $this->briefDescription    = '>> Crea clases formulario para el actual modelo de datos';
         $this->detailedDescription = <<<EOF
 La tarea [doctrine:build-forms|INFO] crea clases de formularios desde el 
 esquema:
@@ -49,7 +49,7 @@ esquema:
 Esta tarea crea clases de forlumarios basados en el modelo de datos, estas
 son creadas en el directorio [lib/doctrine/form|COMMENT].
 
-Esta tarea nunca sobreescribe clases personalizadas in 
+Esta tarea nunca sobreescribe clases personalizadas en 
 [lib/doctrine/form|COMMENT], solo reemplaza las clases base generadas
 en [lib/doctrine/form/base|COMMENT].
 EOF;
