@@ -6,6 +6,11 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * + ------------------------------------------------------------------- +
+ * Añadiendo nuevas formas a lo ya optimizado. Por Oswaldo Rojas un
+ * Sabado, 18 Octubre 2014 18:32:11
+ * + ------------------------------------------------------------------- +
  */
 
 require_once(dirname(__FILE__).'/sfDoctrineBaseTask.class.php');
@@ -18,184 +23,168 @@ require_once(dirname(__FILE__).'/sfDoctrineBaseTask.class.php');
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id: sfDoctrineGenerateModuleTask.class.php 24637 2009-12-01 05:06:21Z Kris.Wallsmith $
  */
-class sfDoctrineGenerateModuleTask extends sfDoctrineBaseTask
-{
-  /**
-   * @see sfTask
-   */
-  protected function configure()
-  {
-    $this->addArguments(array(
-      new sfCommandArgument('application', sfCommandArgument::REQUIRED, 'The application name'),
-      new sfCommandArgument('module', sfCommandArgument::REQUIRED, 'The module name'),
-      new sfCommandArgument('model', sfCommandArgument::REQUIRED, 'The model class name'),
-    ));
+class sfDoctrineGenerateModuleTask extends sfDoctrineBaseTask {
 
-    $this->addOptions(array(
-      new sfCommandOption('theme', null, sfCommandOption::PARAMETER_REQUIRED, 'The theme name', 'default'),
-      new sfCommandOption('generate-in-cache', null, sfCommandOption::PARAMETER_NONE, 'Generate the module in cache'),
-      new sfCommandOption('non-verbose-templates', null, sfCommandOption::PARAMETER_NONE, 'Generate non verbose templates'),
-      new sfCommandOption('with-show', null, sfCommandOption::PARAMETER_NONE, 'Generate a show method'),
-      new sfCommandOption('singular', null, sfCommandOption::PARAMETER_REQUIRED, 'The singular name', null),
-      new sfCommandOption('plural', null, sfCommandOption::PARAMETER_REQUIRED, 'The plural name', null),
-      new sfCommandOption('route-prefix', null, sfCommandOption::PARAMETER_REQUIRED, 'The route prefix', null),
-      new sfCommandOption('with-doctrine-route', null, sfCommandOption::PARAMETER_NONE, 'Whether you will use a Doctrine route'),
-      new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
-      new sfCommandOption('actions-base-class', null, sfCommandOption::PARAMETER_REQUIRED, 'The base class for the actions', 'sfActions'),
-    ));
+    /**
+     * @see sfTask
+     */
+    protected function configure() {
+        $this->addArguments(array(
+            new sfCommandArgument('application', sfCommandArgument::REQUIRED, 'El nombre de la aplicacion'),
+            new sfCommandArgument('module', sfCommandArgument::REQUIRED, 'El nombre del modulo'),
+            new sfCommandArgument('model', sfCommandArgument::REQUIRED, 'El nombre de la clase del modelo'),
+        ));
 
-    $this->namespace = 'doctrine';
-    $this->name = 'generate-module';
-    $this->briefDescription = 'Generates a Doctrine module';
+        $this->addOptions(array(
+            new sfCommandOption('theme', null, sfCommandOption::PARAMETER_REQUIRED, 'The theme name', 'default'),
+            new sfCommandOption('generate-in-cache', null, sfCommandOption::PARAMETER_NONE, 'Generate the module in cache'),
+            new sfCommandOption('non-verbose-templates', null, sfCommandOption::PARAMETER_NONE, 'Generate non verbose templates'),
+            new sfCommandOption('with-show', null, sfCommandOption::PARAMETER_NONE, 'Generate a show method'),
+            new sfCommandOption('singular', null, sfCommandOption::PARAMETER_REQUIRED, 'The singular name', null),
+            new sfCommandOption('plural', null, sfCommandOption::PARAMETER_REQUIRED, 'The plural name', null),
+            new sfCommandOption('route-prefix', null, sfCommandOption::PARAMETER_REQUIRED, 'The route prefix', null),
+            new sfCommandOption('with-doctrine-route', null, sfCommandOption::PARAMETER_NONE, 'Whether you will use a Doctrine route'),
+            new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
+            new sfCommandOption('actions-base-class', null, sfCommandOption::PARAMETER_REQUIRED, 'The base class for the actions', 'sfActions'),
+        ));
 
-    $this->detailedDescription = <<<EOF
-The [doctrine:generate-module|INFO] task generates a Doctrine module:
+        $this->namespace           = 'doctrine';
+        $this->name                = 'generate-module';
+        $this->briefDescription    = '>> Genera un modulo doctrine';
+        $this->detailedDescription = <<<EOF
+La tarea [doctrine:generate-module|INFO] genera un modulo Doctrine:
 
   [./symfony doctrine:generate-module frontend article Article|INFO]
 
-The task creates a [%module%|COMMENT] module in the [%application%|COMMENT] application
-for the model class [%model%|COMMENT].
+La tarea crea un modulo [%module%|COMMENT] en el directorio de la aplicacion
+[%application%|COMMENT] en base al nombre del modelo de la clase.
 
-You can also create an empty module that inherits its actions and templates from
-a runtime generated module in [%sf_app_cache_dir%/modules/auto%module%|COMMENT] by
-using the [--generate-in-cache|COMMENT] option:
+Puedes crear tambien un modulo vacio que hereda las acciones y plantilas 
+del directorio [%sf_app_cache_dir%/modules/auto%module%|COMMENT] usando
+la opcion [--generate-in-cache|COMMENT] en tiempo de ejecucion:
 
   [./symfony doctrine:generate-module --generate-in-cache frontend article Article|INFO]
 
-The generator can use a customized theme by using the [--theme|COMMENT] option:
+El generador puede referir un tema personalizado usando la opcion [--theme|COMMENT]:
 
   [./symfony doctrine:generate-module --theme="custom" frontend article Article|INFO]
 
-This way, you can create your very own module generator with your own conventions.
+De esta manera, puedes crear tu propio generador del modulos personalizado.
 
-You can also change the default actions base class (default to sfActions) of
-the generated modules:
+Adicional puedes cambiar las acciones por defecto de la clase base 
+(default to sfActions) de los modulos generados:
 
   [./symfony doctrine:generate-module --actions-base-class="ProjectActions" frontend article Article|INFO]
 EOF;
-  }
+    }
 
-  /**
-   * @see sfTask
-   */
-  protected function execute($arguments = array(), $options = array())
-  {
-    $databaseManager = new sfDatabaseManager($this->configuration);
+    /**
+     * @see sfTask
+     */
+    protected function execute($arguments = array(), $options = array()) {
+        $databaseManager = new sfDatabaseManager($this->configuration);
     
-    $properties = parse_ini_file(sfConfig::get('sf_config_dir').'/properties.ini', true);
+        $properties = parse_ini_file(sfConfig::get('sf_config_dir').'/properties.ini', true);
 
-    $this->constants = array(
-      'PROJECT_NAME'   => isset($properties['symfony']['name']) ? $properties['symfony']['name'] : 'symfony',
-      'APP_NAME'       => $arguments['application'],
-      'MODULE_NAME'    => $arguments['module'],
-      'UC_MODULE_NAME' => ucfirst($arguments['module']),
-      'MODEL_CLASS'    => $arguments['model'],
-      'AUTHOR_NAME'    => isset($properties['symfony']['author']) ? $properties['symfony']['author'] : 'Your name here',
-    );
+        $this->constants = array(
+            'PROJECT_NAME'   => isset($properties['symfony']['name']) ? $properties['symfony']['name'] : 'symfony',
+            'APP_NAME'       => $arguments['application'],
+            'MODULE_NAME'    => $arguments['module'],
+            'UC_MODULE_NAME' => ucfirst($arguments['module']),
+            'MODEL_CLASS'    => $arguments['model'],
+            'AUTHOR_NAME'    => isset($properties['symfony']['author']) ? $properties['symfony']['author'] : 'Tu nombre aqui',
+        );
 
-    $method = $options['generate-in-cache'] ? 'executeInit' : 'executeGenerate';
+        $method = $options['generate-in-cache'] ? 'executeInit' : 'executeGenerate';
 
-    $this->$method($arguments, $options);
-  }
-
-  protected function executeGenerate($arguments = array(), $options = array())
-  {
-    // generate module
-    $tmpDir = sfConfig::get('sf_cache_dir').DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.md5(uniqid(rand(), true));
-    $generatorManager = new sfGeneratorManager($this->configuration, $tmpDir);
-    $generatorManager->generate('sfDoctrineGenerator', array(
-      'model_class'           => $arguments['model'],
-      'moduleName'            => $arguments['module'],
-      'theme'                 => $options['theme'],
-      'non_verbose_templates' => $options['non-verbose-templates'],
-      'with_show'             => $options['with-show'],
-      'singular'              => $options['singular'] ? $options['singular'] : sfInflector::underscore($arguments['model']),
-      'plural'                => $options['plural'] ? $options['plural'] : sfInflector::underscore($arguments['model'].'s'),
-      'route_prefix'          => $options['route-prefix'],
-      'with_doctrine_route'   => $options['with-doctrine-route'],
-      'actions_base_class'    => $options['actions-base-class'],
-    ));
-
-    $moduleDir = sfConfig::get('sf_app_module_dir').'/'.$arguments['module'];
-
-    // copy our generated module
-    $this->getFilesystem()->mirror($tmpDir.DIRECTORY_SEPARATOR.'auto'.ucfirst($arguments['module']), $moduleDir, sfFinder::type('any'));
-
-    if (!$options['with-show'])
-    {
-      $this->getFilesystem()->remove($moduleDir.'/templates/showSuccess.php');
+        $this->$method($arguments, $options);
     }
 
-    // change module name
-    $finder = sfFinder::type('file')->name('*.php');
-    $this->getFilesystem()->replaceTokens($finder->in($moduleDir), '', '', array('auto'.ucfirst($arguments['module']) => $arguments['module']));
+    protected function executeGenerate($arguments = array(), $options = array()) {
+        // generate module
+        $tmpDir = sfConfig::get('sf_cache_dir').DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.md5(uniqid(rand(), true));
+        $generatorManager = new sfGeneratorManager($this->configuration, $tmpDir);
+        $generatorManager->generate('sfDoctrineGenerator', array(
+            'model_class'           => $arguments['model'],
+            'moduleName'            => $arguments['module'],
+            'theme'                 => $options['theme'],
+            'non_verbose_templates' => $options['non-verbose-templates'],
+            'with_show'             => $options['with-show'],
+            'singular'              => $options['singular'] ? $options['singular'] : sfInflector::underscore($arguments['model']),
+            'plural'                => $options['plural'] ? $options['plural'] : sfInflector::underscore($arguments['model'].'s'),
+            'route_prefix'          => $options['route-prefix'],
+            'with_doctrine_route'   => $options['with-doctrine-route'],
+            'actions_base_class'    => $options['actions-base-class'],
+        ));
 
-    // customize php and yml files
-    $finder = sfFinder::type('file')->name('*.php', '*.yml');
-    $this->getFilesystem()->replaceTokens($finder->in($moduleDir), '##', '##', $this->constants);
+        $moduleDir = sfConfig::get('sf_app_module_dir').'/'.$arguments['module'];
 
-    // create basic test
-    $this->getFilesystem()->copy(sfConfig::get('sf_symfony_lib_dir').DIRECTORY_SEPARATOR.'task'.DIRECTORY_SEPARATOR.'generator'.DIRECTORY_SEPARATOR.'skeleton'.DIRECTORY_SEPARATOR.'module'.DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'actionsTest.php', sfConfig::get('sf_test_dir').DIRECTORY_SEPARATOR.'functional'.DIRECTORY_SEPARATOR.$arguments['application'].DIRECTORY_SEPARATOR.$arguments['module'].'ActionsTest.php');
+        // copy our generated module
+        $this->getFilesystem()->mirror($tmpDir.DIRECTORY_SEPARATOR.'auto'.ucfirst($arguments['module']), $moduleDir, sfFinder::type('any'));
 
-    // customize test file
-    $this->getFilesystem()->replaceTokens(sfConfig::get('sf_test_dir').DIRECTORY_SEPARATOR.'functional'.DIRECTORY_SEPARATOR.$arguments['application'].DIRECTORY_SEPARATOR.$arguments['module'].'ActionsTest.php', '##', '##', $this->constants);
+        if (!$options['with-show']) {
+            $this->getFilesystem()->remove($moduleDir.'/templates/showSuccess.php');
+        }
 
-    // delete temp files
-    $this->getFilesystem()->remove(sfFinder::type('any')->in($tmpDir));
-  }
+        // change module name
+        $finder = sfFinder::type('file')->name('*.php');
+        $this->getFilesystem()->replaceTokens($finder->in($moduleDir), '', '', array('auto'.ucfirst($arguments['module']) => $arguments['module']));
 
-  protected function executeInit($arguments = array(), $options = array())
-  {
-    $moduleDir = sfConfig::get('sf_app_module_dir').'/'.$arguments['module'];
+        // customize php and yml files
+        $finder = sfFinder::type('file')->name('*.php', '*.yml');
+        $this->getFilesystem()->replaceTokens($finder->in($moduleDir), '##', '##', $this->constants);
 
-    // create basic application structure
-    $finder = sfFinder::type('any')->discard('.sf');
-    $dirs = $this->configuration->getGeneratorSkeletonDirs('sfDoctrineModule', $options['theme']);
+        // create basic test
+        $this->getFilesystem()->copy(sfConfig::get('sf_symfony_lib_dir').DIRECTORY_SEPARATOR.'task'.DIRECTORY_SEPARATOR.'generator'.DIRECTORY_SEPARATOR.'skeleton'.DIRECTORY_SEPARATOR.'module'.DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'actionsTest.php', sfConfig::get('sf_test_dir').DIRECTORY_SEPARATOR.'functional'.DIRECTORY_SEPARATOR.$arguments['application'].DIRECTORY_SEPARATOR.$arguments['module'].'ActionsTest.php');
 
-    foreach ($dirs as $dir)
-    {
-      if (is_dir($dir))
-      {
-        $this->getFilesystem()->mirror($dir, $moduleDir, $finder);
-        break;
-      }
+        // customize test file
+        $this->getFilesystem()->replaceTokens(sfConfig::get('sf_test_dir').DIRECTORY_SEPARATOR.'functional'.DIRECTORY_SEPARATOR.$arguments['application'].DIRECTORY_SEPARATOR.$arguments['module'].'ActionsTest.php', '##', '##', $this->constants);
+
+        // delete temp files
+        $this->getFilesystem()->remove(sfFinder::type('any')->in($tmpDir));
     }
 
-    // move configuration file
-    if (file_exists($config = $moduleDir.'/lib/configuration.php'))
-    {
-      if (file_exists($target = $moduleDir.'/lib/'.$arguments['module'].'GeneratorConfiguration.class.php'))
-      {
-        $this->getFilesystem()->remove($config);
-      }
-      else
-      {
-        $this->getFilesystem()->rename($config, $target);
-      }
-    }
+    protected function executeInit($arguments = array(), $options = array()) {
+        $moduleDir = sfConfig::get('sf_app_module_dir').'/'.$arguments['module'];
 
-    // move helper file
-    if (file_exists($config = $moduleDir.'/lib/helper.php'))
-    {
-      if (file_exists($target = $moduleDir.'/lib/'.$arguments['module'].'GeneratorHelper.class.php'))
-      {
-        $this->getFilesystem()->remove($config);
-      }
-      else
-      {
-        $this->getFilesystem()->rename($config, $target);
-      }
-    }
+        // create basic application structure
+        $finder = sfFinder::type('any')->discard('.sf');
+        $dirs = $this->configuration->getGeneratorSkeletonDirs('sfDoctrineModule', $options['theme']);
 
-    // create basic test
-    $this->getFilesystem()->copy(sfConfig::get('sf_symfony_lib_dir').DIRECTORY_SEPARATOR.'task'.DIRECTORY_SEPARATOR.'generator'.DIRECTORY_SEPARATOR.'skeleton'.DIRECTORY_SEPARATOR.'module'.DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'actionsTest.php', sfConfig::get('sf_test_dir').DIRECTORY_SEPARATOR.'functional'.DIRECTORY_SEPARATOR.$arguments['application'].DIRECTORY_SEPARATOR.$arguments['module'].'ActionsTest.php');
+        foreach ($dirs as $dir) {
+            if (is_dir($dir)) {
+                $this->getFilesystem()->mirror($dir, $moduleDir, $finder);
+                break;
+            }
+        }
 
-    // customize test file
-    $this->getFilesystem()->replaceTokens(sfConfig::get('sf_test_dir').DIRECTORY_SEPARATOR.'functional'.DIRECTORY_SEPARATOR.$arguments['application'].DIRECTORY_SEPARATOR.$arguments['module'].'ActionsTest.php', '##', '##', $this->constants);
+        // move configuration file
+        if (file_exists($config = $moduleDir.'/lib/configuration.php')) {
+            if (file_exists($target = $moduleDir.'/lib/'.$arguments['module'].'GeneratorConfiguration.class.php')) {
+                $this->getFilesystem()->remove($config);
+            } else {
+                $this->getFilesystem()->rename($config, $target);
+            }
+        }
 
-    // customize php and yml files
-    $finder = sfFinder::type('file')->name('*.php', '*.yml');
-    $this->constants['CONFIG'] = sprintf(<<<EOF
+        // move helper file
+        if (file_exists($config = $moduleDir.'/lib/helper.php')) {
+            if (file_exists($target = $moduleDir.'/lib/'.$arguments['module'].'GeneratorHelper.class.php')) {
+                $this->getFilesystem()->remove($config);
+            } else {
+                $this->getFilesystem()->rename($config, $target);
+            }
+        }
+
+        // create basic test
+        $this->getFilesystem()->copy(sfConfig::get('sf_symfony_lib_dir').DIRECTORY_SEPARATOR.'task'.DIRECTORY_SEPARATOR.'generator'.DIRECTORY_SEPARATOR.'skeleton'.DIRECTORY_SEPARATOR.'module'.DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR.'actionsTest.php', sfConfig::get('sf_test_dir').DIRECTORY_SEPARATOR.'functional'.DIRECTORY_SEPARATOR.$arguments['application'].DIRECTORY_SEPARATOR.$arguments['module'].'ActionsTest.php');
+
+        // customize test file
+        $this->getFilesystem()->replaceTokens(sfConfig::get('sf_test_dir').DIRECTORY_SEPARATOR.'functional'.DIRECTORY_SEPARATOR.$arguments['application'].DIRECTORY_SEPARATOR.$arguments['module'].'ActionsTest.php', '##', '##', $this->constants);
+
+        // customize php and yml files
+        $finder = sfFinder::type('file')->name('*.php', '*.yml');
+        $this->constants['CONFIG'] = sprintf(<<<EOF
     model_class:           %s
     theme:                 %s
     non_verbose_templates: %s
@@ -206,17 +195,18 @@ EOF;
     with_doctrine_route:   %s
     actions_base_class:    %s
 EOF
-    ,
-      $arguments['model'],
-      $options['theme'],
-      $options['non-verbose-templates'] ? 'true' : 'false',
-      $options['with-show'] ? 'true' : 'false',
-      $options['singular'] ? $options['singular'] : '~',
-      $options['plural'] ? $options['plural'] : '~',
-      $options['route-prefix'] ? $options['route-prefix'] : '~',
-      $options['with-doctrine-route'] ? 'true' : 'false',
-      $options['actions-base-class']
-    );
-    $this->getFilesystem()->replaceTokens($finder->in($moduleDir), '##', '##', $this->constants);
-  }
+            ,
+            $arguments['model'],
+            $options['theme'],
+            $options['non-verbose-templates'] ? 'true' : 'false',
+            $options['with-show'] ? 'true' : 'false',
+            $options['singular'] ? $options['singular'] : '~',
+            $options['plural'] ? $options['plural'] : '~',
+            $options['route-prefix'] ? $options['route-prefix'] : '~',
+            $options['with-doctrine-route'] ? 'true' : 'false',
+            $options['actions-base-class']
+        );
+        $this->getFilesystem()->replaceTokens($finder->in($moduleDir), '##', '##', $this->constants);
+    }
+
 }

@@ -1,4 +1,3 @@
-  public function executeNew(sfWebRequest $request)
-  {
-    $this->form = new <?php echo $this->getModelClass().'Form' ?>();
-  }
+    public function executeNew(sfWebRequest $request) {
+        $this->form = new <?php echo $this->getModelClass().'Form' ?>();
+    }

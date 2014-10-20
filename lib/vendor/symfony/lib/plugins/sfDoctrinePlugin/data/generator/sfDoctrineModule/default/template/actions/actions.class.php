@@ -1,16 +1,19 @@
 [?php
 
 /**
- * <?php echo $this->getModuleName() ?> actions.
+ * <?php echo $this->getModuleName() ?> acciones (Controlador).
  *
  * @package    ##PROJECT_NAME##
  * @subpackage <?php echo $this->getModuleName()."\n" ?>
  * @author     ##AUTHOR_NAME##
  * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
  */
-class <?php echo $this->getGeneratedModuleName() ?>Actions extends <?php echo $this->getActionsBaseClass() ?>
+ 
+/**
+ * Fecha creacion : "yyyy-mm-dd_hh:mm:ss"
+ */
+class <?php echo $this->getGeneratedModuleName() ?>Actions extends <?php echo $this->getActionsBaseClass() ?> {
 
-{
 <?php include dirname(__FILE__).'/../../parts/indexAction.php' ?>
 
 <?php if (isset($this->params['with_show']) && $this->params['with_show']): ?>
@@ -28,4 +31,5 @@ class <?php echo $this->getGeneratedModuleName() ?>Actions extends <?php echo $t
 <?php include dirname(__FILE__).'/../../parts/deleteAction.php' ?>
 
 <?php include dirname(__FILE__).'/../../parts/processFormAction.php' ?>
+
 }

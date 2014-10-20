@@ -56,7 +56,8 @@ abstract class sfModelGenerator extends sfGenerator
     $this->configure();
 
     $this->configuration = $this->loadConfiguration();
-
+//    print_r($this->getActionsBaseClass());
+//    die();
     // generate files
     $this->generatePhpFiles($this->generatedModuleName, sfFinder::type('file')->relative()->in($themeDir));
 
