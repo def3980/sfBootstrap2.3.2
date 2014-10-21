@@ -8,7 +8,7 @@
         ));
         $this->forward404Unless(
             $<?php echo $this->getSingularName() ?>,
-            sprintf('Object <?php echo $this->getSingularName() ?> does not exist (%s).', <?php echo $this->getRetrieveByPkParamsForAction(43) ?>)
+            sprintf('El objecto <?php echo $this->getSingularName() ?> con el parametro (%s), no existe.', <?php echo $this->getRetrieveByPkParamsForAction(43) ?>)
         );
         $this->form = new <?php echo $this->getModelClass().'Form' ?>($<?php echo $this->getSingularName() ?>);
 <?php endif; ?>

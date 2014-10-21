@@ -1,51 +1,44 @@
-<?php $con = 0; ?>
-<!-- Navbar ================================================== -->
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="brand" href="[?php echo url_for('@homepage') ?]">Bootstrap</a>
-                    <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            <li><a href="[?php echo url_for('@homepage') ?]">Home</a></li>
-                            <li class="active">[?php echo link_to('<?=sfInflector::humanize($this->getModuleName())?>', '<?php echo $this->getModuleName() ?>/index') ?]</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Subhead ================================================== -->
-        <header class="jumbotron subhead" id="overview">
-            <div class="container">
-                <h1><?=sfInflector::humanize($this->getPluralName())?></h1>
-                <p class="lead">Vista principal de datos de la tabla <?=$this->getPluralName()?></p>
-            </div>
-        </header>
-        <div class="container">
-            <div class="row-fluid">
+[?php slot('porcion_css') ?]
+        <style type="text/css">
+            .table thead th,
+            .table tbody td:first-child {
+                text-align: center;
+            }
+            .alert p {
+                margin: 0;
+            }
+            .alert h4 {
+                margin-bottom: 5px;
+            }
+        </style>
+[?php end_slot() ?]
+<div class="container">
+            <div class="row">
                 <div class="span12">
-                    <div class="page-header"><h2>Descripci&oacute;n</h2></div>
-                    <p>Este es un detalle de todos los campos que comprenden la tabla <?=$this->getModelClass()?> que ya incluye un paginador por defecto para filas y campos de ser necesario.</p>
-                    <table class="table table-bordered table-striped">
+                    <h2>[?php echo link_to('<?=sfInflector::humanize($this->getModuleName())?>', '<?php echo $this->getModuleName() ?>/index') ?]</h2>
+                    <hr>
+                    <div class="alert alert-info">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <h4 class="alert-info">Atenci&oacute;n!!</h4>
+                        <p>Si te percatas de la falta de algunos campos en esta tabla y en el modelo si existen, la razon es simple; la plantilla solo visualiza por defecto <code>5 campos</code> independientemente de cuantos tenga el modelo que esta en base a la tabla indicada en el comando <code>>_ ./symfony doctrine:generate-module</code>. No te preocupes solo necesitas llamarlos de acuerdo a su nombre planteado en el modelo. Suerte y hasta un proxima oportunidad. \m/</p>
+                    </div>
+                    <table class="table table-bordered table-striped responsive-utilities">
                         <thead>
                             <tr>
-<?php foreach ($this->getColumns() as $column): $con += 1; ?>
-                                <th<?php echo 1 === $con ? ' style="text-align: center"' : '' ?>><?php echo sfInflector::humanize(sfInflector::underscore($column->getPhpName())) ?></th>
+<?php $con = 0; foreach ($this->getColumns() as $columBDD => $column): $con += 1; ?>
+                                <th><?php echo sfInflector::humanize(sfInflector::underscore($column->getPhpName())) ?><small><?=$columBDD?></small></th>
 <?php if ($con >= 5): $con = 0; break; endif; endforeach; ?>
                             </tr>
                         </thead>
-                        <tbody>[?php if ($<?php echo $this->getPluralName() ?>->count()): foreach ($<?php echo $this->getPluralName() ?> as $<?php echo $this->getSingularName() ?>): echo PHP_EOL; ?]
+                        <tbody>[?php if ($<?php echo $this->getPluralName() ?>->count()): foreach ($<?php echo $this->getPluralName() ?>->getResults() as $<?php echo $this->getSingularName() ?>): echo PHP_EOL; ?]
                             <tr>
 <?php foreach ($this->getColumns() as $column): $con += 1; ?>
 <?php   if ($column->isPrimaryKey()): ?>
 <?php       if (isset($this->params['route_prefix']) && $this->params['route_prefix']): ?>
                                 <td><a href="[?php echo url_for('<?php echo $this->getUrlForAction(isset($this->params['with_show']) && $this->params['with_show'] ? 'show' : 'edit') ?>', $<?php echo $this->getSingularName() ?>) ?]">[?php echo $<?php echo $this->getSingularName() ?>->get<?php echo sfInflector::camelize($column->getPhpName()) ?>() ?]</a></td>
 <?php       else: ?>
-                                <td><a href="[?php echo url_for('<?php echo $this->getModuleName() ?>/<?php echo isset($this->params['with_show']) && $this->params['with_show'] ? 'show' : 'edit' ?>?<?php echo $this->getPrimaryKeyUrlParams() ?>) ?]">[?php echo $<?php echo $this->getSingularName() ?>->get<?php echo sfInflector::camelize($column->getPhpName()) ?>() ?]</a></td>
+<?php /*<td><a href="[?php echo url_for('<?php echo $this->getModuleName() ?>/<?php echo isset($this->params['with_show']) && $this->params['with_show'] ? 'show' : 'edit' ?>?<?php echo $this->getPrimaryKeyUrlParams() ?>) ?]">[?php echo $<?php echo $this->getSingularName() ?>->get<?php echo sfInflector::camelize($column->getPhpName()) ?>() ?]</a></td> */?>
+                                <td>[?php echo link_to($<?php echo $this->getSingularName() ?>->get<?php echo sfInflector::camelize($column->getPhpName()) ?>(), '<?php echo $this->getModuleName() ?>/<?php echo isset($this->params['with_show']) && $this->params['with_show'] ? 'show' : 'edit' ?>?<?php echo $this->getPrimaryKeyUrlParams() ?>) ?]</td>
 <?php       endif; ?>
 <?php   else: ?>
                                 <td>[?php echo $<?php echo $this->getSingularName() ?>->get<?php echo sfInflector::camelize($column->getPhpName()) ?>() ?]</td>
@@ -57,9 +50,44 @@
 <?php foreach ($this->getColumns() as $column): $con += 1; ?>
                                 <td>-</td>
 <?php if ($con >= 5): $con = 0; break; endif; endforeach; ?>
-                            </tr>[?php endif; ?]
+                            </tr>[?php endif; echo PHP_EOL; ?]
                         </tbody>
-                    </table>
+                    </table>[?php if ($<?php echo $this->getPluralName() ?>->count()): if ($<?php echo $this->getPluralName() ?>->haveToPaginate()): echo PHP_EOL; ?]
+                    <hr>
+                    <div class="pagination pagination-centered">
+                        <ul>
+                            <li[?php echo 1 == $<?php echo $this->getPluralName() ?>->getPage() ? ' class="active"' : '' ?]>
+                                <a[?php echo 1 == $<?php echo $this->getPluralName() ?>->getPage() ? ' href="javascript:void(0)"' : ' href="'.url_for('<?php echo $this->getModuleName() ?>/index?pagina=1').'"' ?]>&laquo;</a>
+                            </li>[?php foreach ($<?php echo $this->getPluralName() ?>->getLinks() as $pag): echo PHP_EOL; ?]
+                            <li[?php echo $pag == $<?php echo $this->getPluralName() ?>->getPage() ? ' class="active"' : '' ?]>
+                                <a[?php echo $pag == $<?php echo $this->getPluralName() ?>->getPage() ? ' href="javascript:void(0)"' : ' href="'.url_for('<?php echo $this->getModuleName() ?>/index?pagina='.$pag).'"' ?]>[?=$pag?]</a>
+                            </li>[?php endforeach; echo PHP_EOL; ?]
+                            <li[?php echo $<?php echo $this->getPluralName() ?>->getLastPage() == $<?php echo $this->getPluralName() ?>->getPage() ? ' class="active"' : '' ?]>
+                                <a[?php echo $<?php echo $this->getPluralName() ?>->getLastPage() == $<?php echo $this->getPluralName() ?>->getPage() ? ' href="javascript:void(0)"' : ' href="'.url_for('<?php echo $this->getModuleName() ?>/index?pagina='.$<?php echo $this->getPluralName() ?>->getNextPage()).'"' ?]>&raquo;</a>
+                            </li>
+                        </ul>
+                    </div>
+[?php else: ?]
+                    <hr>
+                    <div class="pagination pagination-centered">
+                        <ul>
+                            <li class="active"><a href="javascript:void(0)">&laquo;</a></li>
+                            <li class="active"><a href="javascript:void(0)">1</a></li>
+                            <li class="active"><a href="javascript:void(0)">&raquo;</a></li>
+                        </ul>
+                    </div>
+[?php endif; else: echo PHP_EOL; ?]
+                    <hr>
+                    <div class="pagination pagination-centered">
+                        <ul>
+                            <li class="active"><a href="javascript:void(0)">&laquo;</a></li>
+                            <li class="active"><a href="javascript:void(0)">1</a></li>
+                            <li class="active"><a href="javascript:void(0)">&raquo;</a></li>
+                        </ul>
+                    </div>
+[?php endif; ?]
                 </div>
             </div>
-        </div>
+        </div><!-- /container -->
+<?php echo str_repeat('        <br />'.PHP_EOL, 6) ?>
+[?php include_partial('footer') ?]

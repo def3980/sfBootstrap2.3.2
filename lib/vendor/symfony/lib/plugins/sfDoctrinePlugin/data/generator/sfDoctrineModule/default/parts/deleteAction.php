@@ -8,7 +8,7 @@
         ));
         $this->forward404Unless(
             $<?php echo $this->getSingularName() ?>,
-            sprintf('Object <?php echo $this->getSingularName() ?> does not exist (%s).', <?php echo $this->getRetrieveByPkParamsForAction(43) ?>)
+            sprintf('El objecto <?php echo $this->getSingularName() ?> con el parametro (%s), no existe.', <?php echo $this->getRetrieveByPkParamsForAction(43) ?>)
         );
         $<?php echo $this->getSingularName() ?>->delete();
 <?php endif; ?>
