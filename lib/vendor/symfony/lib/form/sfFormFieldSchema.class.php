@@ -39,24 +39,23 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
     $this->fieldNames = $widget->getPositions();
   }
 
-  /**
-   * Renders hidden form fields.
-   *
-   * @param boolean $recursive False will prevent hidden fields from embedded forms from rendering
-   *
-   * @return string
-   */
-  public function renderHiddenFields($recursive = true)
-  {
-    $output = '';
+    /**
+     * Renders hidden form fields.
+     *
+     * @param boolean $recursive False will prevent hidden fields from embedded forms from rendering
+     *
+     * @return string
+     */
+    public function renderHiddenFields($recursive = true) {
+        $output = '';
+        foreach ($this->getHiddenFields($recursive) as $field) {
+            // modificado solo para el caso de _form.php en el comando
+            // ./symfony doctrine:generate-module
+            $output .= str_repeat('      ', 4).$field->render().PHP_EOL;
+        }
 
-    foreach ($this->getHiddenFields($recursive) as $field)
-    {
-      $output .= $field->render();
+        return rtrim($output, PHP_EOL);
     }
-
-    return $output;
-  }
 
   /**
    * Returns an array of hidden fields from the current schema.

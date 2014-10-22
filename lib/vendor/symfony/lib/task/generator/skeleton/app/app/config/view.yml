@@ -12,6 +12,6 @@ default:
     author: 
 
   stylesheets: [ bootstrap: { bootstrap : true }, bootstrap-responsive: { bootstrap : true }, docs: { bootstrap : true }, google-code-prettify: { bootstrap : true } ]
-  javascripts: [ widgets: { bootstrap : true }, jquery: { bootstrap : true }, bootstrap-transition: { bootstrap : true }, bootstrap-alert: { bootstrap : true }, bootstrap-modal: { bootstrap : true }, bootstrap-dropdown: { bootstrap : true }, bootstrap-scrollspy: { bootstrap : true }, bootstrap-tab: { bootstrap : true }, bootstrap-tooltip: { bootstrap : true }, bootstrap-popover: { bootstrap : true }, bootstrap-button: { bootstrap : true }, bootstrap-collapse: { bootstrap : true }, bootstrap-carousel: { bootstrap : true }, bootstrap-typeahead: { bootstrap : true }, bootstrap-affix: { bootstrap : true }, holder/holder: { bootstrap : true }, google-code-prettify/prettify: { bootstrap : true }, application: { bootstrap : true } ]
+  javascripts: [ widgets, jquery, bootstrap-transition, bootstrap-alert, bootstrap-modal, bootstrap-dropdown, bootstrap-scrollspy, bootstrap-tab, bootstrap-tooltip, bootstrap-popover, bootstrap-button, bootstrap-collapse, bootstrap-carousel, bootstrap-typeahead, bootstrap-affix, holder/holder, google-code-prettify/prettify, application ]
   has_layout:  true
   layout:      layout

@@ -137,7 +137,7 @@ function javascript_include_tag() {
         $html .= $tag.PHP_EOL;
     }
 
-    return $inside ? $html :"\t".$html;
+    return $inside ? $html : "\t".$html;
 }
 
 /**

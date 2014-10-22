@@ -22,7 +22,7 @@
                         <h4 class="alert-info">Atenci&oacute;n!!</h4>
                         <p>Si te percatas de la falta de algunos campos en esta tabla y en el modelo si existen, la razon es simple; la plantilla solo visualiza por defecto <code>5 campos</code> independientemente de cuantos tenga el modelo que esta en base a la tabla indicada en el comando <code>>_ ./symfony doctrine:generate-module</code>. No te preocupes solo necesitas llamarlos de acuerdo a su nombre planteado en el modelo. Suerte y hasta un proxima oportunidad. \m/</p>
                     </div>
-                    <table class="table table-bordered table-striped responsive-utilities">
+                    <table class="table table-bordered table-striped table-hover responsive-utilities">
                         <thead>
                             <tr>
 <?php $con = 0; foreach ($this->getColumns() as $columBDD => $column): $con += 1; ?>
@@ -52,7 +52,9 @@
 <?php if ($con >= 5): $con = 0; break; endif; endforeach; ?>
                             </tr>[?php endif; echo PHP_EOL; ?]
                         </tbody>
-                    </table>[?php if ($<?php echo $this->getPluralName() ?>->count()): if ($<?php echo $this->getPluralName() ?>->haveToPaginate()): echo PHP_EOL; ?]
+                    </table>
+                    [?php echo link_to('Nuevo', '<?php echo $this->getModuleName() ?>/new', array('class' => 'btn btn-link')) ?]
+[?php if ($<?php echo $this->getPluralName() ?>->count()): if ($<?php echo $this->getPluralName() ?>->haveToPaginate()): echo PHP_EOL; ?]
                     <hr>
                     <div class="pagination pagination-centered">
                         <ul>
