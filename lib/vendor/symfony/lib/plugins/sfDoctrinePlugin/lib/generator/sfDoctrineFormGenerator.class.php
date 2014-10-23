@@ -102,7 +102,7 @@ class sfDoctrineFormGenerator extends sfGenerator
     }
 
     $models = $this->loadModels();
-
+    
     // create the project base class for all forms
     $file = sfConfig::get('sf_lib_dir').'/form/doctrine/BaseFormDoctrine.class.php';
     if (!file_exists($file))

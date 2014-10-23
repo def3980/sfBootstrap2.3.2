@@ -1,5 +1,6 @@
-[?php use_stylesheet('bootstrap-datepicker') ?]
-[?php use_javascript('bootstrap-datepicker') ?]
+[?php use_stylesheet('bootstrap-datetimepicker.min.css') ?]
+[?php use_javascript('bootstrap-datetimepicker') ?]
+[?php use_javascript('locales/bootstrap-datetimepicker.es.js') ?]
 [?php use_stylesheets_for_form($form) ?]
 [?php use_javascripts_for_form($form) ?]
 <?php $form = $this->getFormObject() ?>
@@ -27,9 +28,12 @@
 <?php   foreach ($form as $name => $field): if ($field->isHidden()) continue ?>
                                 <div class="control-group">
                                     [?php echo $form['<?php echo $name ?>']->renderLabel('', array('class' => 'control-label')).PHP_EOL ?]
-                                    <div class="controls">
+                                    <div class="controls date input-append" id="dtp_<?=$field->renderId()?>">
 [?php echo $form['<?php echo $name ?>']->renderError() ?]
                                         [?php echo $form['<?php echo $name ?>']->render(array('placeholder' => '<?php echo $name ?>')).PHP_EOL ?]
+                                        <span class='add-on'>
+                                            <i data-date-icon='icon-calendar' data-time-icon='icon-time'></i>
+                                        </span>
                                     </div>
                                 </div>
 <?php       if ($con == ceil($tot / 2)): ?>
@@ -64,12 +68,25 @@
 [?php slot('porcion_js') ?]
         <script>
             $(function() {
-<?php foreach ($form as $name => $field): ?>
-<?php   if($field->renderId() == 'dml_personas_pe_fecha_nacimiento'): ?>
-                $('#<?=$field->renderId()?>').datepicker({
-                    format : 'yyyy-mm-dd'
-                });
-<?php   endif; ?>
+<?php 
+    $objTabla = Doctrine_Core::getTable($this->getModelClass());
+    $columns  = array(); $campoDateODateTime = array();
+    // Recorrido para obtener el acceso a los campos de la tabla indicada
+    // ademas de los tipos de datos que tiene cada campo.
+    foreach (array_diff(array_keys($objTabla->getColumns()), array()) as $name) {
+        $columns[] = new sfDoctrineColumn($name, $objTabla);
+    }
+    foreach ($columns as $column) {
+        if ('date' == $column->getDoctrineType() || 'timestamp' == $column->getDoctrineType()) {
+            $campoDateODateTime[] = $column->getFieldName();
+        }
+    }
+    foreach ($form as $name => $field): 
+        foreach ($campoDateODateTime as $dodt):
+            if (false !== strpos($field->renderId(), $dodt)): ?>
+                $('#dtp_<?=$field->renderId()?>').datetimepicker({ format : 'yyyy-MM-dd hh:mm:ss', language: 'es' });
+<?php       endif; ?>
+<?php   endforeach; ?>
 <?php endforeach; ?>
             });
         </script>
