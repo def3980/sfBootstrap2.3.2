@@ -20,7 +20,7 @@
                     <div class="alert alert-info">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <h4 class="alert-info">Atenci&oacute;n!!</h4>
-                        <p>Si te percatas de la falta de algunos campos en esta tabla y en el modelo si existen, la razon es simple; la plantilla solo visualiza por defecto <code>5 campos</code> independientemente de cuantos tenga el modelo que esta en base a la tabla indicada en el comando <code>>_ ./symfony doctrine:generate-module</code>. No te preocupes solo necesitas llamarlos de acuerdo a su nombre planteado en el modelo. Suerte y hasta un proxima oportunidad. \m/</p>
+                        <p>Si te percatas de la falta de algunos campos en esta tabla y en el modelo si existen, la razon es simple; la plantilla solo visualiza por defecto <code>5 campos</code> independientemente de cuantos tenga el modelo que esta en base a la tabla indicada en el comando <code>>_ ./symfony doctrine:generate-module</code>. No te preocupes solo necesitas llamarlos de acuerdo a su nombre, planteado en el modelo. Suerte y hasta un proxima oportunidad. \m/</p>
                     </div>
                     <table class="table table-bordered table-striped table-hover responsive-utilities">
                         <thead>

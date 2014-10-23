@@ -1,6 +1,9 @@
 <div class="container">
             <div class="row">
                 <div class="span12">
+                    <ul class="nav nav-pills pull-right">
+                        <li><span class="opc">Editar registro</span></li>
+                    </ul>
                     <h2>[?php echo link_to('<?=sfInflector::humanize($this->getModuleName())?>', '<?php echo $this->getModuleName() ?>/index') ?]</h2>
                     <hr>
 [?php include_partial('form', array('form' => $form)) ?]
