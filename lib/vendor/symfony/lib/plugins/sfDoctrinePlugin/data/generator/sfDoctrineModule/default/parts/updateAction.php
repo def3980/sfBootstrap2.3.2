@@ -14,4 +14,4 @@
 <?php endif; ?>
         $this->processForm($request, $this->form);
         $this->setTemplate('edit');
-  }
+    }

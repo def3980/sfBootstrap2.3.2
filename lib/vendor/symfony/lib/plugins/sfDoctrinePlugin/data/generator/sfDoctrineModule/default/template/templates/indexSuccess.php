@@ -10,13 +10,40 @@
             .alert h4 {
                 margin-bottom: 5px;
             }
+            .opc {
+                display: block;
+                text-decoration: none;
+                background-color: #eeeeee;
+                border-color: #eeeeee #eeeeee #dddddd;
+                color: #0088cc;
+                padding-top: 8px;
+                padding-bottom: 8px;
+                margin-top: 2px;
+                margin-bottom: 2px;
+                padding-right: 12px;
+                padding-left: 12px;
+                margin-right: 2px;
+                line-height: 14px;
+                -webkit-border-radius: 5px;
+                   -moz-border-radius: 5px;
+                        border-radius: 5px;
+            }
         </style>
 [?php end_slot() ?]
 <div class="container">
             <div class="row">
                 <div class="span12">
-                    <h2>[?php echo link_to('<?=sfInflector::humanize($this->getModuleName())?>', '<?php echo $this->getModuleName() ?>/index') ?]</h2>
-                    <hr>
+                    <div class="row">
+                        <div class="span6">
+                            <h2>[?php echo link_to('<?=sfInflector::humanize($this->getModuleName())?>', '<?php echo $this->getModuleName() ?>/index') ?]</h2>
+                        </div>
+                        <div class="span6">
+                            <ul class="nav nav-pills pull-right">
+                                <li><span class="opc">Lista de registros</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr style="margin: 0 0 20px">
                     <div class="alert alert-info">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <h4 class="alert-info">Atenci&oacute;n!!</h4>
@@ -44,7 +71,7 @@
                                 <td>[?php echo $<?php echo $this->getSingularName() ?>->get<?php echo sfInflector::camelize($column->getPhpName()) ?>() ?]</td>
 <?php   endif; ?>
 <?php if ($con >= 5): $con = 0; break; endif; endforeach; ?>
-                            </tr>[?php endforeach; echo PHP_EOL; ?]
+                            </tr>[?php endforeach; ?]
 [?php else: echo PHP_EOL; ?]
                             <tr>
 <?php foreach ($this->getColumns() as $column): $con += 1; ?>
@@ -53,8 +80,13 @@
                             </tr>[?php endif; echo PHP_EOL; ?]
                         </tbody>
                     </table>
-                    [?php echo link_to('Nuevo', '<?php echo $this->getModuleName() ?>/new', array('class' => 'btn btn-link')) ?]
-[?php if ($<?php echo $this->getPluralName() ?>->count()): if ($<?php echo $this->getPluralName() ?>->haveToPaginate()): echo PHP_EOL; ?]
+                    <div class="row">
+                        <div class="span6">&nbsp;</div>
+                        <div class="span6" style="text-align: right">
+                            [?php echo link_to('Nuevo', '<?php echo $this->getModuleName() ?>/new', array('class' => 'btn btn-link')) ?]
+                        </div>
+                    </div>
+[?php if ($<?php echo $this->getPluralName() ?>->count()): if ($<?php echo $this->getPluralName() ?>->haveToPaginate()): ?]
                     <hr>
                     <div class="pagination pagination-centered">
                         <ul>

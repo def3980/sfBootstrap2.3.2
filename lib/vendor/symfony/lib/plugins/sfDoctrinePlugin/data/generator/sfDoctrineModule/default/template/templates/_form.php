@@ -3,7 +3,23 @@
 [?php use_javascript('locales/bootstrap-datetimepicker.es.js') ?]
 [?php use_stylesheets_for_form($form) ?]
 [?php use_javascripts_for_form($form) ?]
-<?php $form = $this->getFormObject() ?>
+<?php 
+    $form = $this->getFormObject();
+    $con = 1;
+    $tot = count($form) - 2; // porque -2, para eliminar por defecto id y csrf_token de la lista de conteo
+    $objTabla = Doctrine_Core::getTable($this->getModelClass());
+    $columns  = array(); $campoDateODateTime = array(); $flag = false;
+    // Recorrido para obtener el acceso a los campos de la tabla indicada
+    // ademas de los tipos de datos que tiene cada campo.
+    foreach (array_diff(array_keys($objTabla->getColumns()), array()) as $name) {
+        $columns[] = new sfDoctrineColumn($name, $objTabla);
+    }
+    foreach ($columns as $column) {
+        if ('date' == $column->getDoctrineType() || 'timestamp' == $column->getDoctrineType()) {
+            $campoDateODateTime[$column->getFieldName()] = $column->getDoctrineType();
+        }
+    }
+?>
 <?php if (isset($this->params['route_prefix']) && $this->params['route_prefix']): ?>
 [?php echo form_tag_for($form, '@<?php echo $this->params['route_prefix'] ?>') ?]
 <?php else: ?>
@@ -19,23 +35,7 @@
 <?php endif;?>
 <?php if (isset($this->params['non_verbose_templates']) && $this->params['non_verbose_templates']): ?>
                         [?php echo $form ?]
-<?php else: 
-    $con = 1;
-    $tot = count($form) - 2; // porque -2, para eliminar por defecto id y csrf_token de la lista de conteo
-    
-    $objTabla = Doctrine_Core::getTable($this->getModelClass());
-    $columns  = array(); $campoDateODateTime = array(); $flag = false;
-    // Recorrido para obtener el acceso a los campos de la tabla indicada
-    // ademas de los tipos de datos que tiene cada campo.
-    foreach (array_diff(array_keys($objTabla->getColumns()), array()) as $name) {
-        $columns[] = new sfDoctrineColumn($name, $objTabla);
-    }
-    foreach ($columns as $column) {
-        if ('date' == $column->getDoctrineType() || 'timestamp' == $column->getDoctrineType()) {
-            $campoDateODateTime[$column->getFieldName()] = $column->getDoctrineType();
-        }
-    }
-?>
+<?php else: ?>
                         <div class="row">
                             <div class="span6">
 <?php   foreach ($form as $name => $field): if ($field->isHidden()) continue ?>
@@ -65,46 +65,69 @@
 <?php       endif; $con += 1; ?>
 <?php   endforeach; ?>
                             </div>
-<?php endif; ?>
                         </div>
+<?php endif; ?>
                         <hr style="margin: 0 0 20px 0" />
                         <div style="text-align: center">
 <?php if (isset($this->params['route_prefix']) && $this->params['route_prefix']): ?>
                             <a href="[?php echo url_for('<?php echo $this->getUrlForAction('list') ?>') ?]">Regresar a la lista</a>
 <?php else: ?>
-                            <a class="btn" href="[?php echo url_for('<?php echo $this->getModuleName() ?>/index') ?]">Regresar</a>
+                            <a class="btn btn-small" href="[?php echo url_for('<?php echo $this->getModuleName() ?>/index') ?]">Regresar</a>
 <?php endif; ?>
-                            &nbsp; | &nbsp;<button type="submit" class="btn btn-success" style="margin: 0 auto">Guardar</button>
+                             |&nbsp;<button type="submit" class="btn btn-small btn-success" style="margin: 0 auto">Guardar</button>
 [?php if (!$form->getObject()->isNew()): ?]
 <?php if (isset($this->params['route_prefix']) && $this->params['route_prefix']): ?>
-                            &nbsp; | &nbsp;[?php echo link_to('Eliminar', '<?php echo $this->getUrlForAction('delete') ?>', $form->getObject(), array('method' => 'delete', 'confirm' => 'Estas seguro?')) ?]
+                             |&nbsp;[?php echo link_to('Eliminar', '<?php echo $this->getUrlForAction('delete') ?>', $form->getObject(), array('method' => 'delete', 'confirm' => 'Estas seguro?')) ?]
 <?php else: ?>
-                            &nbsp; | &nbsp;[?php echo link_to('Eliminar', '<?php echo $this->getModuleName() ?>/delete?<?php echo $this->getPrimaryKeyUrlParams('$form->getObject()', true) ?>, array('method' => 'delete', 'confirm' => 'Estas seguro?', 'class' => 'btn btn-danger')).PHP_EOL ?]
+<?php /*&nbsp; | &nbsp;[?php echo link_to('Eliminar', '<?php echo $this->getModuleName() ?>/delete?<?php echo $this->getPrimaryKeyUrlParams('$form->getObject()', true) ?>, array('method' => 'delete', 'confirm' => 'Estas seguro?', 'class' => 'btn btn-danger')).PHP_EOL ?]*/ ?>
+                             |&nbsp;<button class="btn btn-small btn-danger" id="del">Eliminar</button>
 <?php endif; ?>
-                        </div>
 [?php endif; ?]
+                        </div>
 [?php echo $form->renderGlobalErrors() ?]
 <?php if (!isset($this->params['non_verbose_templates']) || !$this->params['non_verbose_templates']): ?>
 [?php echo $form->renderHiddenFields(false).PHP_EOL ?]
 <?php endif; ?>
                     </form>
-                    <!-- Button to trigger modal -->
-                    <a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+[?php if (!$form->getObject()->isNew()): ?]
                     <!-- Modal -->
-                    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="text-align: center">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="myModalLabel">Modal header</h3>
+                            <h4 id="myModalLabel">Advertencia !!</h4>
                         </div>
                         <div class="modal-body">
-                            <p>One fine body…</p>
+                            <p>Se va a proceder a eliminar un registro <br />con n&uacute;mero de identificador <code><?php echo $this->getFormObject()->getFormFieldSchema()->key() ?> = [?php echo $form['<?php echo $this->getFormObject()->getFormFieldSchema()->key() ?>']->getValue() ?]</code></p>
+                            <p>Est&aacute;s seguro?</p>
                         </div>
-                        <div class="modal-footer">
-                            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                            <button class="btn btn-primary">Save changes</button>
+                        <div class="modal-footer" style="text-align: center">
+                            <button class="btn btn-small btn-danger">Aceptar</button>
+                            <button class="btn btn-small" data-dismiss="modal" aria-hidden="true">Cancelar</button>
                         </div>
                     </div>
+[?php endif; ?]
 <?php 
+// Aqui un caso especial. La eliminacion de un registro en Symfony 1.4.20
+// genera una problematica que se detalla a continuacion: 
+// El _csrf_token (que es una clave sha1 aleatoria con el cual se valida los formularios) 
+// es reservado para el envio de formularios y para las peticiones 
+// link_to (Helper que te ayuda a crear el link "<a href='#'>enlace</a>"). 
+// Entonces, ¿si esto es reservado para estos items como poder usarlo desde 
+// JQuery en cualquier template de nuestros modulos ?
+// Ver la solucion: http://comunidad.fware.pro/general/csrf-token-en-symfony-y-jquery/#sthash.05aJLi2c.dpuf
+// 
+// Aqui el detalle de la solucion:
+// Sin embargo instanciando BaseForm() hacia un objeto accedemos al token de la sesion del navegador
+// Y podemos pasar la validacion checkCSRFProtection() ubicada en el actions.class.php del modulo en
+// el que estemos trabajando.
+//
+// Para este caso de modificaciones de Symfony 1.4.20 con Bootstrap toco hacer dos tipos de casos
+// con BaseForm(). Uno para validar la utilizacion en csrf_token al momento de crear el modulo
+// con el comando doctrine:generate-module y otro para cuando ya en el modulo creado deseas eliminar
+// el registro.
+//
+// Nota: Me tomo un dia averiguar esto... :-|
+$token = new BaseForm();
 $date = $time = "";
 foreach ($form as $name => $field): 
     foreach ($campoDateODateTime as $campo => $tipo):
@@ -146,15 +169,45 @@ endforeach; ?>
 [?php slot('porcion_js') ?]
         <script>
             $(function() {
-                <?php echo sfConfig::get('sf_csrf_secret') ?>
                 var inputDate = "<?php echo rtrim($date, ', ') ?>",
                     inputDateTime = "<?php echo rtrim($time, ', ') ?>";
-                $(inputDate).datetimepicker({ 
+                $(inputDate).datetimepicker({
                     format : 'yyyy-MM-dd', language: 'es', pickTime: false
                 });
                 $(inputDateTime).datetimepicker({ 
                     format : 'yyyy-MM-dd hh:mm:ss', language: 'es' 
                 });
+[?php if (!$form->getObject()->isNew()): $token = new BaseForm(); ?]
+                // para abrir el modal
+                $('#del').bind('click', function(e) {
+                    e.preventDefault();
+                    $('#myModal').modal({
+                        keyboard : false
+                    });
+                });
+                
+                // para borrar el registro ~[?php echo sfConfig::get('sf_csrf_secret') ?]~
+                $('#myModal div:last .btn-danger').bind('click', function() {
+                    $('#myModal').find('div:last').append(
+                        $('<form/>', { 
+                            action : '[?php echo url_for('<?php echo $this->getModuleName() ?>/delete?<?php echo $this->getPrimaryKeyUrlParams('$form->getObject()', true) ?>) ?]', 
+                            method : 'post',
+                            style  : 'display: none'
+                        }).append(
+                            $('<input />', {
+                                type  : 'hidden',
+                                name  : 'sf_method',
+                                value : 'delete'
+                            })<?php if ($token->isCSRFProtected()): ?>,
+                            $('<input />', {
+                                type  : 'hidden',
+                                name  : '[?=$token->getCSRFFieldName()?]',
+                                value : '[?=$token->getCSRFToken()?]'
+                            })<?php echo PHP_EOL; endif; ?>
+                        )
+                    ).find('form').submit();
+                });
+[?php endif; ?]
             });
         </script>
 [?php end_slot() ?]

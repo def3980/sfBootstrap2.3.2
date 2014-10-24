@@ -10,7 +10,7 @@
  */
  
 /**
- * Fecha creacion : "yyyy-mm-dd_hh:mm:ss"
+ * Fecha creacion : "##FECHA_Y_HORA##"
  */
 class <?php echo $this->getGeneratedModuleName() ?>Actions extends <?php echo $this->getActionsBaseClass() ?> {
 

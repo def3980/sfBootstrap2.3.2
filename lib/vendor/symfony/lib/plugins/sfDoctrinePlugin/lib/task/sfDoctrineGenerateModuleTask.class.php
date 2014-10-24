@@ -24,6 +24,32 @@ require_once(dirname(__FILE__).'/sfDoctrineBaseTask.class.php');
  * @version    SVN: $Id: sfDoctrineGenerateModuleTask.class.php 24637 2009-12-01 05:06:21Z Kris.Wallsmith $
  */
 class sfDoctrineGenerateModuleTask extends sfDoctrineBaseTask {
+    
+    protected $_dias = array(
+                        'domingo', 
+                        'lunes', 
+                        'martes', 
+                        'miercoles', 
+                        'jueves', 
+                        'viernes', 
+                        'sabado'
+                       ),
+              $_diasAbreviados = array(),
+              $_meses = array(
+                        'enero', 
+                        'febrero', 
+                        'marzo', 
+                        'abril', 
+                        'mayo', 
+                        'junio',
+                        'julio', 
+                        'agosto', 
+                        'septiembre', 
+                        'octubre', 
+                        'noviembre', 
+                        'diciembre'
+                       ),
+              $_mesesAbreviados = array();
 
     /**
      * @see sfTask
@@ -93,6 +119,7 @@ EOF;
             'UC_MODULE_NAME' => ucfirst($arguments['module']),
             'MODEL_CLASS'    => $arguments['model'],
             'AUTHOR_NAME'    => isset($properties['symfony']['author']) ? $properties['symfony']['author'] : 'Tu nombre aqui',
+            'FECHA_Y_HORA'   => $this->getDateAndTimeInEs(date('Y-m-d H:i:s'))
         );
 
         $method = $options['generate-in-cache'] ? 'executeInit' : 'executeGenerate';
@@ -207,6 +234,54 @@ EOF
             $options['actions-base-class']
         );
         $this->getFilesystem()->replaceTokens($finder->in($moduleDir), '##', '##', $this->constants);
+    }
+
+    /**
+     * Ayuda a traducir la fecha y hora actual del sistema en formato español.
+     *
+     * Por Oswaldo Rojas ~ Sáb, 27 Sep 2014 13:53:12
+     * 
+     * @param  date $date Recibe la fecha y hora actual ('Y-m-d H:i:s')
+     * @param  boolean $complete Indica si los nombre de las fechas son
+     * completas o abreviadas
+     * @param  boolean $capital Indica los nombres de las fechas con letra 
+     * capital
+     * @return string Ej.: Lun, 01 Ene 1970 00:00:01
+     */
+    protected function getDateAndTimeInEs($date, $complete = true, $capital = true) {
+        // Debido a que este proyecto de modificacion de symfony se realiza en
+        // Ecuador se va a poner por default el timezone correspondiente, pero
+        // sientete libre de cambiarlo a tu gusto (manualmente) ;-|
+        date_default_timezone_set('America/Guayaquil');
+
+        foreach ($this->_dias as $k => $v) { $this->_diasAbreviados[$k] = substr($v, 0, 3); }        
+        array_unshift($this->_meses, '');
+        foreach ($this->_meses as $k => $v) { $this->_mesesAbreviados[$k] = substr($v, 0, 3); }
+        array_unshift($this->_mesesAbreviados, '');
+        $dia    = explode('-', $date, 3);
+        $year   = reset($dia);
+        $month  = (string)(int)$dia[1];
+        $day    = (string)(int)$dia[2];
+        $hms    = explode(' ', $dia[2], 2);
+        $time   = (string) $hms[1];
+        $dias   = $this->_dias;
+        $dAbr   = $this->_diasAbreviados;
+        $tdia   = $dias[intval((date('w', mktime(0, 0, 0, $month, $day, $year))))];
+        $tAbr   = $dAbr[intval((date('w', mktime(0, 0, 0, $month, $day, $year))))];
+        $meses  = $this->_meses;
+        $mesAbr = $this->_mesesAbreviados;
+
+        return $complete 
+               ? ($capital 
+                  ? ucfirst($tdia) 
+                  : $tdia).", {$day} ".($capital 
+                                        ? ucfirst($meses[$month]) 
+                                        : $meses[$month])." {$year} {$time}"
+               : ($capital 
+                  ? ucfirst($tAbr) 
+                  : $tAbr).", {$day} ".($capital 
+                                        ? ucfirst($mesAbr[$month]) 
+                                        : $mesAbr[$month])." {$year} {$time}";
     }
 
 }
