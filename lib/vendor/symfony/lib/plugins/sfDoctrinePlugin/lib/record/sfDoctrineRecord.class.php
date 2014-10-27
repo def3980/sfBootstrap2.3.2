@@ -103,31 +103,24 @@ abstract class sfDoctrineRecord extends Doctrine_Record
     return ! $this->exists();
   }
 
-  /**
-   * Returns a string representation of the record.
-   *
-   * @return string A string representation of the record
-   */
-  public function __toString()
-  {
-    $guesses = array('name',
-                     'title',
-                     'description',
-                     'subject',
-                     'keywords',
-                     'id');
+    /**
+     * Retorna una representacion string de u registro.
+     *
+     * @return string Una representacion string de un registro
+     */
+    public function __toString() {
+        $guesses = array('name', 'title', 'description', 'subject', 'keywords', 'id');
 
-    // we try to guess a column which would give a good description of the object
-    foreach ($guesses as $descriptionColumn)
-    {
-      try
-      {
-        return (string) $this->get($descriptionColumn);
-      } catch (Exception $e) {}
+        // Tratamos de adivinar cual columna nos puede dar una buena descripcion del objeto
+        foreach ($guesses as $descriptionColumn) {
+            try {
+                return (string) $this->get($descriptionColumn);
+            } catch (Exception $e) {}
+        }
+
+        return sprintf('No existe el metodo __toString() en la clase modelo "%s"', $this->getTable()->getComponentName());
+        //return sprintf('No description for object of class "%s"', $this->getTable()->getComponentName());
     }
-
-    return sprintf('No description for object of class "%s"', $this->getTable()->getComponentName());
-  }
 
   /**
    * Provides getter and setter methods.
