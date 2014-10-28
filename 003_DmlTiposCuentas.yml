@@ -1,0 +1,12 @@
+DmlTiposCuentas:
+<?php foreach (sgAyudaGlobal::getInstance()->csvHaciaArray('D:\documentación\Descargas\DmlTiposCuentas.csv') as $k => $v): ?>
+  id_<?=$k?>:
+    tc_nombre:         <?php echo "" == $v['tc_nombre'] ? NULL : $v['tc_nombre']; echo PHP_EOL; ?>
+    tc_fecha_crea:     <?php echo "" == $v['tc_fecha_crea'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['tc_fecha_crea']; echo PHP_EOL; ?>
+    tc_quien_crea:     <?php echo "" == $v['tc_quien_crea'] ? NULL : $v['tc_quien_crea']; echo PHP_EOL; ?>
+    tc_fecha_modifica: <?php echo "" == $v['tc_fecha_modifica'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['tc_fecha_modifica']; echo PHP_EOL; ?>
+    tc_quien_modifica: <?php echo "" == $v['tc_quien_modifica'] ? NULL : $v['tc_quien_modifica']; echo PHP_EOL; ?>
+    tc_fecha_borra:    <?php echo "" == $v['tc_fecha_borra'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['tc_fecha_borra']; echo PHP_EOL; ?>
+    tc_quien_borra:    <?php echo "" == $v['tc_quien_borra'] ? NULL : $v['tc_quien_borra']; echo PHP_EOL; ?>
+    tc_borrado_logico: <?php echo "" == $v['tc_borrado_logico'] ? NULL : $v['tc_borrado_logico']; echo PHP_EOL; ?>
+<?php endforeach; ?>

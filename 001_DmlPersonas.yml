@@ -1,0 +1,22 @@
+DmlPersonas:
+<?php foreach (sgAyudaGlobal::getInstance()->csvHaciaArray('D:\documentación\Descargas\DmlPersonas.csv') as $k => $v): ?>
+  id_<?=$k?>:
+    pe_cedula:           <?php echo "" == $v['pe_cedula'] ? NULL : $v['pe_cedula']; echo PHP_EOL; ?>
+    pe_nombres:          <?php echo "" == $v['pe_nombres'] ? NULL : $v['pe_nombres']; echo PHP_EOL; ?>
+    pe_apellidos:        <?php echo "" == $v['pe_apellidos'] ? NULL : $v['pe_apellidos']; echo PHP_EOL; ?>
+    pe_fecha_nacimiento: <?php echo "" == $v['pe_fecha_nacimiento'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['pe_fecha_nacimiento']; echo PHP_EOL; ?>
+    pe_email:            <?php echo "" == $v['pe_email'] ? NULL : $v['pe_email']; echo PHP_EOL; ?>
+    pe_salt:             <?php echo "" == $v['pe_salt'] ? NULL : $v['pe_salt']; echo PHP_EOL; ?>
+    pe_password:         <?php echo "" == $v['pe_password'] ? NULL : $v['pe_password']; echo PHP_EOL; ?>
+    pe_online:           <?php echo "" == $v['pe_online'] ? NULL : $v['pe_online']; echo PHP_EOL; ?>
+    pe_inicio_sesion:    <?php echo "" == $v['pe_inicio_sesion'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['pe_inicio_sesion']; echo PHP_EOL; ?>
+    pe_fin_sesion:       <?php echo "" == $v['pe_fin_sesion'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['pe_fin_sesion']; echo PHP_EOL; ?>
+    pe_duracion_sesion:  <?php echo "" == $v['pe_duracion_sesion'] ? NULL : $v['pe_duracion_sesion']; echo PHP_EOL; ?>
+    pe_fecha_crea:       <?php echo "" == $v['pe_fecha_crea'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['pe_fecha_crea']; echo PHP_EOL; ?>
+    pe_quien_crea:       <?php echo "" == $v['pe_quien_crea'] ? NULL : $v['pe_quien_crea']; echo PHP_EOL; ?>
+    pe_fecha_modifica:   <?php echo "" == $v['pe_fecha_modifica'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['pe_fecha_modifica']; echo PHP_EOL; ?>
+    pe_quien_modifica:   <?php echo "" == $v['pe_quien_modifica'] ? NULL : $v['pe_quien_modifica']; echo PHP_EOL; ?>
+    pe_fecha_borra:      <?php echo "" == $v['pe_fecha_borra'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['pe_fecha_borra']; echo PHP_EOL; ?>
+    pe_quien_borra:      <?php echo "" == $v['pe_quien_borra'] ? NULL : $v['pe_quien_borra']; echo PHP_EOL; ?>
+    pe_borrado_logico:   <?php echo "" == $v['pe_borrado_logico'] ? NULL : $v['pe_borrado_logico']; echo PHP_EOL; ?>
+<?php endforeach; ?>

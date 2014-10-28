@@ -1,0 +1,13 @@
+DmlContratosBancarios:
+<?php foreach (sgAyudaGlobal::getInstance()->csvHaciaArray('D:\documentación\Descargas\DmlContratosBancarios.csv') as $k => $v): ?>
+  id_<?=$k?>:
+    personas:          <?php echo "" == $v['personas'] ? NULL : $v['personas']; echo PHP_EOL; ?>
+    entidades:         <?php echo "" == $v['entidades'] ? NULL : $v['entidades']; echo PHP_EOL; ?>
+    cb_fecha_contrato: <?php echo "" == $v['cb_fecha_contrato'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['cb_fecha_contrato']; echo PHP_EOL; ?>
+    cb_quien_crea:     <?php echo "" == $v['cb_quien_crea'] ? NULL : $v['cb_quien_crea']; echo PHP_EOL; ?>
+    cb_fecha_modifica: <?php echo "" == $v['cb_fecha_modifica'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['cb_fecha_modifica']; echo PHP_EOL; ?>
+    cb_quien_modifica: <?php echo "" == $v['cb_quien_modifica'] ? NULL : $v['cb_quien_modifica']; echo PHP_EOL; ?>
+    cb_fecha_borra:    <?php echo "" == $v['cb_fecha_borra'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['cb_fecha_borra']; echo PHP_EOL; ?>
+    cb_quien_borra:    <?php echo "" == $v['cb_quien_borra'] ? NULL : $v['cb_quien_borra']; echo PHP_EOL; ?>
+    cb_borrado_logico: <?php echo "" == $v['cb_borrado_logico'] ? NULL : $v['cb_borrado_logico']; echo PHP_EOL; ?>
+<?php endforeach; ?>

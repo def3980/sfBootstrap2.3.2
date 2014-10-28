@@ -1,0 +1,17 @@
+DmlAhorros:
+<?php foreach (sgAyudaGlobal::getInstance()->csvHaciaArray('D:\documentación\Descargas\DmlAhorros.csv') as $k => $v): ?>
+  id_<?=$k?>:
+    contratos_bancarios:  <?php echo "" == $v['contratos_bancarios'] ? NULL : $v['contratos_bancarios']; echo PHP_EOL; ?>
+    tipos_cuentas:        <?php echo "" == $v['tipos_cuentas'] ? NULL : $v['tipos_cuentas']; echo PHP_EOL; ?>
+    ah_fecha_creacion:    <?php echo "" == $v['ah_fecha_creacion'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['ah_fecha_creacion']; echo PHP_EOL; ?>
+    ah_numero_cuenta:     <?php echo "" == $v['ah_numero_cuenta'] ? NULL : $v['ah_numero_cuenta']; echo PHP_EOL; ?>
+    ah_fecha_cancelacion: <?php echo "" == $v['ah_fecha_cancelacion'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['ah_fecha_cancelacion']; echo PHP_EOL; ?>
+    ah_estado:            <?php echo "" == $v['ah_estado'] ? NULL : $v['ah_estado']; echo PHP_EOL; ?>
+    ah_fecha_crea:        <?php echo "" == $v['ah_fecha_crea'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['ah_fecha_crea']; echo PHP_EOL; ?>
+    ah_quien_crea:        <?php echo "" == $v['ah_quien_crea'] ? NULL : $v['ah_quien_crea']; echo PHP_EOL; ?>
+    ah_fecha_modifica:    <?php echo "" == $v['ah_fecha_modifica'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['ah_fecha_modifica']; echo PHP_EOL; ?>
+    ah_quien_modifica:    <?php echo "" == $v['ah_quien_modifica'] ? NULL : $v['ah_quien_modifica']; echo PHP_EOL; ?>
+    ah_fecha_borra:       <?php echo "" == $v['ah_fecha_borra'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['ah_fecha_borra']; echo PHP_EOL; ?>
+    ah_quien_borra:       <?php echo "" == $v['ah_quien_borra'] ? NULL : $v['ah_quien_borra']; echo PHP_EOL; ?>
+    ah_borrado_logico:    <?php echo "" == $v['ah_borrado_logico'] ? NULL : $v['ah_borrado_logico']; echo PHP_EOL; ?>
+<?php endforeach; ?>

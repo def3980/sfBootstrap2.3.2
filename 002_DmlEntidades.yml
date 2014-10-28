@@ -1,0 +1,15 @@
+DmlEntidades:
+<?php foreach (sgAyudaGlobal::getInstance()->csvHaciaArray('D:\documentación\Descargas\DmlEntidades.csv') as $k => $v): ?>
+  id_<?=$k?>:
+    en_nombre_entidad: <?php echo "" == $v['en_nombre_entidad'] ? NULL : $v['en_nombre_entidad']; echo PHP_EOL; ?>
+    en_alias:          <?php echo "" == $v['en_alias'] ? NULL : $v['en_alias']; echo PHP_EOL; ?>
+    en_direccion:      <?php echo "" == $v['en_direccion'] ? NULL : $v['en_direccion']; echo PHP_EOL; ?>
+    en_contacto_json:  <?php echo "" == $v['en_contacto_json'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['en_contacto_json']; echo PHP_EOL; ?>
+    en_fecha_crea:     <?php echo "" == $v['en_fecha_crea'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['en_fecha_crea']; echo PHP_EOL; ?>
+    en_quien_crea:     <?php echo "" == $v['en_quien_crea'] ? NULL : $v['en_quien_crea']; echo PHP_EOL; ?>
+    en_fecha_modifica: <?php echo "" == $v['en_fecha_modifica'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['en_fecha_modifica']; echo PHP_EOL; ?>
+    en_quien_modifica: <?php echo "" == $v['en_quien_modifica'] ? NULL : $v['en_quien_modifica']; echo PHP_EOL; ?>
+    en_fecha_borra:    <?php echo "" == $v['en_fecha_borra'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['en_fecha_borra']; echo PHP_EOL; ?>
+    en_quien_borra:    <?php echo "" == $v['en_quien_borra'] ? NULL : $v['en_quien_borra']; echo PHP_EOL; ?>
+    en_borrado_logico: <?php echo "" == $v['en_borrado_logico'] ? NULL : $v['en_borrado_logico']; echo PHP_EOL; ?>
+<?php endforeach; ?>

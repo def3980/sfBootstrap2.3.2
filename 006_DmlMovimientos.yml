@@ -1,0 +1,20 @@
+DmlMovimientos:
+<?php foreach (array_reverse(sgAyudaGlobal::getInstance()->csvHaciaArray('D:\documentación\Descargas\DmlMovimientos.csv')) as $k => $v): ?>
+  id_<?=$k?>:
+    ahorros:              <?php echo "" == $v['ahorros'] ? NULL : $v['ahorros']; echo PHP_EOL; ?>
+    mo_fecha:             <?php echo "" == $v['mo_fecha'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['mo_fecha']; echo PHP_EOL; ?>
+    mo_concepto:          <?php echo "" == $v['mo_concepto'] ? NULL : $v['mo_concepto']; echo PHP_EOL; ?>
+    mo_tipo:              <?php echo "" == $v['mo_tipo'] ? NULL : $v['mo_tipo']; echo PHP_EOL; ?>
+    mo_documento:         <?php echo "" == $v['mo_documento'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['mo_documento']; echo PHP_EOL; ?>
+    mo_oficina:           <?php echo "" == $v['mo_oficina'] ? NULL : $v['mo_oficina']; echo PHP_EOL; ?>
+    mo_monto:             <?php echo "" == $v['mo_monto'] ? NULL : $v['mo_monto']; echo PHP_EOL; ?>
+    mo_saldo:             <?php echo "" == $v['mo_saldo'] ? NULL : $v['mo_saldo']; echo PHP_EOL; ?>
+    mo_mini_detalle_json: <?php echo "" == $v['mo_mini_detalle_json'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['mo_mini_detalle_json']; echo PHP_EOL; ?>
+    mo_fecha_crea:        <?php echo "" == $v['mo_fecha_crea'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['mo_fecha_crea']; echo PHP_EOL; ?>
+    mo_quien_crea:        <?php echo "" == $v['mo_quien_crea'] ? NULL : $v['mo_quien_crea']; echo PHP_EOL; ?>
+    mo_fecha_modifica:    <?php echo "" == $v['mo_fecha_modifica'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['mo_fecha_modifica']; echo PHP_EOL; ?>
+    mo_quien_modifica:    <?php echo "" == $v['mo_quien_modifica'] ? NULL : $v['mo_quien_modifica']; echo PHP_EOL; ?>
+    mo_fecha_borra:       <?php echo "" == $v['mo_fecha_borra'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['mo_fecha_borra']; echo PHP_EOL; ?>
+    mo_quien_borra:       <?php echo "" == $v['mo_quien_borra'] ? NULL : $v['mo_quien_borra']; echo PHP_EOL; ?>
+    mo_borrado_logico:    <?php echo "" == $v['mo_borrado_logico'] ? NULL : $v['mo_borrado_logico']; echo PHP_EOL; ?>
+<?php endforeach; ?>

@@ -24,10 +24,13 @@ class <?php echo $this->table->getOption('name') ?>Form extends Base<?php echo $
 <?php else: ?>
 <?php
         $fecha_o_fecha_y_hora = false;
+        $arrayFechaYHora = array();
+        $lon = 0;
         foreach ($this->getColumns() as $column):
             if ('date' == $column->getDoctrineType() || 'timestamp' == $column->getDoctrineType()):
                 $fecha_o_fecha_y_hora = true;
-                break;
+                $arrayFechaYHora[] = $column->getFieldName(); 
+                $lon = strlen($column->getFieldName()) > $lon ? strlen($column->getFieldName()) : $lon;
             endif;
         endforeach;
 ?>
@@ -41,10 +44,11 @@ class <?php echo $this->table->getOption('name') ?>Form extends Base<?php echo $
         // se podra aplicar el plugin bootstrap-datetimepicker.
         // Nota: se puede eliminar las siguientes lineas de codigo y volver al
         // estado normal del framework.
-<?php       foreach ($this->getColumns() as $column): ?>
-<?php           if ('date' == $column->getDoctrineType() || 'timestamp' == $column->getDoctrineType()): ?>
-        $this->widgetSchema['<?php echo $column->getFieldName() ?>']<?php echo str_repeat(' ', ($this->getColumnNameMaxLength() + 23) - (strlen($column->getFieldName()) + 23)) ?> = new sfWidgetFormInputText();
-<?php           endif; ?>
+<?php foreach ($this->getColumns() as $column): ?>
+        // <?=$column->getFieldName()?> => <?=$column->getDoctrineType()?> | detalle
+<?php endforeach; ?>
+<?php       foreach ($arrayFechaYHora as $column): ?>
+        $this->widgetSchema['<?php echo $column ?>']<?php echo str_repeat(' ', ($lon + 23) - (strlen($column) + 23)) ?> = new sfWidgetFormInputText();
 <?php       endforeach; ?>
     }
 <?php   endif; ?>
