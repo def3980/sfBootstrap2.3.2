@@ -1,3 +1,5 @@
+[?php use_stylesheet('bootstrap-select') ?]
+[?php use_javascript('bootstrap-select') ?]
 [?php use_stylesheet('bootstrap-datetimepicker.min.css') ?]
 [?php use_javascript('bootstrap-datetimepicker') ?]
 [?php use_javascript('locales/bootstrap-datetimepicker.es.js') ?]
@@ -8,7 +10,7 @@
     $con = 1;
     $tot = count($form) - 2; // porque -2, para eliminar por defecto id y csrf_token de la lista de conteo
     $objTabla = Doctrine_Core::getTable($this->getModelClass());
-    $columns  = array(); $campoDateODateTime = array(); $flag = false;
+    $columns  = array(); $campoDateODateTime = $fk = array(); $flag = false;
     // Recorrido para obtener el acceso a los campos de la tabla indicada
     // ademas de los tipos de datos que tiene cada campo.
     foreach (array_diff(array_keys($objTabla->getColumns()), array()) as $name) {
@@ -17,6 +19,9 @@
     foreach ($columns as $column) {
         if ('date' == $column->getDoctrineType() || 'timestamp' == $column->getDoctrineType()) {
             $campoDateODateTime[$column->getFieldName()] = $column->getDoctrineType();
+        }
+        if ($column->isForeignKey()) { // Valido los campos claves foraneos para adaptarle el plugin bootstrap-select
+            $fk[$column->getFieldName()] = $column->getDoctrineType();
         }
     }
 ?>
@@ -128,7 +133,7 @@
 //
 // Nota: Me tomo un dia averiguar esto... :-|
 $token = new BaseForm();
-$date = $time = "";
+$date = $time = $foreanKey = "";
 foreach ($form as $name => $field): 
     foreach ($campoDateODateTime as $campo => $tipo):
         if ($field->getName() === $campo && $tipo == "date"): 
@@ -137,6 +142,13 @@ foreach ($form as $name => $field):
             $time .= "#dtp_{$field->renderId()}, ";
         endif;
     endforeach;
+    if (count($fk)):
+        foreach ($fk as $fkk => $fkv):
+            if ($field->getName() === $fkk):
+                $foreanKey .= "#{$field->renderId()}, ";
+            endif;
+        endforeach;
+    endif;
 endforeach; ?>
 [?php slot('porcion_css') ?]
         <style>
@@ -170,7 +182,8 @@ endforeach; ?>
         <script>
             $(function() {
                 var inputDate = "<?php echo rtrim($date, ', ') ?>",
-                    inputDateTime = "<?php echo rtrim($time, ', ') ?>";
+                    inputDateTime = "<?php echo rtrim($time, ', ') ?>"<?php if (count($fk)): ?>,
+                    inputForeanKey = "<?php echo rtrim($foreanKey, ', ') ?>"<?php endif; ?>;
                 $(inputDate).datetimepicker({
                     format : 'yyyy-MM-dd', language: 'es', pickTime: false
                 });
@@ -208,6 +221,12 @@ endforeach; ?>
                     ).find('form').submit();
                 });
 [?php endif; ?]
+<?php if (count($fk)): ?>
+                // activando bootstrap-select en los campos que son claves foreaneas
+                $(inputForeanKey).selectpicker({
+                    size : 5
+                });
+<?php endif; ?>
             });
         </script>
 [?php end_slot() ?]

@@ -44,9 +44,6 @@ class <?php echo $this->table->getOption('name') ?>Form extends Base<?php echo $
         // se podra aplicar el plugin bootstrap-datetimepicker.
         // Nota: se puede eliminar las siguientes lineas de codigo y volver al
         // estado normal del framework.
-<?php foreach ($this->getColumns() as $column): ?>
-        // <?=$column->getFieldName()?> => <?=$column->getDoctrineType()?> | detalle
-<?php endforeach; ?>
 <?php       foreach ($arrayFechaYHora as $column): ?>
         $this->widgetSchema['<?php echo $column ?>']<?php echo str_repeat(' ', ($lon + 23) - (strlen($column) + 23)) ?> = new sfWidgetFormInputText();
 <?php       endforeach; ?>
