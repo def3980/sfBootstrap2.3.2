@@ -1,5 +1,5 @@
 DmlMovimientos:
-<?php foreach (array_reverse(sgAyudaGlobal::getInstance()->csvHaciaArray('D:\documentación\Descargas\DmlMovimientos.csv')) as $k => $v): ?>
+<?php foreach (array_reverse(Singleton::getInstance()->csv_to_array('D:\documentaciï¿½n\Descargas\DmlMovimientos.csv')) as $k => $v): ?>
   id_<?=$k?>:
     ahorros:              <?php echo "" == $v['ahorros'] ? NULL : $v['ahorros']; echo PHP_EOL; ?>
     mo_fecha:             <?php echo "" == $v['mo_fecha'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['mo_fecha']; echo PHP_EOL; ?>

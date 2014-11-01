@@ -1,5 +1,5 @@
 DmlPersonas:
-<?php foreach (sgAyudaGlobal::getInstance()->csvHaciaArray('D:\documentación\Descargas\DmlPersonas.csv') as $k => $v): ?>
+<?php foreach (Singleton::getInstance()->csv_to_array('D:\documentaciï¿½n\Descargas\DmlPersonas.csv') as $k => $v): ?>
   id_<?=$k?>:
     pe_cedula:           <?php echo "" == $v['pe_cedula'] ? NULL : $v['pe_cedula']; echo PHP_EOL; ?>
     pe_nombres:          <?php echo "" == $v['pe_nombres'] ? NULL : $v['pe_nombres']; echo PHP_EOL; ?>

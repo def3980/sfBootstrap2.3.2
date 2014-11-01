@@ -1,5 +1,5 @@
 DmlContratosBancarios:
-<?php foreach (sgAyudaGlobal::getInstance()->csvHaciaArray('D:\documentación\Descargas\DmlContratosBancarios.csv') as $k => $v): ?>
+<?php foreach (Singleton::getInstance()->csv_to_array('D:\documentaciï¿½n\Descargas\DmlContratosBancarios.csv') as $k => $v): ?>
   id_<?=$k?>:
     personas:          <?php echo "" == $v['personas'] ? NULL : $v['personas']; echo PHP_EOL; ?>
     entidades:         <?php echo "" == $v['entidades'] ? NULL : $v['entidades']; echo PHP_EOL; ?>
