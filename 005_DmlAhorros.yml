@@ -1,5 +1,5 @@
 DmlAhorros:
-<?php foreach (Singleton::getInstance()->csv_to_array('D:\documentaci�n\Descargas\DmlAhorros.csv') as $k => $v): ?>
+<?php foreach (Singleton::getInstance()->csv_to_array('\path\DmlAhorros.csv') as $k => $v): ?>
   id_<?=$k?>:
     contratos_bancarios:  <?php echo "" == $v['contratos_bancarios'] ? NULL : $v['contratos_bancarios']; echo PHP_EOL; ?>
     tipos_cuentas:        <?php echo "" == $v['tipos_cuentas'] ? NULL : $v['tipos_cuentas']; echo PHP_EOL; ?>

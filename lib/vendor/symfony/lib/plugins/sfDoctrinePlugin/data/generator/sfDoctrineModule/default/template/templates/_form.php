@@ -20,8 +20,8 @@
         if ('date' == $column->getDoctrineType() || 'timestamp' == $column->getDoctrineType()) {
             $campoDateODateTime[$column->getFieldName()] = $column->getDoctrineType();
         }
-        if ($column->isForeignKey()) { // Valido los campos claves foraneos para adaptarle el plugin bootstrap-select
-            $fk[$column->getFieldName()] = $column->getDoctrineType();
+        if ($column->isForeignKey()) { // Valido los campos claves foraneas para adaptarle el plugin bootstrap-select
+            $fk[] = $column->getFieldName();
         }
     }
 ?>
@@ -60,7 +60,7 @@
 <?php       endforeach; ?>
 <?php       if (true !== $flag): ?>
 [?php echo $form['<?php echo $name ?>']->renderError() ?]
-                                        [?php echo $form['<?php echo $name ?>']->render(array('placeholder' => '<?php echo $name ?>')).PHP_EOL ?]
+                                        [?php echo $form['<?php echo $name ?>']->render(array('placeholder' => '<?php echo $name ?>'<?php echo false !== array_search($name, $fk) ? ", 'class' => 'show-menu-arrow'" : '' ?>)).PHP_EOL ?]
 <?php       endif; $flag = false; ?>
                                     </div>
                                 </div>
@@ -133,7 +133,7 @@
 //
 // Nota: Me tomo un dia averiguar esto... :-|
 $token = new BaseForm();
-$date = $time = $foreanKey = "";
+$date = $time = $foreinKey = "";
 foreach ($form as $name => $field): 
     foreach ($campoDateODateTime as $campo => $tipo):
         if ($field->getName() === $campo && $tipo == "date"): 
@@ -143,9 +143,9 @@ foreach ($form as $name => $field):
         endif;
     endforeach;
     if (count($fk)):
-        foreach ($fk as $fkk => $fkv):
-            if ($field->getName() === $fkk):
-                $foreanKey .= "#{$field->renderId()}, ";
+        foreach ($fk as $fkv):
+            if ($field->getName() === $fkv):
+                $foreinKey .= "#{$field->renderId()}, ";
             endif;
         endforeach;
     endif;
@@ -183,7 +183,7 @@ endforeach; ?>
             $(function() {
                 var inputDate = "<?php echo rtrim($date, ', ') ?>",
                     inputDateTime = "<?php echo rtrim($time, ', ') ?>"<?php if (count($fk)): ?>,
-                    inputForeanKey = "<?php echo rtrim($foreanKey, ', ') ?>"<?php endif; ?>;
+                    inputForeinKey = "<?php echo rtrim($foreinKey, ', ') ?>"<?php endif; ?>;
                 $(inputDate).datetimepicker({
                     format : 'yyyy-MM-dd', language: 'es', pickTime: false
                 });
@@ -207,12 +207,12 @@ endforeach; ?>
                             method : 'post',
                             style  : 'display: none'
                         }).append(
-                            $('<input />', {
+                            $('<input/>', {
                                 type  : 'hidden',
                                 name  : 'sf_method',
                                 value : 'delete'
                             })<?php if ($token->isCSRFProtected()): ?>,
-                            $('<input />', {
+                            $('<input/>', {
                                 type  : 'hidden',
                                 name  : '[?=$token->getCSRFFieldName()?]',
                                 value : '[?=$token->getCSRFToken()?]'
@@ -223,7 +223,7 @@ endforeach; ?>
 [?php endif; ?]
 <?php if (count($fk)): ?>
                 // activando bootstrap-select en los campos que son claves foreaneas
-                $(inputForeanKey).selectpicker({
+                $(inputForeinKey).selectpicker({
                     size : 5
                 });
 <?php endif; ?>

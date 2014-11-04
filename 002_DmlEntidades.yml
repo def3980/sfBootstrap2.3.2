@@ -1,5 +1,5 @@
 DmlEntidades:
-<?php foreach (Singleton::getInstance()->csv_to_array('D:\documentaci�n\Descargas\DmlEntidades.csv') as $k => $v): ?>
+<?php foreach (Singleton::getInstance()->csv_to_array('\path\DmlEntidades.csv') as $k => $v): ?>
   id_<?=$k?>:
     en_nombre_entidad: <?php echo "" == $v['en_nombre_entidad'] ? NULL : $v['en_nombre_entidad']; echo PHP_EOL; ?>
     en_alias:          <?php echo "" == $v['en_alias'] ? NULL : $v['en_alias']; echo PHP_EOL; ?>

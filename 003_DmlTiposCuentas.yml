@@ -1,5 +1,5 @@
 DmlTiposCuentas:
-<?php foreach (Singleton::getInstance()->csv_to_array('D:\documentaci�n\Descargas\DmlTiposCuentas.csv') as $k => $v): ?>
+<?php foreach (Singleton::getInstance()->csv_to_array('\path\DmlTiposCuentas.csv') as $k => $v): ?>
   id_<?=$k?>:
     tc_nombre:         <?php echo "" == $v['tc_nombre'] ? NULL : $v['tc_nombre']; echo PHP_EOL; ?>
     tc_fecha_crea:     <?php echo "" == $v['tc_fecha_crea'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['tc_fecha_crea']; echo PHP_EOL; ?>
