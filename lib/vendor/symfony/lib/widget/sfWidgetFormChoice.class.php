@@ -132,6 +132,23 @@ class sfWidgetFormChoice extends sfWidgetFormChoiceBase
 
     $renderer = new $class($options, $this->getAttributes());
 
+    // agrego unas opciones necesarias para poder trabajar html5 en las opciones del select
+    // se le aumento mas opciones al configure de la clase sfWidgetFormSelect
+    // para poder enviar las opciones agregadas en la clase sfWidgetFormDoctrineChoice
+
+    if (isset($this->options['subtext']) && $this->options['subtext']) {
+        $renderer->setOption('subtext', $this->options['subtext']);
+        $renderer->setOption('models', $this->options['models']); // necesito el modelo para obtener el padre
+    }
+    
+    if (isset($this->options['spaces'])) {
+        $renderer->setOption('spaces', $this->options['spaces']);
+    }
+    
+    if (isset($this->options['field_to_show'])) {
+        $renderer->setOption('field_to_show', $this->options['field_to_show']);
+    }
+
     // choices returned by the callback will already be translated (so we need to avoid double-translation)
     if ($renderer->hasOption('translate_choices')) {
         $renderer->setOption('translate_choices', false);

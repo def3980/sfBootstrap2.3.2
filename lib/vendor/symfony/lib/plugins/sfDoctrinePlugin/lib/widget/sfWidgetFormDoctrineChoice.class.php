@@ -59,6 +59,11 @@ class sfWidgetFormDoctrineChoice extends sfWidgetFormChoice
     $this->addOption('query', null);
     $this->addOption('multiple', false);
     $this->addOption('table_method', null);
+    
+    $this->addOption('subtext', false);
+    $this->addOption('models', null);
+    $this->addOption('spaces', null);
+    $this->addOption('field_to_show', null);
 
     parent::configure($options, $attributes);
   }
