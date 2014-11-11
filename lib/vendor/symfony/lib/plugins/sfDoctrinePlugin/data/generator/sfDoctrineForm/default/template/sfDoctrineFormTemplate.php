@@ -24,7 +24,7 @@ class <?php echo $this->table->getOption('name') ?>Form extends Base<?php echo $
 <?php else: ?>
 <?php
         $fecha_o_fecha_y_hora = false;
-        $arrayFechaYHora = array();
+        $arrayFechaYHora = $arrayBlob = array();
         $lon = 0;
         foreach ($this->getColumns() as $column):
             if ('date' == $column->getDoctrineType() || 'timestamp' == $column->getDoctrineType()):
@@ -32,6 +32,10 @@ class <?php echo $this->table->getOption('name') ?>Form extends Base<?php echo $
                 $arrayFechaYHora[] = $column->getFieldName(); 
                 $lon = strlen($column->getFieldName()) > $lon ? strlen($column->getFieldName()) : $lon;
             endif;
+            if ('blob' == $column->getDoctrineType()) {
+                $arrayBlob[] = $column->getFieldName();
+                $lon = strlen($column->getFieldName()) > $lon ? strlen($column->getFieldName()) : $lon;
+            }
         endforeach;
 ?>
 <?php   if (!$fecha_o_fecha_y_hora): ?>
@@ -45,8 +49,24 @@ class <?php echo $this->table->getOption('name') ?>Form extends Base<?php echo $
         // Nota: se puede eliminar las siguientes lineas de codigo y volver al
         // estado normal del framework.
 <?php       foreach ($arrayFechaYHora as $column): ?>
-        $this->widgetSchema['<?php echo $column ?>']<?php echo str_repeat(' ', ($lon + 23) - (strlen($column) + 23)) ?> = new sfWidgetFormInputText();
-<?php       endforeach; ?>
+        $this->widgetSchema['<?php echo $column ?>']<?php echo str_repeat(' ', abs(($lon + 23) - (strlen($column) + 23))) ?> = new sfWidgetFormInputText();
+<?php       endforeach; echo !empty($arrayBlob) ? PHP_EOL : ''; ?>
+<?php       if (!empty($arrayBlob)): ?>
+        // Incluyo un widget personalizado para subir cualquier tipo de archivo 
+        // (*.jpg, *.png, *.pdf, *.xlsx, *.wordx, etc.)
+        // ya que por defecto symfony 1.4 a los campos de tipo BLOB, MEDIUMBLOB 
+        // y LONGBLOB los entiende como textarea | string
+        // seguramente esto, por que eso de subir archivos por navegadores es 
+        // una @#&%$da, pero yo me he tomado la molestia
+        // de verificar los campos y agregar las opciones para subir dichos 
+        // archivos aunque de manera básica y con destino
+        // hacia la base de datos como contenido binario. Para mayor personalizacion 
+        // debes programarlo a tu gusto.
+<?php           foreach ($arrayBlob as $column): ?>
+        $this->widgetSchema['<?php echo $column ?>']<?php echo str_repeat(' ', abs(($lon + 23) - (strlen($column) + 23))) ?> = new sfWidgetFormInputFile();
+        $this->validatorSchema['<?php echo $column ?>']<?php echo str_repeat(' ', abs((($lon + 23) - (strlen($column) + 23)) - 3)) ?> = new sfValidatorFile(array('required' => false));
+<?php           endforeach; ?>
+<?php       endif; ?>
     }
 <?php   endif; ?>
 <?php endif; ?>
