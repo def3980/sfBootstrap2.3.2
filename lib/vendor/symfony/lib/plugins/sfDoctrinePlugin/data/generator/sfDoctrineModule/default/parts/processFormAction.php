@@ -14,6 +14,7 @@
         $form->bind($request->getParameter($form->getName()), $request->getFiles($form->getName()));
         if ($form->isValid()) {
 <?php if (!empty($arrayBlob)): ?>
+            // necesito guardar los datos para despues actualizar el objeto form
             $values = $form->getValues();
             $<?php echo $this->getSingularName() ?> = $form->save();
 <?php else: ?>
@@ -23,6 +24,9 @@
             $this->redirect('@<?php echo $this->getUrlForAction('edit') ?>?<?php echo $this->getPrimaryKeyUrlParams() ?>);
 <?php else: ?>
 <?php   if (!empty($arrayBlob)): ?>
+            // actualizo el objeto despues de guardar el formulario para poder
+            // guardar la imagen en la BDD como contenido binario, ya que por 
+            // defecto symfony 1.4 no lo hace
             foreach ($values as $key => $value)
                 if (is_object($value))
                     $<?php echo $this->getSingularName() ?>->$key = file_get_contents($value->getTempName());

@@ -1,16 +1,9 @@
-[?php use_stylesheet('bootstrap-select') ?]
-[?php use_javascript('bootstrap-select') ?]
-[?php use_stylesheet('bootstrap-datetimepicker.min.css') ?]
-[?php use_javascript('bootstrap-datetimepicker') ?]
-[?php use_javascript('locales/bootstrap-datetimepicker.es.js') ?]
-[?php use_stylesheets_for_form($form) ?]
-[?php use_javascripts_for_form($form) ?]
 <?php 
     $form = $this->getFormObject();
     $con = 1;
     $tot = count($form) - 2; // porque -2, para eliminar por defecto id y csrf_token de la lista de conteo
     $objTabla = Doctrine_Core::getTable($this->getModelClass());
-    $columns  = array(); $campoDateODateTime = $fk = array(); $flag = false;
+    $columns  = array(); $campoDateODateTime = $fk = $arrayBlob = array(); $flag = $flag2 = false;
     // Recorrido para obtener el acceso a los campos de la tabla indicada
     // ademas de los tipos de datos que tiene cada campo.
     foreach (array_diff(array_keys($objTabla->getColumns()), array()) as $name) {
@@ -23,8 +16,25 @@
         if ($column->isForeignKey()) { // Valido los campos claves foraneas para adaptarle el plugin bootstrap-select
             $fk[] = $column->getFieldName();
         }
+        if ('blob' == $column->getDoctrineType()) { // Valido el campo blob para subir images o cualquier archivo a la BDD
+            $arrayBlob[] = $column->getFieldName();
+        }
     }
 ?>
+<?php if (!empty($fk)): ?>
+[?php use_stylesheet('bootstrap-select') ?]
+[?php use_javascript('bootstrap-select') ?]
+<?php endif; ?>
+<?php if (!empty($campoDateODateTime)): ?>
+[?php use_stylesheet('bootstrap-datetimepicker.min.css') ?]
+[?php use_javascript('bootstrap-datetimepicker') ?]
+[?php use_javascript('locales/bootstrap-datetimepicker.es.js') ?]
+<?php endif; ?>
+<?php if (!empty($arrayBlob)): ?>
+[?php use_javascript('bootstrap-fileupload') ?]
+<?php endif; ?>
+[?php use_stylesheets_for_form($form) ?]
+[?php use_javascripts_for_form($form) ?]
 <?php if (isset($this->params['route_prefix']) && $this->params['route_prefix']): ?>
 [?php echo form_tag_for($form, '@<?php echo $this->params['route_prefix'] ?>') ?]
 <?php else: ?>
@@ -47,8 +57,9 @@
                                 <div class="control-group">
                                     [?php echo $form['<?php echo $name ?>']->renderLabel('', array('class' => 'control-label')).PHP_EOL ?]
                                     <div class="controls">
-<?php       foreach ($campoDateODateTime as $campo => $tipo):
-                if ($field->getName() === $campo): $flag = true; ?>
+<?php       if (!empty($campoDateODateTime)): ?>
+<?php           foreach ($campoDateODateTime as $campo => $tipo):
+                    if ($field->getName() === $campo): $flag = true; ?>
                                         <div class="input-append date" id="dtp_<?=$field->renderId()?>">
 [?php echo $form['<?php echo $name ?>']->renderError() ?]
                                             [?php echo $form['<?php echo $name ?>']->render(array('placeholder' => '<?php echo $name ?>', 'style' => 'width: 180px', 'readonly' => 'true')).PHP_EOL ?]
@@ -56,12 +67,31 @@
                                                 <i data-date-icon='icon-calendar' data-time-icon='icon-time'></i>
                                             </span>
                                         </div>
-<?php           endif; ?>
-<?php       endforeach; ?>
+<?php               endif; ?>
+<?php           endforeach; ?>
+<?php       endif; ?>
 <?php       if (true !== $flag): ?>
+<?php           if (!empty($arrayBlob)): ?>
+<?php               foreach ($arrayBlob as $campo): ?>
+<?php                   if ($field->getName() === $campo): $flag2 = true; ?>
+[?php echo $form['<?php echo $name ?>']->renderError() ?]
+                                        <div class="fileupload fileupload-new" data-provides="fileupload" style="margin-bottom: 0">
+                                            <span class="btn btn-file">
+                                                <span class="fileupload-new"><i class="icon-file"></i></span>
+                                                <span class="fileupload-exists"><i class="icon-file"></i></span>
+                                                [?php echo $form['<?php echo $name ?>']->render().PHP_EOL ?]
+                                            </span>
+                                            <span class="fileupload-preview"></span>
+                                            <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">&times;</a>
+                                        </div>
+<?php                   endif; ?>
+<?php               endforeach; ?>
+<?php           endif; ?>
+<?php           if (true !== $flag2): ?>
 [?php echo $form['<?php echo $name ?>']->renderError() ?]
                                         [?php echo $form['<?php echo $name ?>']->render(array('placeholder' => '<?php echo $name ?>'<?php echo false !== array_search($name, $fk) ? ", 'class' => 'show-menu-arrow'" : '' ?>)).PHP_EOL ?]
-<?php       endif; $flag = false; ?>
+<?php           endif; ?>
+<?php       endif; $flag = $flag2 = false; ?>
                                     </div>
                                 </div>
 <?php       if ($con == ceil($tot / 2)): ?>
@@ -132,32 +162,38 @@
 // el registro.
 //
 // Nota: Me tomo un dia averiguar esto... :-|
-$token = new BaseForm();
-$date = $time = $foreinKey = "";
-foreach ($form as $name => $field): 
-    foreach ($campoDateODateTime as $campo => $tipo):
-        if ($field->getName() === $campo && $tipo == "date"): 
-            $date .= "#dtp_{$field->renderId()}, ";
-        elseif ($field->getName() === $campo && $tipo == "timestamp"): 
-            $time .= "#dtp_{$field->renderId()}, ";
+if (!empty($campoDateODateTime) || !empty($fk)):
+    $token = new BaseForm();
+    $date = $time = $foreinKey = "";
+    foreach ($form as $name => $field): 
+        if (!empty($campoDateODateTime)) {
+            foreach ($campoDateODateTime as $campo => $tipo):
+                if ($field->getName() === $campo && $tipo == "date"): 
+                    $date .= "#dtp_{$field->renderId()}, ";
+                elseif ($field->getName() === $campo && $tipo == "timestamp"): 
+                    $time .= "#dtp_{$field->renderId()}, ";
+                endif;
+            endforeach;
+        }
+        if (count($fk)):
+            foreach ($fk as $fkv):
+                if ($field->getName() === $fkv):
+                    $foreinKey .= "#{$field->renderId()}, ";
+                endif;
+            endforeach;
         endif;
-    endforeach;
-    if (count($fk)):
-        foreach ($fk as $fkv):
-            if ($field->getName() === $fkv):
-                $foreinKey .= "#{$field->renderId()}, ";
-            endif;
-        endforeach;
-    endif;
-endforeach; ?>
+    endforeach; 
+endif; ?>
 [?php slot('porcion_css') ?]
         <style>
+<?php if (!empty($campoDateODateTime)): ?>
             span.add-on .icon-calendar {
                 background-position: -191px -118px;
             }
             span.add-on .icon-time {
                 background-position: -47px -22px;
             }
+<?php endif; ?>
             .opc {
                 display: block;
                 text-decoration: none;
@@ -181,15 +217,16 @@ endforeach; ?>
 [?php slot('porcion_js') ?]
         <script>
             $(function() {
+<?php if (!empty($campoDateODateTime)): ?>
                 var inputDate = "<?php echo rtrim($date, ', ') ?>",
-                    inputDateTime = "<?php echo rtrim($time, ', ') ?>"<?php if (count($fk)): ?>,
-                    inputForeinKey = "<?php echo rtrim($foreinKey, ', ') ?>"<?php endif; ?>;
+                    inputDateTime = "<?php echo rtrim($time, ', ') ?>";
                 $(inputDate).datetimepicker({
                     format : 'yyyy-MM-dd', language: 'es', pickTime: false
                 });
                 $(inputDateTime).datetimepicker({ 
                     format : 'yyyy-MM-dd hh:mm:ss', language: 'es' 
                 });
+<?php endif; ?>
 [?php if (!$form->getObject()->isNew()): $token = new BaseForm(); ?]
                 // para abrir el modal
                 $('#del').bind('click', function(e) {
@@ -222,6 +259,7 @@ endforeach; ?>
                 });
 [?php endif; ?]
 <?php if (count($fk)): ?>
+                var inputForeinKey = "<?php echo rtrim($foreinKey, ', ') ?>";
                 // activando bootstrap-select en los campos que son claves foreaneas
                 $(inputForeinKey).selectpicker({
                     size : 5
