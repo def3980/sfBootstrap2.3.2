@@ -96,8 +96,8 @@ HED;
         $useDatabase       = sfToolkit::literalize($options['use-database']);
         $defaultConnection = is_string($useDatabase) ? $useDatabase : sfConfig::get('sf_orm');
 
-    if ($useDatabase) {
-        $content = <<<HED
+        if ($useDatabase) {
+            $content = <<<HED
 <?php
 
 class $taskClassName extends sfBaseTask {
@@ -133,8 +133,8 @@ EOF;
 
 }
 HED;
-    } else {
-        $content = <<<HED
+        } else {
+            $content = <<<HED
 <?php
 
 class $taskClassName extends sfBaseTask {
@@ -164,20 +164,20 @@ EOF;
 
 }
 HED;
-    }
+        }
 
-    // Revisa que el directorio de la tarea existe y que el archivo de la tarea
-    // no existe
-    if (!is_readable(sfConfig::get('sf_root_dir').'/'.$options['dir'])) {
-        $this->getFilesystem()->mkdirs($options['dir']);
-    }
+        // Revisa que el directorio de la tarea existe y que el archivo de la tarea
+        // no existe
+        if (!is_readable(sfConfig::get('sf_root_dir').'/'.$options['dir'])) {
+            $this->getFilesystem()->mkdirs($options['dir']);
+        }
 
-    $taskFile = sfConfig::get('sf_root_dir').'/'.$options['dir'].'/'.$taskClassName.'.class.php';
-    if (is_readable($taskFile)) {
-        throw new sfCommandException(sprintf('La tarea "%s" ya existe en "%s".', $taskName, $taskFile));
-    }
+        $taskFile = sfConfig::get('sf_root_dir').'/'.$options['dir'].'/'.$taskClassName.'.class.php';
+        if (is_readable($taskFile)) {
+            throw new sfCommandException(sprintf('La tarea "%s" ya existe en "%s".', $taskName, $taskFile));
+        }
 
-    $this->logSection('task', sprintf('Creado la tarea archivo "%s"', $taskFile));
+        $this->logSection('task', sprintf('Creado la tarea archivo "%s"', $taskFile));
         file_put_contents($taskFile, $content);
     }
 

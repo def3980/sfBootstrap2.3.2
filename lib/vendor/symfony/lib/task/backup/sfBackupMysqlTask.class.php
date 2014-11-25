@@ -78,14 +78,31 @@ EOF;
             endforeach;
         }
         $command = "mysqldump "
-                 . "--user=".$contenedor['usr']." "
-                 . "--password='".$contenedor['pwd']."' "
-                 . "--host=".$contenedor['hst']." "
+                 . "-h ".$contenedor['hst']." "
+                 . "-u ".$contenedor['usr']." "
+                 . "-p".$contenedor['pwd']." "
+//                 . "--opt "
+//                 . "--extended-insert=FALSE "
+                 . "--skip-extended-insert "
+                 . "--single-transaction "
+                 . "--quick "
                  . $contenedor['dbn']." > "
-                 . sfConfig::get('sf_app_docs_dir')
+                 . sfConfig::get('sf_docs_dir')."/"
                  . $arguments['name']."_".date('Y-m-d')."_".date('His').".sql";
-         exec($command);
-        print_r($command);
+        exec($command);
+        
+        $file_compress = "7z "
+                       . "a "
+                       . "-t7z "
+                       . sfConfig::get('sf_docs_dir')."/backup.7z "
+                       . sfConfig::get('sf_docs_dir')."/"
+                       . $arguments['name']."_".date('Y-m-d')."_".date('His').".sql "
+//                       . "-m0=BCJ2 -m1=LZMA2:d=1024m -aoa";
+//                       . "-mx9 -aoa";
+                       . "-mx9";
+        
+        exec($file_compress);
+        $this->logSection('backup:mysql', sprintf('"%s" :: creado satisfactoriamente...', $contenedor['dbn']));
         
 //        $app    = $arguments['application'];
 //        $module = $arguments['module'];
