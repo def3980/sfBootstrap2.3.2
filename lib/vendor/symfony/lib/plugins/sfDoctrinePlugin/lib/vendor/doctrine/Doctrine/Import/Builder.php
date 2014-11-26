@@ -194,37 +194,6 @@ class Doctrine_Import_Builder extends Doctrine_Builder
     protected static $_tpl;
 
     /**
-     * Para el calculo de fechas en español
-     *
-     * @var array
-     */
-    protected $_dias = array(
-                        'domingo', 
-                        'lunes', 
-                        'martes', 
-                        'miercoles', 
-                        'jueves', 
-                        'viernes', 
-                        'sabado'
-                       ),
-              $_diasAbreviados = array(),
-              $_meses = array(
-                        'enero', 
-                        'febrero', 
-                        'marzo', 
-                        'abril', 
-                        'mayo', 
-                        'junio',
-                        'julio', 
-                        'agosto', 
-                        'septiembre', 
-                        'octubre', 
-                        'noviembre', 
-                        'diciembre'
-                       ),
-              $_mesesAbreviados = array();
-
-    /**
      * __construct
      *
      * @return void
@@ -1183,7 +1152,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
         $code = sprintf("    /**
      * Retorna una instancia de esta clase.
      *
-     * @return objecto %s
+     * @return objeto %s
      */
     public static function getInstance() {
         return Doctrine_Core::getTable('%s');
@@ -1205,7 +1174,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             $code,
             null
         );
-
+        
         $content = str_replace(
                     '* Esta clase ha sido auto-generada por el Framework ORM de Doctrine',
                     "* Esta clase ha sido auto-generada por el Framework ORM de Doctrine"
@@ -1414,9 +1383,13 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             $definitionCode = str_replace(
                                 str_repeat(PHP_EOL, 3), 
                                 str_repeat(PHP_EOL, 2).str_repeat(' ', 4)
-                                ."// aqui tu codigo __toString() o "
+                                ."// Metodo __toString() que ayuda a visualizar datos "
                                 .PHP_EOL.str_repeat(' ', 4)
-                                . "// cualquier metodo/funcion necesaria..."
+                                . "// como clase padre hacia cualquier clase que herede "
+                                .PHP_EOL.str_repeat(' ', 4)
+                                . "// de ella. Descomenta dicha funcion cuando sea necesario"
+                                .PHP_EOL.str_repeat(' ', 4)
+                                . "//public function __toString() {}"
                                 .PHP_EOL,
                                 $definitionCode
                               );
@@ -1481,40 +1454,26 @@ class Doctrine_Import_Builder extends Doctrine_Builder
      * capital
      * @return string Ej.: Lun, 01 Ene 1970 00:00:01
      */
-    private function obtenerFechaYHoraEnEsp($date, $complete = true, $capital = true) {
-        // Debido a que este proyecto de modificacion de symfony se realiza en
-        // Ecuador se va a poner por default el timezone correspondiente, pero
-        // sientete libre de cambiarlo a tu gusto (manualmente) ;-|
-        date_default_timezone_set('America/Guayaquil');
+    private function obtenerFechaYHoraEnEsp($date, $completa = true, $capital = true) {
+        $dia   = explode('-', $date, 3);
+        $year  = $dia[0];
+        $month = (string)(int)$dia[1];
+        $day   = (string)(int)$dia[2];
+        $hms   = explode(' ', $dia[2], 2);
+        $time  = (string)$hms[1];
 
-        foreach ($this->_dias as $k => $v) { $this->_diasAbreviados[$k] = substr($v, 0, 3); }        
-        array_unshift($this->_meses, '');
-        foreach ($this->_meses as $k => $v) { $this->_mesesAbreviados[$k] = substr($v, 0, 3); }
-        array_unshift($this->_mesesAbreviados, '');
-        $dia    = explode('-', $date, 3);
-        $year   = reset($dia);
-        $month  = (string)(int)$dia[1];
-        $day    = (string)(int)$dia[2];
-        $hms    = explode(' ', $dia[2], 2);
-        $time   = (string) $hms[1];
-        $dias   = $this->_dias;
-        $dAbr   = $this->_diasAbreviados;
-        $tdia   = $dias[intval((date('w', mktime(0, 0, 0, $month, $day, $year))))];
-        $tAbr   = $dAbr[intval((date('w', mktime(0, 0, 0, $month, $day, $year))))];
-        $meses  = $this->_meses;
-        $mesAbr = $this->_mesesAbreviados;
+        $dias = array("domingo","lunes","martes","miercoles","jueves","viernes","sabado");
+        $diasAbrev = array("dom","lun","mar","mie","jue","vie","sab");
+        
+        $tomadia = $dias[intval((date("w",mktime(0,0,0,$month,$day,$year))))];
+        $tomadiaAbrev = $diasAbrev[intval((date("w",mktime(0,0,0,$month,$day,$year))))];
 
-        return $complete 
-               ? ($capital 
-                  ? ucfirst($tdia) 
-                  : $tdia).", {$day} ".($capital 
-                                        ? ucfirst($meses[$month]) 
-                                        : $meses[$month])." {$year} {$time}"
-               : ($capital 
-                  ? ucfirst($tAbr) 
-                  : $tAbr).", {$day} ".($capital 
-                                        ? ucfirst($mesAbr[$month]) 
-                                        : $mesAbr[$month])." {$year} {$time}";
+        $meses = array("","enero","febrero","marzo","abril","mayo","junio",
+                        "julio","agosto","septiembre","octubre","noviembre","diciembre");
+        $mesesAbrev = array("","ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic");
+
+        return $completa ? ($capital ? ucfirst($tomadia) : $tomadia).", ".$day." ".($capital ? ucfirst($meses[$month]) : $meses[$month])." ".$year." ".$time
+                : ($capital ? ucfirst($tomadiaAbrev) : $tomadiaAbrev).", ".$day." ".($capital ? ucfirst($mesesAbrev[$month]) : $mesesAbrev[$month])." ".$year." ".$time;
     }
     
     /**
