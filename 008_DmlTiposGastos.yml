@@ -1,0 +1,13 @@
+DmlTiposGastos:
+<?php foreach (Singleton::getInstance()->csv_to_array('\path\DmlTiposGastos.csv') as $k => $v): ?>
+  id_<?=$k?>:
+    tg_nombre:         <?php echo "" == $v['tg_nombre'] ? NULL : $v['tg_nombre']; echo PHP_EOL; ?>
+    tg_alias:          <?php echo "" == $v['tg_alias'] ? NULL : $v['tg_alias']; echo PHP_EOL; ?>
+    tg_fecha_crea:     <?php echo "" == $v['tg_fecha_crea'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['tg_fecha_crea']; echo PHP_EOL; ?>
+    tg_quien_crea:     <?php echo "" == $v['tg_quien_crea'] ? NULL : $v['tg_quien_crea']; echo PHP_EOL; ?>
+    tg_fecha_modifica: <?php echo "" == $v['tg_fecha_modifica'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['tg_fecha_modifica']; echo PHP_EOL; ?>
+    tg_quien_modifica: <?php echo "" == $v['tg_quien_modifica'] ? NULL : $v['tg_quien_modifica']; echo PHP_EOL; ?>
+    tg_fecha_borra:    <?php echo "" == $v['tg_fecha_borra'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['tg_fecha_borra']; echo PHP_EOL; ?>
+    tg_quien_borra:    <?php echo "" == $v['tg_quien_borra'] ? NULL : $v['tg_quien_borra']; echo PHP_EOL; ?>
+    tg_borrado_logico: <?php echo "" == $v['tg_borrado_logico'] ? NULL : $v['tg_borrado_logico']; echo PHP_EOL; ?>
+<?php endforeach; ?>

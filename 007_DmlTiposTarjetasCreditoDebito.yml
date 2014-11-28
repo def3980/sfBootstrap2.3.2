@@ -1,0 +1,12 @@
+DmlTiposTarjetasCreditoDebito:
+<?php foreach (Singleton::getInstance()->csv_to_array('\path\DmlTiposTarjetasCreditoDebito.csv') as $k => $v): ?>
+  id_<?=$k?>:
+    ttcd_nombre:         <?php echo "" == $v['ttcd_nombre'] ? NULL : $v['ttcd_nombre']; echo PHP_EOL; ?>
+    ttcd_fecha_crea:     <?php echo "" == $v['ttcd_fecha_crea'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['ttcd_fecha_crea']; echo PHP_EOL; ?>
+    ttcd_quien_crea:     <?php echo "" == $v['ttcd_quien_crea'] ? NULL : $v['ttcd_quien_crea']; echo PHP_EOL; ?>
+    ttcd_fecha_modifica: <?php echo "" == $v['ttcd_fecha_modifica'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['ttcd_fecha_modifica']; echo PHP_EOL; ?>
+    ttcd_quien_modifica: <?php echo "" == $v['ttcd_quien_modifica'] ? NULL : $v['ttcd_quien_modifica']; echo PHP_EOL; ?>
+    ttcd_fecha_borra:    <?php echo "" == $v['ttcd_fecha_borra'] ? NULL : "|".PHP_EOL.str_repeat(' ', 25).$v['ttcd_fecha_borra']; echo PHP_EOL; ?>
+    ttcd_quien_borra:    <?php echo "" == $v['ttcd_quien_borra'] ? NULL : $v['ttcd_quien_borra']; echo PHP_EOL; ?>
+    ttcd_borrado_logico: <?php echo "" == $v['ttcd_borrado_logico'] ? NULL : $v['ttcd_borrado_logico']; echo PHP_EOL; ?>
+<?php endforeach; ?>
