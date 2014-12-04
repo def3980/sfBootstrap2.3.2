@@ -709,7 +709,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
      *
      * @param  array  $definition
      */
-    public function buildPhpDocs(array $definition) {
+    public function buildPhpDocs(array $definition) {        
         $ret = array();
 
         $ret[] = $definition['className'];
@@ -743,7 +743,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
 
                 $name = trim($name);
                 $fieldName = trim($fieldName);
-
+                
                 $ret[] = '@property ' . $column['type'] . ' $' . $fieldName;
             }
 
@@ -1142,8 +1142,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
         return $this->_baseClassPrefix . $className;
     }
 
-    public function buildTableClassDefinition($className, $definition, $options = array())
-    {
+    public function buildTableClassDefinition($className, $definition, $options = array()) {
         $extends = isset($options['extends']) ? $options['extends'] : $this->_baseTableClassName;
         if ($extends !== $this->_baseTableClassName) {
             $extends = $this->_classPrefix . $extends;
@@ -1164,7 +1163,11 @@ class Doctrine_Import_Builder extends Doctrine_Builder
         $docBlock[] = 'Esta clase ha sido auto-generada por el Framework ORM de Doctrine';
         $docBlock = PHP_EOL.' * ' . implode(PHP_EOL . ' * ', $docBlock);
 
-        $content  = '<?php' . PHP_EOL.PHP_EOL;
+        $content  = '<?php'.str_repeat(PHP_EOL, 2)
+                    ."/**".PHP_EOL
+                    ." * Fecha creacion : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"".PHP_EOL
+                    ." */"
+                    .str_repeat(PHP_EOL, 2);
         $content .= sprintf(self::$_tpl,
             $docBlock,
             false,
@@ -1174,16 +1177,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             $code,
             null
         );
-        
-        $content = str_replace(
-                    '* Esta clase ha sido auto-generada por el Framework ORM de Doctrine',
-                    "* Esta clase ha sido auto-generada por el Framework ORM de Doctrine"
-                    .PHP_EOL." */"
-                    .str_repeat(PHP_EOL, 2)
-                    ."/**".PHP_EOL
-                    ." * Fecha creacion : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"",
-                    $content
-                   );
+
         if ($this->_eolStyle) {
             $content = str_replace(PHP_EOL, $this->_eolStyle, $content);
         }
@@ -1326,7 +1320,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
                 $writePath = $this->_path . DIRECTORY_SEPARATOR . $this->_baseClassesDirectory;
             }
         }
-        
+
         // validacion para no mezclar la clase base con otras clases ya que estas se sobreescriben ------------------------------
         if (isset($definition['is_base_class']) 
             && $definition['is_base_class'] === true) {
@@ -1365,21 +1359,11 @@ class Doctrine_Import_Builder extends Doctrine_Builder
                       . " * - Veces ejecutado doctrine:build-model  : \"000000\"".PHP_EOL
                       . " * - Ultima vez que se actualizo el modelo : \"yyyy-mm-dd_hh:mm:ss\"";
             }
-            
-            $definitionCode = str_replace(
-                                '*/',
-                                "*/".str_repeat(PHP_EOL, 2)."/**".PHP_EOL.$reem.PHP_EOL." */",
-                                $definitionCode
-                              );
         } else {
-            $definitionCode = str_replace(
-                                '*/',
-                                "*/".str_repeat(PHP_EOL, 2)
-                                ."/**".PHP_EOL
-                                ." * Fecha creacion : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"".PHP_EOL
-                                ." */",
-                                $definitionCode
-                              );
+            $auditoria = str_repeat(PHP_EOL, 2)
+                       ."/**".PHP_EOL
+                       ." * Fecha creacion : \"{$this->obtenerFechaYHoraEnEsp(date('Y-m-d H:i:s'))}\"".PHP_EOL
+                       ." */".PHP_EOL;
             $definitionCode = str_replace(
                                 str_repeat(PHP_EOL, 3), 
                                 str_repeat(PHP_EOL, 2).str_repeat(' ', 4)
@@ -1410,8 +1394,8 @@ class Doctrine_Import_Builder extends Doctrine_Builder
         
         $code = isset($definition['is_base_class']) 
                 && $definition['is_base_class'] === true
-                ? "<?php".str_repeat(PHP_EOL, 2)
-                : '<?php'.PHP_EOL;
+                ? "<?php".str_repeat(PHP_EOL, 2)."/**".PHP_EOL.$reem.PHP_EOL." */".str_repeat(PHP_EOL, 2)
+                : '<?php'.$auditoria;
 
         if (isset($definition['connection']) && $definition['connection']) {
             $code .= "// Connection Component Binding" . PHP_EOL;
@@ -1506,6 +1490,24 @@ class Doctrine_Import_Builder extends Doctrine_Builder
          * mmm talvez, pero puede suceder.
          */
         return $no;
-    }    
+    }
+    
+    private function longitudParaClaseBase(array $definition) {
+        $cont = 0;
+        foreach ($definition['columns'] as $name => $column)
+            $cont = strlen($column['type']) > $cont 
+                    ? strlen($column['type']) : $cont;
+
+        if (isset($definition['relations']) && ! empty($definition['relations'])) {
+            foreach ($definition['relations'] as $relation) {
+                $type = (isset($relation['type']) && $relation['type'] == Doctrine_Relation::MANY) 
+                        ? 'Doctrine_Collection' : $this->_classPrefix . $relation['class'];
+                $cont = strlen($type) > $cont 
+                        ? strlen($type) : $cont;
+            }
+        }
+        
+        return $cont;
+    }
     /* ---------------------------------------------------------------------- */
 }

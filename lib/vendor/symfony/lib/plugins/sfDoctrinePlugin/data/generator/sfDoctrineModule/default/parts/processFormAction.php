@@ -25,8 +25,8 @@
 <?php else: ?>
 <?php   if (!empty($arrayBlob)): ?>
             // actualizo el objeto despues de guardar el formulario para poder
-            // guardar la imagen en la BDD como contenido binario, ya que por 
-            // defecto symfony 1.4 no lo hace
+            // poner la imagen en la BDD como contenido binario, ya que por 
+            // defecto symfony 1.4 no lo hace...
             foreach ($values as $key => $value)
                 if (is_object($value))
                     $<?php echo $this->getSingularName() ?>->$key = file_get_contents($value->getTempName());

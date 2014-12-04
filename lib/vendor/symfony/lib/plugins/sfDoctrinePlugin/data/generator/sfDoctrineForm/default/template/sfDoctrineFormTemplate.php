@@ -1,16 +1,16 @@
 [?php
 
 /**
+ * Fecha creacion : "<?=$this->_fechaYHora?>"
+ */
+
+/**
  * <?php echo $this->table->getOption('name') ?> formulario.
  *
  * @package    ##PROJECT_NAME##
  * @subpackage form
  * @author     ##AUTHOR_NAME##
  * @version    SVN: $Id: sfDoctrineFormTemplate.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
- */
-
-/**
- * Fecha creacion : "<?=$this->_fechaYHora?>"
  */
 class <?php echo $this->table->getOption('name') ?>Form extends Base<?php echo $this->table->getOption('name') ?>Form {
 

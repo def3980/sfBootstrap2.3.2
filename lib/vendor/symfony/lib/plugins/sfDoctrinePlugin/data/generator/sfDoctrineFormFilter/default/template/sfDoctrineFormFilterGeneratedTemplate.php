@@ -1,15 +1,6 @@
 [?php
 
 /**
- * <?php echo $this->table->getOption('name') ?> clase base de formulario para el filtrado.
- *
- * @package    ##PROJECT_NAME##
- * @subpackage filter
- * @author     ##AUTHOR_NAME##
- * @version    SVN: $Id: sfDoctrineFormFilterGeneratedTemplate.php 29570 2010-05-21 14:49:47Z Kris.Wallsmith $
- */
-
-/**
  * Fecha creacion : "<?=$this->_fechaYHora?>"
  * 
  * Acciones realizadas:
@@ -19,6 +10,15 @@
  * - Ultima vez que se actualizo la clase formulario : "<?php echo !$this->_actualizarFechaYHora
                                                                    ? 'yyyy-mm-dd_hh:mm:ss'
                                                                    : date('Y-m-d H:i:s') ?>"
+ */
+
+/**
+ * <?php echo $this->table->getOption('name') ?> clase base de formulario para el filtrado.
+ *
+ * @package    ##PROJECT_NAME##
+ * @subpackage filter
+ * @author     ##AUTHOR_NAME##
+ * @version    SVN: $Id: sfDoctrineFormFilterGeneratedTemplate.php 29570 2010-05-21 14:49:47Z Kris.Wallsmith $
  */
 abstract class Base<?php echo $this->table->getOption('name') ?>FormFilter extends <?php echo $this->getFormClassToExtend() ?> {
 

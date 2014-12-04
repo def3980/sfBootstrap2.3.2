@@ -96,6 +96,8 @@ EOF;
 
                 $typePad = max(array_map('strlen', array_merge(array_values($properties), array($model))));
                 $namePad = max(array_map('strlen', array_keys(array_map(array('sfInflector', 'camelize'), $properties))));
+                $namePad = $namePad > strlen('Doctrine_Collection')
+                           ? $namePad + 2 : $namePad;
                 $setters = array();
                 $getters = array();
 
