@@ -2,10 +2,10 @@
 
 /**
  * + ------------------------------------------------------------------- +
- * Agregando una nueva tarea para crear respaldo de base de datos solo   |
- * para el motor de base de datos MySQL.  Que pena por los demaas        |
+ * Agregando una nueva tarea para restaurar un respaldo de base de datos |
+ * solo para el motor de base de datos MySQL.                            |
  * Por Oswaldo Rojas un                                                  |
- * Miércoles, 12 Noviembre 2014 17:33:49                                 |
+ * Viernes, 06 Febrero 2015 11:37:55                                     |
  * + ------------------------------------------------------------------- +
  */
 
@@ -19,7 +19,7 @@ require_once(dirname(__FILE__).'/../generator/sfGeneratorBaseTask.class.php');
  * @author     Oswaldo Rojas <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id: sfGenerateModuleTask.class.php 23922 2009-11-14 14:58:38Z fabien $
  */
-class sfBackupMysqlTask extends sfGeneratorBaseTask {
+class sfRestoreMysqlTask extends sfGeneratorBaseTask {
     
     protected 
         $findDsn = "dsn:",
@@ -34,24 +34,17 @@ class sfBackupMysqlTask extends sfGeneratorBaseTask {
      */
     protected function configure() {
         $this->addArguments(array(
-            new sfCommandArgument('name', sfCommandArgument::REQUIRED, 'El nombre del archivo a crear'),
+            new sfCommandArgument('name', sfCommandArgument::REQUIRED, 'El nombre del archivo a restaurar'),
         ));
-        $this->namespace           = 'backup';
+        $this->namespace           = 'restore';
         $this->name                = 'mysql';
-        $this->briefDescription    = '>> Genera respaldo de base de datos';
+        $this->briefDescription    = '>> Restaura un respaldo de base de datos';
         $this->detailedDescription = <<<EOF
-La tarea [backup:mysql|INFO] crea un respaldo de base de datos con
-extension *.sql a la vez que comprimime el mismo para mejor
-transporte:
+La tarea [restore:mysql|INFO] restaura un respaldo de base de datos con
+extension *.sql hacia una instancia de base de datos creada en el motor
+MySQL:
 
-  [./symfony backup:mysql nombre_archivo|INFO]
-
-Adicionalmente la instruccion sabe que extension crear para el archivo
-comprimido (nombre_archivo.zip), ademas de incluir dentro del archivo 
-comprimido el *.sql del respaldo con fecha y hora del sistema donde 
-se encuentre alojado.
-
-  backup.zip
+  [./symfony restore:mysql nombre_archivo|INFO]
 
 El directorio por defecto para la ubicacion del respaldo de base de datos 
 es la carpeta docs.
@@ -63,7 +56,6 @@ EOF;
      */
     protected function execute($arguments = array(), $options = array()) {
         $contenedor = array();
-        $filename = $arguments['name']."_".date('Y-m-d')."_".date('His').".sql";
         if ($file = file(sfConfig::get('sf_config_dir').'/databases.yml')) {
             foreach ($file as $k => $v):
                 if (false !== strpos($v, $this->findDsn)):
@@ -84,32 +76,18 @@ EOF;
                 endif;
             endforeach;
         }
-        $command = "mysqldump "
+        $this->runTask('doctrine:drop-db');
+        $this->runTask('doctrine:build-db');
+        $command = "mysql "
                  . "-h ".$contenedor['hst']." "
                  . "-u ".$contenedor['usr']." "
                  . "-p".$contenedor['pwd']." "
                  . (array_key_exists('prt', $contenedor) ? "--port=".$contenedor['prt']." " : '')
-                 . "--skip-extended-insert "
-                 . "--single-transaction "
-                 . "--quick "
-                 . $contenedor['dbn']." > "
+                 . $contenedor['dbn']." < "
                  . sfConfig::get('sf_docs_dir')."/"
-                 . $filename;
+                 . $arguments['name'];
         exec($command);
-
-        $file_compress = "7z "
-                       . "a "
-                       . "-t7z "
-                       . sfConfig::get('sf_docs_dir')."/backup.7z "
-                       . sfConfig::get('sf_docs_dir')."/"
-                       . $filename
-//                       . "-m0=BCJ2 -m1=LZMA2:d=1024m -aoa";
-//                       . "-mx9 -aoa";
-                       . " -mx9";
-
-        exec($file_compress);
-        $this->logSection('backup:mysql', sprintf('"%s" :: creado satisfactoriamente...', $contenedor['dbn']));
-        unlink(sfConfig::get('sf_docs_dir')."/".$filename);
+        $this->logSection('restore:mysql', sprintf('"%s" :: restaurado satisfactoriamente...', $contenedor['dbn']));
     }
 
 }
