@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Por Oswaldo Rojas
+ * Empezado a modificar un Miércoles, 20 Enero 2016 21:13:20
+ * Terminado un Miércoles, 20 Enero 2016 21:26:29
+ */
+
 function is_cli() { return !isset($_SERVER['HTTP_HOST']); }
 
 /**
@@ -66,24 +72,29 @@ if (is_cli()) {
 // requerimientos obligatorios
 echo "+ -- REQUERIMIENTOS OBLIGATORIOS -------------------- +".str_repeat(PHP_EOL, 2);
 check(
-        version_compare(phpversion(), '5.2.4', '>='), 
-        sprintf('PHP >= v5.2.4 (Actual: v%s)', phpversion()), 
-        'Versiona actual v'.phpversion(), 
-        true
-    );
+    version_compare(phpversion(), '5.2.4', '>='), 
+    sprintf('PHP >= v5.2.4 (Actual: v%s)', phpversion()), 
+    'Version actual v'.phpversion(), 
+    true
+);
 echo str_repeat(PHP_EOL, 1);
 echo "+ --------------------------------------------------- +".str_repeat(PHP_EOL, 2);
 
 // requerimientos opcionales
 echo "+ -- REQUERIMIENTOS OPCIONALES ---------------------- +".str_repeat(PHP_EOL, 2);
-check(class_exists('PDO'), 'PDO instalado', 'Instalar PDO (obligatorio para Doctrine & Propel)', false);
+check(
+    class_exists('PDO'),
+    'PDO instalado',
+    'Instalar PDO (obligatorio para Doctrine & Propel)',
+    false
+);
 if (class_exists('PDO')) {
     $drivers = PDO::getAvailableDrivers();
     check(
-            count($drivers), 
-            "PDO drivers: ".implode(', ', $drivers), 
-            'Instalar PDO (obligatorio para Doctrine & Propel)'
-        );
+        count($drivers), 
+        "PDO drivers: ".implode(', ', $drivers), 
+        'Instalar PDO (obligatorio para Doctrine & Propel)'
+    );
 }
 check(class_exists('DomDocument'), 'PHP-XML module instalado', 'Instalar y activar el modulo php-xml (requerido en Propel)', false);
 check(class_exists('XSLTProcessor'), 'XSL module instalado', 'Instalar y activar el modulo XSL (recomendado para Propel)', false);
