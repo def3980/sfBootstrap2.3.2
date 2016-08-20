@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Sábado, 20 Agosto 2016 09:09:59
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -77,74 +85,66 @@ class sfSymfonyCommandApplication extends sfCommandApplication {
         return $ret;
     }
 
-  /**
-   * Loads all available tasks.
-   *
-   * Looks for tasks in the symfony core, the current project and all project plugins.
-   *
-   * @param sfProjectConfiguration $configuration The project configuration
-   */
-  public function loadTasks(sfProjectConfiguration $configuration)
-  {
-    // Symfony core tasks
-    $dirs = array(sfConfig::get('sf_symfony_lib_dir').'/task');
+    /**
+     * Loads all available tasks.
+     *
+     * Looks for tasks in the symfony core, the current project and all project plugins.
+     *
+     * @param sfProjectConfiguration $configuration The project configuration
+     */
+    public function loadTasks(sfProjectConfiguration $configuration) {
+        // Symfony core tasks
+        $dirs = array(sfConfig::get('sf_symfony_lib_dir').'/task');
 
-    // Plugin tasks
-    foreach ($configuration->getPluginPaths() as $path)
-    {
-      if (is_dir($taskPath = $path.'/lib/task'))
-      {
-        $dirs[] = $taskPath;
-      }
+        // Plugin tasks
+        foreach ($configuration->getPluginPaths() as $path) {
+            if (is_dir($taskPath = $path.'/lib/task')) {
+                $dirs[] = $taskPath;
+            }
+        }
+
+        // project tasks
+        $dirs[] = sfConfig::get('sf_lib_dir').'/task';
+
+        $finder = sfFinder::type('file')->name('*Task.class.php');
+        foreach ($finder->in($dirs) as $file) {
+            $this->taskFiles[basename($file, '.class.php')] = $file;
+        }
+
+        // register local autoloader for tasks
+        spl_autoload_register(array($this, 'autoloadTask'));
+
+        // require tasks
+        foreach ($this->taskFiles as $task => $file) {
+            // forces autoloading of each task class
+            class_exists($task, true);
+        }
+
+        // unregister local autoloader
+        spl_autoload_unregister(array($this, 'autoloadTask'));
     }
 
-    // project tasks
-    $dirs[] = sfConfig::get('sf_lib_dir').'/task';
+    /**
+     * Autoloads a task class
+     *
+     * @param  string  $class  The task class name
+     *
+     * @return Boolean
+     */
+    public function autoloadTask($class) {
+        if (isset($this->taskFiles[$class])) {
+            require_once $this->taskFiles[$class];
 
-    $finder = sfFinder::type('file')->name('*Task.class.php');
-    foreach ($finder->in($dirs) as $file)
-    {
-      $this->taskFiles[basename($file, '.class.php')] = $file;
+            return true;
+        }
+
+        return false;
     }
 
-    // register local autoloader for tasks
-    spl_autoload_register(array($this, 'autoloadTask'));
-
-    // require tasks
-    foreach ($this->taskFiles as $task => $file)
-    {
-      // forces autoloading of each task class
-      class_exists($task, true);
+    /**
+     * @see sfCommandApplication
+     */
+    public function getLongVersion() {
+        return sprintf('%s version %s (%s)', $this->getName(), $this->formatter->format($this->getVersion(), 'INFO'), sfConfig::get('sf_symfony_lib_dir'))."\n";
     }
-
-    // unregister local autoloader
-    spl_autoload_unregister(array($this, 'autoloadTask'));
-  }
-
-  /**
-   * Autoloads a task class
-   *
-   * @param  string  $class  The task class name
-   *
-   * @return Boolean
-   */
-  public function autoloadTask($class)
-  {
-    if (isset($this->taskFiles[$class]))
-    {
-      require_once $this->taskFiles[$class];
-
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * @see sfCommandApplication
-   */
-  public function getLongVersion()
-  {
-    return sprintf('%s version %s (%s)', $this->getName(), $this->formatter->format($this->getVersion(), 'INFO'), sfConfig::get('sf_symfony_lib_dir'))."\n";
-  }
 }
