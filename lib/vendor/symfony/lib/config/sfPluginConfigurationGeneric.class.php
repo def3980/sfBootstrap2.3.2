@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Sábado, 20 Agosto 2016 10:34:29
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -16,13 +24,12 @@
  * @author     Kris Wallsmith <kris.wallsmith@symfony-project.com>
  * @version    SVN: $Id: sfPluginConfigurationGeneric.class.php 12503 2008-10-31 16:58:52Z Kris.Wallsmith $
  */
-class sfPluginConfigurationGeneric extends sfPluginConfiguration
-{
-  /**
-   * @see sfPluginConfiguration
-   */
-  public function initialize()
-  {
-    return false;
-  }
+class sfPluginConfigurationGeneric extends sfPluginConfiguration {
+
+    /**
+     * @see sfPluginConfiguration
+     */
+    public function initialize() {
+        return false;
+    }
 }
