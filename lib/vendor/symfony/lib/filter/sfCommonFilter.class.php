@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Domingo, 21 Agosto 2016 13:53:01
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -16,43 +24,39 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-class sfCommonFilter extends sfFilter
-{
-  /**
-   * Executes this filter.
-   *
-   * @param sfFilterChain $filterChain A sfFilterChain instance
-   */
-  public function execute($filterChain)
-  {
-    // execute next filter
-    $filterChain->execute();
+class sfCommonFilter extends sfFilter {
 
-    // execute this filter only once
-    $response = $this->context->getResponse();
+    /**
+     * Executes this filter.
+     *
+     * @param sfFilterChain $filterChain A sfFilterChain instance
+     */
+    public function execute($filterChain) {
+        // execute next filter
+        $filterChain->execute();
 
-    // include javascripts and stylesheets
-    $content = $response->getContent();
-    if (false !== ($pos = strpos($content, '</head>')))
-    {
-      $this->context->getConfiguration()->loadHelpers(array('Tag', 'Asset'));
-      $html = '';
-      if (!sfConfig::get('symfony.asset.javascripts_included', false))
-      {
-        $html .= get_javascripts($response);
-      }
-      if (!sfConfig::get('symfony.asset.stylesheets_included', false))
-      {
-        $html .= get_stylesheets($response);
-      }
+        // execute this filter only once
+        $response = $this->context->getResponse();
 
-      if ($html)
-      {
-        $response->setContent(substr($content, 0, $pos).$html.substr($content, $pos));
-      }
+        // include javascripts and stylesheets
+        $content = $response->getContent();
+        if (false !== ($pos = strpos($content, '</head>'))) {
+            $this->context->getConfiguration()->loadHelpers(array('Tag', 'Asset'));
+            $html = '';
+            if (!sfConfig::get('symfony.asset.javascripts_included', false)) {
+                $html .= get_javascripts($response);
+            }
+            if (!sfConfig::get('symfony.asset.stylesheets_included', false)) {
+                $html .= get_stylesheets($response);
+            }
+
+            if ($html) {
+                $response->setContent(substr($content, 0, $pos).$html.substr($content, $pos));
+            }
+        }
+
+        sfConfig::set('symfony.asset.javascripts_included', false);
+        sfConfig::set('symfony.asset.stylesheets_included', false);
     }
 
-    sfConfig::set('symfony.asset.javascripts_included', false);
-    sfConfig::set('symfony.asset.stylesheets_included', false);
-  }
 }
