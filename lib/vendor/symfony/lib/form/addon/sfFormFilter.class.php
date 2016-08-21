@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Domingo, 21 Agosto 2016 18:00:29
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -18,6 +26,4 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id: sfFormFilter.class.php 18331 2009-05-16 11:13:47Z Kris.Wallsmith $
  */
-class sfFormFilter extends BaseForm
-{
-}
+class sfFormFilter extends BaseForm {}
