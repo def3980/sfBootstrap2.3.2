@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Domingo, 21 Agosto 2016 10:32:04
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -16,20 +24,16 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id: sfWebDebugPanelMemory.class.php 21069 2009-08-11 23:28:20Z Kris.Wallsmith $
  */
-class sfWebDebugPanelMemory extends sfWebDebugPanel
-{
-  public function getTitle()
-  {
-    $totalMemory = sprintf('%.1f', (memory_get_peak_usage(true) / 1024));
+class sfWebDebugPanelMemory extends sfWebDebugPanel {
 
-    return '<img src="'.$this->webDebug->getOption('image_root_path').'/memory.png" alt="Memory" /> '.$totalMemory.' KB';
-  }
+    public function getTitle() {
+        $totalMemory = sprintf('%.1f', (memory_get_peak_usage(true) / 1024));
 
-  public function getPanelTitle()
-  {
-  }
+        return '<img src="'.$this->webDebug->getOption('image_root_path').'/memory.png" alt="Memory" /> '.$totalMemory.' KB';
+    }
 
-  public function getPanelContent()
-  {
-  }
+    public function getPanelTitle() {}
+
+    public function getPanelContent() {}
+
 }

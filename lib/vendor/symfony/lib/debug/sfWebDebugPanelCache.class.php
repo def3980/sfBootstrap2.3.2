@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Domingo, 21 Agosto 2016 10:24:29
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -17,33 +25,26 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id: sfWebDebugPanelCache.class.php 22932 2009-10-11 22:40:20Z Kris.Wallsmith $
  */
-class sfWebDebugPanelCache extends sfWebDebugPanel
-{
-  public function getTitle()
-  {
-    return '<img src="'.$this->webDebug->getOption('image_root_path').'/reload.png" alt="Reload" />';
-  }
+class sfWebDebugPanelCache extends sfWebDebugPanel {
 
-  public function getTitleUrl()
-  {
-    $queryString = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
-
-    if (false === strpos($queryString, '_sf_ignore_cache'))
-    {
-      return sprintf('?%s_sf_ignore_cache=1', $queryString ? $queryString.'&' : '');
+    public function getTitle() {
+        return '<img src="'.$this->webDebug->getOption('image_root_path').'/reload.png" alt="Reload" />';
     }
-    else
-    {
-      return '?'.$queryString;
+
+    public function getTitleUrl() {
+        $queryString = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
+
+        if (false === strpos($queryString, '_sf_ignore_cache')) {
+            return sprintf('?%s_sf_ignore_cache=1', $queryString ? $queryString.'&' : '');
+        } else {
+            return '?'.$queryString;
+        }
     }
-  }
 
-  public function getPanelTitle()
-  {
-    return 'reload and ignore cache';
-  }
+    public function getPanelTitle() {
+        return 'reload and ignore cache';
+    }
 
-  public function getPanelContent()
-  {
-  }
+    public function getPanelContent() {}
+
 }

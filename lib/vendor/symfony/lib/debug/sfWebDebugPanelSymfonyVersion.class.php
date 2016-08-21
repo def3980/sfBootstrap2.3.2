@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Domingo, 21 Agosto 2016 10:32:01
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -16,18 +24,14 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id: sfWebDebugPanelSymfonyVersion.class.php 11726 2008-09-22 12:38:17Z fabien $
  */
-class sfWebDebugPanelSymfonyVersion extends sfWebDebugPanel
-{
-  public function getTitle()
-  {
-    return '<span id="sfWebDebugSymfonyVersion">'.SYMFONY_VERSION.'</span>';
-  }
+class sfWebDebugPanelSymfonyVersion extends sfWebDebugPanel {
 
-  public function getPanelTitle()
-  {
-  }
+    public function getTitle() {
+        return '<span id="sfWebDebugSymfonyVersion">'.SYMFONY_VERSION.'</span>';
+    }
 
-  public function getPanelContent()
-  {
-  }
+    public function getPanelTitle() {}
+
+    public function getPanelContent() {}
+
 }
