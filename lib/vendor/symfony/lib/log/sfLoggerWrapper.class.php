@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Domingo, 27 Agosto 2016 12:37:54
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -16,29 +24,28 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id: sfLoggerWrapper.class.php 9081 2008-05-20 00:47:12Z Carl.Vondrick $
  */
-class sfLoggerWrapper extends sfLogger
-{
-  protected
-    $logger = null;
+class sfLoggerWrapper extends sfLogger {
 
-  /**
-   * Creates a new logger wrapper
-   *
-   * @param sfLoggerInterface $logger The wrapped logger
-   */
-  public function __construct(sfLoggerInterface $logger)
-  {
-    $this->logger = $logger;
-  }
+    protected
+        $logger = null;
 
-  /**
-   * Logs a message.
-   *
-   * @param string $message   Message
-   * @param string $priority  Message priority
-   */
-  protected function doLog($message, $priority)
-  {
-    $this->logger->log($message, $priority);
-  }
+    /**
+     * Creates a new logger wrapper
+     *
+     * @param sfLoggerInterface $logger The wrapped logger
+     */
+    public function __construct(sfLoggerInterface $logger) {
+        $this->logger = $logger;
+    }
+
+    /**
+     * Logs a message.
+     *
+     * @param string $message   Message
+     * @param string $priority  Message priority
+     */
+    protected function doLog($message, $priority) {
+        $this->logger->log($message, $priority);
+    }
+
 }
