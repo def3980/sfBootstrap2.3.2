@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Domingo, 27 Agosto 2016 09:21:02
+ * + ------------------------------------------------------------------- +
+ */
+
 // +----------------------------------------------------------------------+
 // | PEAR :: File :: Gettext :: PO                                        |
 // +----------------------------------------------------------------------+
@@ -20,7 +28,6 @@
  * @author      Michael Wallner <mike@php.net>
  * @license     PHP License
  */
- 
 require_once dirname(__FILE__).'/TGettext.class.php';
 
 /** 
@@ -33,8 +40,8 @@ require_once dirname(__FILE__).'/TGettext.class.php';
  * @access      public
  * @package System.I18N.core 
  */
-class TGettext_PO extends TGettext
-{
+class TGettext_PO extends TGettext {
+
     /**
      * Constructor
      *
@@ -42,8 +49,7 @@ class TGettext_PO extends TGettext
      * @return  object      File_Gettext_PO
      * @param   string      path to GNU PO file
      */
-    function TGettext_PO($file = '')
-    {
+    function TGettext_PO($file = '') {
         $this->file = $file;
     }
 
@@ -54,8 +60,7 @@ class TGettext_PO extends TGettext
      * @return  mixed   Returns true on success or PEAR_Error on failure.
      * @param   string  $file
      */
-    function load($file = null)
-    {
+    function load($file = null) {
         if (!isset($file)) {
             $file = $this->file;
         }
@@ -103,8 +108,7 @@ class TGettext_PO extends TGettext
      * @return  mixed   Returns true on success or PEAR_Error on failure.
      * @param   string  $file
      */
-    function save($file = null)
-    {
+    function save($file = null) {
         if (!isset($file)) {
             $file = $this->file;
         }

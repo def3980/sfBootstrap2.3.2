@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Domingo, 27 Agosto 2016 09:21:48
+ * + ------------------------------------------------------------------- +
+ */
+
 // +----------------------------------------------------------------------+
 // | PEAR :: File :: Gettext                                              |
 // +----------------------------------------------------------------------+
@@ -40,8 +48,8 @@
  * @access      public
  * @package System.I18N.core 
  */
-class TGettext
-{
+class TGettext {
+
     /**
      * strings
      * 
@@ -81,8 +89,7 @@ class TGettext
      * @param   string  $format MO or PO
      * @param   string  $file   path to GNU gettext file
      */
-    static function factory($format, $file = '')
-    {
+    static function factory($format, $file = '') {
         $format = strToUpper($format);
         $filename = dirname(__FILE__).'/'.$format.'.php';
         if (is_file($filename) == false)
@@ -106,8 +113,7 @@ class TGettext
      * @param   string  $pofile path to GNU PO file
      * @param   string  $mofile path to GNU MO file
      */
-    function poFile2moFile($pofile, $mofile)
-    {
+    function poFile2moFile($pofile, $mofile) {
         if (!is_file($pofile)) {
             throw new Exception("File $pofile doesn't exist.");
         }
@@ -137,8 +143,7 @@ class TGettext
      * @param   string  $string
      * @param   bool    $reverse
      */
-    function prepare($string, $reverse = false)
-    {
+    function prepare($string, $reverse = false) {
         if ($reverse) {
             $smap = array('"', "\n", "\t", "\r");
             $rmap = array('\"', '\\n"' . "\n" . '"', '\\t', '\\r');
@@ -159,8 +164,7 @@ class TGettext
      * @return  array
      * @param   string  $meta
      */
-    function meta2array($meta)
-    {
+    function meta2array($meta) {
         $array = array();
         foreach (explode("\n", $meta) as $info) {
             if ($info = trim($info)) {
@@ -195,8 +199,7 @@ class TGettext
      * @access  protected
      * @return  array
      */
-    function toArray()
-    {
+    function toArray() {
     	return array('meta' => $this->meta, 'strings' => $this->strings);
     }
     
@@ -225,8 +228,7 @@ class TGettext
      * @return  bool
      * @param   array       $array
      */
-    function fromArray($array)
-    {
+    function fromArray($array) {
     	if (!array_key_exists('strings', $array)) {
     	    if (count($array) != 2) {
                 return false;
@@ -246,8 +248,7 @@ class TGettext
      * @access  protected
      * @return  object  File_Gettext_MO
      */
-    function toMO()
-    {
+    function toMO() {
         include_once dirname(__FILE__).'/MO.php';
         $MO = new TGettext_MO;
         $MO->fromArray($this->toArray());
@@ -260,8 +261,7 @@ class TGettext
      * @access  protected
      * @return  object      File_Gettext_PO
      */
-    function toPO()
-    {
+    function toPO() {
         include_once dirname(__FILE__).'/PO.php';
         $PO = new TGettext_PO;
         $PO->fromArray($this->toArray());

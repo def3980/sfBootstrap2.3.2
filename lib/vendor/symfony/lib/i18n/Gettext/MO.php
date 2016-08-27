@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Domingo, 27 Agosto 2016 09:19:24
+ * + ------------------------------------------------------------------- +
+ */
+
 // +----------------------------------------------------------------------+
 // | PEAR :: File :: Gettext :: MO                                        |
 // +----------------------------------------------------------------------+
@@ -20,7 +28,6 @@
  * @author      Michael Wallner <mike@php.net>
  * @license     PHP License
  */
-
 require_once dirname(__FILE__).'/TGettext.class.php';
 
 /** 
@@ -33,8 +40,8 @@ require_once dirname(__FILE__).'/TGettext.class.php';
  * @access      public
  * @package System.I18N.core 
  */
-class TGettext_MO extends TGettext
-{
+class TGettext_MO extends TGettext {
+
     /**
      * file handle
      * 
@@ -60,8 +67,7 @@ class TGettext_MO extends TGettext
      * @return  object      File_Gettext_MO
      * @param   string      $file   path to GNU MO file
      */
-    function TGettext_MO($file = '')
-    {
+    function TGettext_MO($file = '') {
         $this->file = $file;
     }
 
@@ -72,11 +78,11 @@ class TGettext_MO extends TGettext
      * @return  mixed
      * @param   int     $bytes
      */
-    function _read($bytes = 1)
-    {
+    function _read($bytes = 1) {
         if (0 < $bytes = abs($bytes)) {
             return fread($this->_handle, $bytes);
         }
+
         return null;
     }
     
@@ -87,10 +93,10 @@ class TGettext_MO extends TGettext
      * @return  int
      * @param   bool    $bigendian
      */
-    function _readInt($bigendian = false)
-    {
-		//unpack returns a reference????
-		$unpacked = unpack($bigendian ? 'N' : 'V', $this->_read(4));
+    function _readInt($bigendian = false) {
+        //unpack returns a reference????
+        $unpacked = unpack($bigendian ? 'N' : 'V', $this->_read(4));
+
         return array_shift($unpacked);
     }
     
@@ -101,8 +107,7 @@ class TGettext_MO extends TGettext
      * @return  int
      * @param   int     $int
      */
-    function _writeInt($int)
-    {
+    function _writeInt($int) {
         return $this->_write(pack($this->writeBigEndian ? 'N' : 'V', (int) $int));
     }
     
@@ -113,8 +118,7 @@ class TGettext_MO extends TGettext
      * @return  int
      * @param   string  $data
      */
-    function _write($data)
-    {
+    function _write($data) {
         return fwrite($this->_handle, $data);
     }
     
@@ -125,8 +129,7 @@ class TGettext_MO extends TGettext
      * @return  int
      * @param   string  $string
      */
-    function _writeStr($string)
-    {
+    function _writeStr($string) {
         return $this->_write($string . "\0");
     }
     
@@ -138,8 +141,7 @@ class TGettext_MO extends TGettext
      * @param   array   $params     associative array with offset and length 
      *                              of the string
      */
-    function _readStr($params)
-    {
+    function _readStr($params) {
         fseek($this->_handle, $params['offset']);
         return $this->_read($params['length']);
     }
@@ -151,8 +153,7 @@ class TGettext_MO extends TGettext
      * @return   mixed   Returns true on success or PEAR_Error on failure.
      * @param    string  $file
      */
-    function load($file = null)
-    {
+    function load($file = null) {
         if (!isset($file)) {
             $file = $this->file;
         }
@@ -169,10 +170,9 @@ class TGettext_MO extends TGettext
         
         // read (part of) magic number from MO file header and define endianess
 
-		//unpack returns a reference????
-		$unpacked = unpack('c', $this->_read(4));
-        switch ($magic = array_shift($unpacked))
-        {
+        //unpack returns a reference????
+        $unpacked = unpack('c', $this->_read(4));
+        switch ($magic = array_shift($unpacked)) {
             case -34:
                 $be = false;
             break;
@@ -247,8 +247,7 @@ class TGettext_MO extends TGettext
      * @return  mixed   Returns true on success or PEAR_Error on failure.
      * @param   string  $file
      */
-    function save($file = null)
-    {
+    function save($file = null) {
         if (!isset($file)) {
             $file = $this->file;
         }
