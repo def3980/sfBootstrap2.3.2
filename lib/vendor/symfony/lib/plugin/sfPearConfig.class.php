@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Domingo, 27 Agosto 2016 13:03:01
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -18,14 +26,14 @@ require_once 'PEAR/Config.php';
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id: sfPearConfig.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
  */
-class sfPearConfig extends PEAR_Config
-{
-  function &getREST($version, $options = array())
-  {
-    $class = 'sfPearRest'.str_replace('.', '', $version);
+class sfPearConfig extends PEAR_Config {
 
-    $remote = new $class($this, $options);
+    function &getREST($version, $options = array()) {
+        $class = 'sfPearRest'.str_replace('.', '', $version);
 
-    return $remote;
-  }
+        $remote = new $class($this, $options);
+
+        return $remote;
+    }
+
 }
