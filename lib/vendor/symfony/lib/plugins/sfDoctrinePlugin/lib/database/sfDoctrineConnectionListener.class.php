@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Viernes, 21 Octubre 2016 20:41:22
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -18,17 +26,14 @@
  * @author     Jonathan H. Wage <jonwage@gmail.com>
  * @version    SVN: $Id: sfDoctrineConnectionListener.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
  */
-class sfDoctrineConnectionListener extends Doctrine_EventListener
-{
-  public function __construct($connection, $encoding)
-  {
-    $this->connection = $connection;
-    $this->encoding = $encoding;
-  }
+class sfDoctrineConnectionListener extends Doctrine_EventListener {
+    public function __construct($connection, $encoding) {
+        $this->connection = $connection;
+        $this->encoding = $encoding;
+    }
 
-  public function postConnect(Doctrine_Event $event)
-  {
-    $this->connection->setCharset($this->encoding);
-    $this->connection->setDateFormat();
-  }
+    public function postConnect(Doctrine_Event $event) {
+        $this->connection->setCharset($this->encoding);
+        $this->connection->setDateFormat();
+    }
 }

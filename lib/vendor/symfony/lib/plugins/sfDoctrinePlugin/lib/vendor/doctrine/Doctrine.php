@@ -1,4 +1,13 @@
 <?php
+
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Actualizado un Viernes, 22 Octubre 2016 09:39:31
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  *  $Id: Doctrine.php 7490 2010-03-29 19:53:27Z jwage $
  *
@@ -33,6 +42,4 @@ require_once 'Doctrine/Core.php';
  * @since       1.0
  * @version     $Revision: 7490 $
  */
-class Doctrine extends Doctrine_Core
-{
-}
+class Doctrine extends Doctrine_Core {}

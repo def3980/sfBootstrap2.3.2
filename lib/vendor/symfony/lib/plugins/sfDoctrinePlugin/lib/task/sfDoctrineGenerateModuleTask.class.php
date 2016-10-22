@@ -25,31 +25,32 @@ require_once(dirname(__FILE__).'/sfDoctrineBaseTask.class.php');
  */
 class sfDoctrineGenerateModuleTask extends sfDoctrineBaseTask {
     
-    protected $_dias = array(
-                        'domingo', 
-                        'lunes', 
-                        'martes', 
-                        'miercoles', 
-                        'jueves', 
-                        'viernes', 
-                        'sabado'
-                       ),
-              $_diasAbreviados = array(),
-              $_meses = array(
-                        'enero', 
-                        'febrero', 
-                        'marzo', 
-                        'abril', 
-                        'mayo', 
-                        'junio',
-                        'julio', 
-                        'agosto', 
-                        'septiembre', 
-                        'octubre', 
-                        'noviembre', 
-                        'diciembre'
-                       ),
-              $_mesesAbreviados = array();
+    protected
+        $_dias = array(
+            'domingo', 
+            'lunes', 
+            'martes', 
+            'miercoles', 
+            'jueves', 
+            'viernes', 
+            'sabado'
+        ),
+        $_diasAbreviados = array(),
+        $_meses = array(
+            'enero', 
+            'febrero', 
+            'marzo', 
+            'abril', 
+            'mayo', 
+            'junio',
+            'julio', 
+            'agosto', 
+            'septiembre', 
+            'octubre', 
+            'noviembre', 
+            'diciembre'
+        ),
+        $_mesesAbreviados = array();
 
     /**
      * @see sfTask
