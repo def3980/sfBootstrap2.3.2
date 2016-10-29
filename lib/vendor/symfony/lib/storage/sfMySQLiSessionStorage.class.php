@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * + ------------------------------------------------------------------- +
+ * Por Oswaldo Rojas
+ * Añadiendo nuevas formas a lo ya optimizado.
+ * Actualizado un Sábado, 29 Octubre 2016 09:26:39
+ * + ------------------------------------------------------------------- +
+ */
+
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -22,59 +30,53 @@
  * @author     Julien Garand <julien.garand@gmail.com>
  * @version    SVN: $Id: sfMySQLiSessionStorage.class.php 24590 2009-11-30 18:28:13Z FabianLange $
  */
-class sfMySQLiSessionStorage extends sfMySQLSessionStorage
-{
-  /**
-   * Execute an SQL Query
-   *
-   * @param  string $query  The query to execute
-   * @return mixed The result of the query
-   */
-  protected function db_query($query)
-  {
-    return mysqli_query($this->db, $query);
-  }
+class sfMySQLiSessionStorage extends sfMySQLSessionStorage {
+    /**
+     * Execute an SQL Query
+     *
+     * @param  string $query  The query to execute
+     * @return mixed The result of the query
+     */
+    protected function db_query($query) {
+        return mysqli_query($this->db, $query);
+    }
 
-  /**
-   * Escape a string before using it in a query statement
-   *
-   * @param  string $string  The string to escape
-   * @return string The escaped string
-   */
-  protected function db_escape($string)
-  {
-    return mysqli_real_escape_string($this->db, $string);
-  }
+    /**
+     * Escape a string before using it in a query statement
+     *
+     * @param  string $string  The string to escape
+     * @return string The escaped string
+     */
+    protected function db_escape($string) {
+        return mysqli_real_escape_string($this->db, $string);
+    }
 
-  /**
-   * Count the rows in a query result
-   *
-   * @param  resource $result  Result of a query
-   * @return int Number of rows
-   */
-  protected function db_num_rows($result)
-  {
-    return $result->num_rows;
-  }
+    /**
+     * Count the rows in a query result
+     *
+     * @param  resource $result  Result of a query
+     * @return int Number of rows
+     */
+    protected function db_num_rows($result) {
+        return $result->num_rows;
+    }
 
-  /**
-   * Extract a row from a query result set
-   *
-   * @param  resource $result  Result of a query
-   * @return array Extracted row as an indexed array
-   */
-  protected function db_fetch_row($result)
-  {
-    return $result->fetch_row();
-  }
+    /**
+     * Extract a row from a query result set
+     *
+     * @param  resource $result  Result of a query
+     * @return array Extracted row as an indexed array
+     */
+    protected function db_fetch_row($result) {
+        return $result->fetch_row();
+    }
 
-  /**
-   * Returns the text of the error message from previous database operation
-   *
-   * @return string The error text from the last database function
-   */
-  protected function db_error()
-  {
-    return mysqli_error($this->db);
-  }
+    /**
+     * Returns the text of the error message from previous database operation
+     *
+     * @return string The error text from the last database function
+     */
+    protected function db_error() {
+        return mysqli_error($this->db);
+    }
 }
